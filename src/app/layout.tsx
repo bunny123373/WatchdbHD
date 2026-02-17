@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
-  keywords: ["Telugu movies", "web series", "streaming", "download", "cinema", "WatchTMDB"],
+  keywords: Array.from(SITE_CONFIG.keywords),
   authors: [{ name: SITE_CONFIG.brandName }],
   creator: SITE_CONFIG.brandName,
   metadataBase: new URL(SITE_CONFIG.url),

@@ -1,7 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api
-
-Host: https://watchtmdb.netlify.app
-Sitemap: https://watchtmdb.netlify.app/sitemap.xml
