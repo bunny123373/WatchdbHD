@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Film, Tv, PlayCircle, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface Stats {
   totalMovies: number;
@@ -46,60 +45,49 @@ export default function AdminStats() {
       label: "Total Movies",
       value: stats.totalMovies,
       icon: Film,
-      color: "from-primary-gold to-yellow-600",
-      bgColor: "bg-primary-gold/10",
-      textColor: "text-primary-gold",
+      color: "bg-red-600",
     },
     {
       label: "Total Series",
       value: stats.totalSeries,
       icon: Tv,
-      color: "from-secondary-purple to-purple-600",
-      bgColor: "bg-secondary-purple/10",
-      textColor: "text-secondary-purple",
+      color: "bg-purple-600",
     },
     {
       label: "Total Episodes",
       value: stats.totalEpisodes,
       icon: PlayCircle,
-      color: "from-accent-green to-green-600",
-      bgColor: "bg-accent-green/10",
-      textColor: "text-accent-green",
+      color: "bg-green-600",
     },
     {
       label: "Trending",
       value: stats.trendingCount,
       icon: TrendingUp,
-      color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-500/10",
-      textColor: "text-blue-500",
+      color: "bg-blue-600",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {statCards.map((stat, index) => {
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {statCards.map((stat) => {
         const Icon = stat.icon;
         return (
-          <motion.div
+          <div
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-card rounded-2xl border border-border p-6"
+            className="bg-[#1f1f1f] rounded-lg p-4 md:p-6"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-text-muted text-sm mb-1">{stat.label}</p>
-                <h3 className="text-3xl font-bold text-text-primary">
+                <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">
                   {loading ? "-" : stat.value}
                 </h3>
               </div>
-              <div className={`w-12 h-12 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
-                <Icon className={`w-6 h-6 ${stat.textColor}`} />
+              <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
+                <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>

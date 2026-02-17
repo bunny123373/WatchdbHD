@@ -119,7 +119,7 @@ function SeriesWatchContent() {
             className="mb-6"
           >
             <Link
-              href={`/series/${series._id}`}
+              href={`/series/${String(series._id)}`}
               className="inline-flex items-center gap-2 text-text-muted hover:text-primary-gold transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/utils/cn";
 import { X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
   isOpen: boolean;
@@ -20,61 +19,56 @@ export default function Modal({ isOpen, onClose, title, children, size = "md" }:
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   const sizes = {
-    sm: "max-w-sm sm:max-w-md",
-    md: "max-w-sm sm:max-w-lg",
-    lg: "max-w-sm sm:max-w-2xl",
-    xl: "max-w-sm sm:max-w-4xl",
-    full: "w-full h-full max-w-full max-h-full",
+    sm: "max-w-xs",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
+    full: "max-w-full",
   };
 
-  if (!mounted) {
-    return <div style={{ display: 'none' }} />;
-  }
+  if (!mounted) return null;
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-              size === "full" 
-                ? "fixed inset-0 z-50" 
-                : "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full",
-              sizes[size]
-            )}
-          >
-            <div className={cn(
-              "bg-card border border-border shadow-2xl overflow-hidden",
-              size === "full" ? "h-full rounded-none" : "rounded-2xl mx-4"
-            )}>
-              {title && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                  <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
-                  <button
-                    onClick={onClose}
-                    className="p-2 rounded-lg hover:bg-border transition-colors text-text-muted hover:text-text-primary"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
-              <div className="p-6">{children}</div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4">
+      <div
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div
+        className={cn(
+          "relative bg-[#1f1f1f] border border-[#333] shadow-2xl w-full h-full sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col",
+          size === "full" ? "sm:rounded-lg" : "sm:rounded-xl",
+          sizes[size]
+        )}
+      >
+        {title && (
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#333] flex-shrink-0">
+            <h3 className="text-base sm:text-lg font-semibold text-white truncate">{title}</h3>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg hover:bg-[#333] transition-colors text-[#808080] hover:text-white flex-shrink-0"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+        <div className="overflow-y-auto flex-1 pb-4">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }

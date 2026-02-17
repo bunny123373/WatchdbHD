@@ -16,11 +16,11 @@ export default function Badge({
   className,
 }: BadgeProps) {
   const variants = {
-    gold: "bg-primary-gold/20 text-primary-gold border-primary-gold/30",
-    purple: "bg-secondary-purple/20 text-secondary-purple border-secondary-purple/30",
-    green: "bg-accent-green/20 text-accent-green border-accent-green/30",
-    default: "bg-card text-text-muted border-border",
-    outline: "bg-transparent text-text-muted border-border",
+    gold: "bg-red-600/20 text-red-500 border-red-600/30",
+    purple: "bg-purple-600/20 text-purple-400 border-purple-600/30",
+    green: "bg-green-600/20 text-green-400 border-green-600/30",
+    default: "bg-gray-800 text-gray-300 border-gray-700",
+    outline: "bg-transparent text-gray-400 border-gray-700",
   };
 
   const sizes = {
@@ -31,7 +31,7 @@ export default function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-medium border",
+        "inline-flex items-center justify-center rounded font-medium border",
         variants[variant],
         sizes[size],
         className

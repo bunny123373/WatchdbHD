@@ -56,7 +56,7 @@ export default function WatchMoviePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#141414]">
         <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
@@ -69,11 +69,11 @@ export default function WatchMoviePage() {
 
   if (!movie) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#141414]">
         <Navbar />
         <div className="pt-32 text-center">
-          <h1 className="text-2xl font-bold text-text-primary">Movie not found</h1>
-          <Link href="/" className="text-primary-gold mt-4 inline-block">
+          <h1 className="text-2xl font-bold text-white">Movie not found</h1>
+          <Link href="/" className="text-red-600 mt-4 inline-block">
             Go back home
           </Link>
         </div>
@@ -82,7 +82,7 @@ export default function WatchMoviePage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-[#141414]">
       <Navbar />
 
       <div className="pt-20 pb-12">
@@ -94,8 +94,8 @@ export default function WatchMoviePage() {
             className="mb-6"
           >
             <Link
-              href={`/movie/${movie._id}`}
-              className="inline-flex items-center gap-2 text-text-muted hover:text-primary-gold transition-colors"
+              href={`/movie/${String(movie._id)}`}
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Movie Details
@@ -188,7 +188,7 @@ export default function WatchMoviePage() {
 
         {/* Related Movies */}
         {relatedMovies.length > 0 && (
-          <ContentGrid title="Related Movies" items={relatedMovies} horizontal icon="movie" />
+          <ContentGrid title="Related Movies" items={relatedMovies} isNetflixStyle />
         )}
       </div>
 

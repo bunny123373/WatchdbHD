@@ -2,11 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Download, Star, Calendar, Globe } from "lucide-react";
-import { motion } from "framer-motion";
+import { Play, Info } from "lucide-react";
 import { IContent } from "@/models/Content";
-import Button from "./ui/Button";
-import Badge from "./ui/Badge";
 
 interface HeroBannerProps {
   content: IContent;
@@ -17,111 +14,67 @@ export default function HeroBanner({ content }: HeroBannerProps) {
 
   const isMovie = content.type === "movie";
   const watchLink = isMovie ? `/watch/${content._id}` : `/series/watch/${content._id}`;
-  const detailsLink = isMovie ? `/movie/${content._id}` : `/series/${content._id}`;
+  const detailLink = isMovie ? `/movie/${String(content._id)}` : `/series/${String(content._id)}`;
+  
+  const bannerImage = content.banner || content.poster;
 
   return (
-    <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[300px] sm:min-h-[400px] md:min-h-[500px] max-h-[400px] sm:max-h-[600px] md:max-h-[800px] overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+    <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
+      <div className="absolute inset-0 w-full h-full">
         <Image
-          src={content.banner || content.poster}
-          alt={content.title}
+          src={bannerImage}
+          alt=""
           fill
           className="object-cover"
           priority
           sizes="100vw"
         />
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent sm:via-background/80 md:via-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/40 to-[#141414]" />
       </div>
 
-      {/* Content */}
-      <div className="relative h-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-xl sm:max-w-2xl space-y-3 sm:space-y-4 md:space-y-6"
-        >
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="gold" className="text-xs sm:text-sm">{isMovie ? "Movie" : "Web Series"}</Badge>
-            {content.quality && <Badge variant="purple" className="text-xs sm:text-sm">{content.quality}</Badge>}
-            {content.rating && (
-              <Badge variant="green" className="text-xs sm:text-sm flex items-center gap-1">
-                <Star className="w-3 h-3 fill-current" />
-                {content.rating}
-              </Badge>
-            )}
-          </div>
-
-          {/* Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-text-primary leading-tight">
+      <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-8 md:pb-12">
+        <div className="max-w-xl lg:max-w-2xl space-y-3 md:space-y-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
             {content.title}
           </h1>
 
-          {/* Meta Info */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-text-muted">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm">
+            {content.rating && (
+              <span className="text-green-400 font-semibold">{content.rating} Match</span>
+            )}
             {content.year && (
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 sm:w-4 h-3 sm:h-4" />
-                {content.year}
+              <span className="text-white/80">{content.year}</span>
+            )}
+            {content.quality && (
+              <span className="text-white font-bold bg-[#e50914] px-1.5 py-0.5 text-xs rounded">
+                {content.quality}
               </span>
             )}
-            {content.language && (
-              <span className="flex items-center gap-1">
-                <Globe className="w-3 sm:w-4 h-3 sm:h-4" />
-                {content.language}
-              </span>
-            )}
+            <span className="text-white/80">{content.language}</span>
           </div>
 
-          {/* Description */}
           {content.description && (
-            <p className="text-text-muted text-sm sm:text-lg line-clamp-2 sm:line-clamp-3 max-w-xl">
+            <p className="text-white/90 text-sm md:text-base leading-relaxed line-clamp-2">
               {content.description}
             </p>
           )}
 
-          {/* Tags */}
-          {content.tags && content.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 sm:gap-2">
-              {content.tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-card border border-border text-xs text-text-muted"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-2 sm:gap-4 pt-1 sm:pt-2">
+          <div className="flex flex-wrap gap-3 pt-1">
             <Link href={watchLink}>
-              <Button size="md" className="gap-1 sm:gap-2">
-                <Play className="w-4 sm:w-5 h-4 sm:h-5 fill-current" />
-                <span className="hidden sm:inline">Watch Now</span>
-                <span className="sm:hidden">Watch</span>
-              </Button>
+              <button className="bg-white text-black hover:bg-white/90 rounded px-5 md:px-7 py-2 md:py-2.5 flex items-center gap-2 font-bold text-sm">
+                <Play className="w-4 h-4 fill-black" />
+                Play
+              </button>
             </Link>
-            {content.downloadLink && (
-              <a
-                href={content.downloadLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" size="md" className="gap-1 sm:gap-2">
-                  <Download className="w-4 sm:w-5 h-4 sm:h-5" />
-                  <span className="hidden sm:inline">Download</span>
-                  <span className="sm:hidden">DL</span>
-                </Button>
-              </a>
-            )}
+            <Link href={detailLink}>
+              <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm">
+                <Info className="w-4 h-4" />
+                More Info
+              </button>
+            </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

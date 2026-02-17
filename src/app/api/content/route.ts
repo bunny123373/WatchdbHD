@@ -34,11 +34,15 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const content = await Content.find(query).sort({ createdAt: -1 });
+    const content = await Content.find(query).sort({ createdAt: -1 }).limit(50);
 
     return NextResponse.json({
       success: true,
       data: content,
+    }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      },
     });
   } catch (error) {
     console.error("Error fetching content:", error);

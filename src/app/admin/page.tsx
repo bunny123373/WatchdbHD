@@ -2,7 +2,6 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminStats from "@/components/admin/AdminStats";
 import UploadMovieForm from "@/components/admin/UploadMovieForm";
@@ -41,29 +40,25 @@ function AdminPageContent() {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-        >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary">TeluguDB Admin Panel</h1>
-            <p className="text-text-muted mt-1">Manage your content and uploads</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white">Admin Panel</h1>
+            <p className="text-gray-400 mt-1">Manage your content and uploads</p>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-border pb-4">
+        {/* Tabs - Netflix Style */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-800 pb-4">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? "bg-primary-gold text-background"
-                  : "text-text-muted hover:text-text-primary hover:bg-card"
+                  ? "bg-red-600 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800"
               }`}
             >
               {tab.label}
@@ -72,33 +67,28 @@ function AdminPageContent() {
         </div>
 
         {/* Content */}
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div>
           {activeTab === "dashboard" && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               <AdminStats />
-              <div className="bg-card rounded-2xl border border-border p-8">
-                <h2 className="text-xl font-bold text-text-primary mb-4">Welcome to TeluguDB Admin</h2>
-                <p className="text-text-muted mb-6">
+              <div className="bg-[#1f1f1f] rounded-lg p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Welcome to Admin Panel</h2>
+                <p className="text-gray-400 mb-6">
                   Use the navigation tabs above to manage your content. You can upload movies and web series,
                   edit existing content, and view statistics about your platform.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-background rounded-xl border border-border">
-                    <h3 className="font-semibold text-text-primary mb-2">Upload Movie</h3>
-                    <p className="text-sm text-text-muted">Add new movies with streaming and download links</p>
+                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                    <h3 className="font-semibold text-white mb-2">Upload Movie</h3>
+                    <p className="text-sm text-gray-400">Add new movies with streaming and download links</p>
                   </div>
-                  <div className="p-4 bg-background rounded-xl border border-border">
-                    <h3 className="font-semibold text-text-primary mb-2">Upload Series</h3>
-                    <p className="text-sm text-text-muted">Add web series with seasons and episodes</p>
+                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                    <h3 className="font-semibold text-white mb-2">Upload Series</h3>
+                    <p className="text-sm text-gray-400">Add web series with seasons and episodes</p>
                   </div>
-                  <div className="p-4 bg-background rounded-xl border border-border">
-                    <h3 className="font-semibold text-text-primary mb-2">Manage Content</h3>
-                    <p className="text-sm text-text-muted">Edit or delete existing movies and series</p>
+                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                    <h3 className="font-semibold text-white mb-2">Manage Content</h3>
+                    <p className="text-sm text-gray-400">Edit or delete existing movies and series</p>
                   </div>
                 </div>
               </div>
@@ -116,13 +106,7 @@ function AdminPageContent() {
           {activeTab === "manage" && (
             <AdminContentTable refreshTrigger={refreshTrigger} />
           )}
-
-          {activeTab === "categories" && (
-            <div className="bg-card rounded-2xl border border-border p-8 text-center">
-              <p className="text-text-muted">Categories management coming soon</p>
-            </div>
-          )}
-        </motion.div>
+        </div>
       </div>
     </AdminLayout>
   );
@@ -130,7 +114,7 @@ function AdminPageContent() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#141414] flex items-center justify-center text-white">Loading...</div>}>
       <AdminPageContent />
     </Suspense>
   );

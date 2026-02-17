@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   authors: [{ name: SITE_CONFIG.brandName }],
   creator: SITE_CONFIG.brandName,
   metadataBase: new URL(SITE_CONFIG.url),
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
