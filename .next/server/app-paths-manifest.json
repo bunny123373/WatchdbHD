@@ -1,15 +1,15 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/admin/page": "app/admin/page.js",
   "/api/admin/stats/route": "app/api/admin/stats/route.js",
-  "/api/admin/verify/route": "app/api/admin/verify/route.js",
   "/api/content/[id]/route": "app/api/content/[id]/route.js",
   "/api/content/route": "app/api/content/route.js",
-  "/movie/[id]/page": "app/movie/[id]/page.js",
-  "/page": "app/page.js",
+  "/admin/page": "app/admin/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
-  "/series/[id]/page": "app/series/[id]/page.js",
+  "/page": "app/page.js",
+  "/api/admin/verify/route": "app/api/admin/verify/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/series/watch/[id]/page": "app/series/watch/[id]/page.js",
-  "/watch/[id]/page": "app/watch/[id]/page.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js"
+  "/movie/[id]/page": "app/movie/[id]/page.js",
+  "/series/[id]/page": "app/series/[id]/page.js",
+  "/watch/[id]/page": "app/watch/[id]/page.js"
 }

@@ -23,10 +23,10 @@ export const TYPE_OPTIONS = [
 ] as const;
 
 export const SITE_CONFIG = {
-  name: "WatchDB",
-  brandName: "WatchDB",
+  name: "WatchTMDB",
+  brandName: "WatchTMDB",
   tagline: "Watch. Download. Stream Premium Cinema.",
   description: "Your ultimate destination for Telugu movies and web series. Stream and download premium cinema content.",
-  url: "https://watchdb.netlify.app",
+  url: "https://watchtmdb.netlify.app",
   ogImage: "/og-image.jpg",
 } as const;

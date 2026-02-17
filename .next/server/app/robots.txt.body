@@ -3,5 +3,5 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Host: https://watchdb.netlify.app
-Sitemap: https://watchdb.netlify.app/sitemap.xml
+Host: https://watchtmdb.netlify.app
+Sitemap: https://watchtmdb.netlify.app/sitemap.xml

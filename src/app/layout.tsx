@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
-  keywords: ["Telugu movies", "web series", "streaming", "download", "cinema", "TeluguDB", "WatchDB"],
+  keywords: ["Telugu movies", "web series", "streaming", "download", "cinema", "WatchTMDB"],
   authors: [{ name: SITE_CONFIG.brandName }],
   creator: SITE_CONFIG.brandName,
   metadataBase: new URL(SITE_CONFIG.url),
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title: `${SITE_CONFIG.brandName} - ${SITE_CONFIG.tagline}`,
     description: SITE_CONFIG.description,
     images: [SITE_CONFIG.ogImage],
-    creator: "@telugudb",
+    creator: "@watchtmdb",
   },
   robots: {
     index: true,
@@ -76,6 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
+        <meta name="google-adsense-account" content="ca-pub-8628683007968578" />
         {isAdsEnabled() && (
           <Script
             async
