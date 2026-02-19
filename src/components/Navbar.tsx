@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, ChevronDown, Menu, X, Film, Tv } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSearch, setTypeFilter } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
@@ -21,6 +21,7 @@ export default function Navbar() {
   const router = useRouter();
 
   const isAdminRoute = pathname.startsWith("/admin");
+  const isHomePage = pathname === "/";
   if (isAdminRoute) return null;
 
   useEffect(() => {
@@ -86,6 +87,17 @@ export default function Navbar() {
                 WATCH<span className="text-white">TMDB</span>
               </span>
             </Link>
+
+            {/* Back to Home Button */}
+            {!isHomePage && (
+              <Link
+                href="/"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#e50914] hover:bg-[#b2070f] rounded text-white text-xs sm:text-sm font-medium transition-colors"
+              >
+                <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden md:inline">Home</span>
+              </Link>
+            )}
 
             {/* Desktop Nav Links */}
             <div className="hidden lg:flex items-center gap-5">
@@ -243,6 +255,18 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Mobile Back to Home */}
+            {!isHomePage && (
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 text-sm sm:text-base py-2 text-[#e50914] font-medium"
+              >
+                <Home className="w-4 h-4" />
+                Back to Home
+              </Link>
+            )}
           </div>
         </div>
       )}

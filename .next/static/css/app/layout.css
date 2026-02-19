@@ -735,6 +735,9 @@ video {
 .h-px{
   height: 1px;
 }
+.h-3\.5{
+  height: 0.875rem;
+}
 .max-h-80{
   max-height: 20rem;
 }
@@ -801,6 +804,9 @@ video {
 }
 .w-full{
   width: 100%;
+}
+.w-3\.5{
+  width: 0.875rem;
 }
 .min-w-0{
   min-width: 0px;
@@ -2144,6 +2150,10 @@ body {
 
   .md\:block{
     display: block;
+  }
+
+  .md\:inline{
+    display: inline;
   }
 
   .md\:h-12{

@@ -1,7 +1,5 @@
 {
-  "/api/content/route": "app/api/content/route.js",
   "/page": "app/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/api/admin/verify/route": "app/api/admin/verify/route.js",
-  "/api/admin/stats/route": "app/api/admin/stats/route.js"
+  "/movie/[id]/page": "app/movie/[id]/page.js",
+  "/watch/[id]/page": "app/watch/[id]/page.js"
 }

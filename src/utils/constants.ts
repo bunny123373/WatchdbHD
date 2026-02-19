@@ -27,7 +27,7 @@ export const SITE_CONFIG = {
   brandName: "WatchTMDB HD",
   tagline: "Watch. Download. Stream Premium Cinema.",
   description: "Your ultimate destination for Telugu movies, Hindi dubbed films, and web series. Stream and download premium cinema content in HD quality free.",
-  url: "https://watchtmdbhd.netlify.app",
+  url: "https://watchdbhd.vercel.app",
   keywords: [
     "telugu movies",
     "hindi dubbed movies",
