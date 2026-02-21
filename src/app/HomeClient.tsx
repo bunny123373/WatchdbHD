@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AdBanner from "@/components/AdBanner";
 import HeroBanner from "@/components/HeroBanner";
 import ContentGrid from "@/components/ContentGrid";
 import MovieCard from "@/components/MovieCard";
@@ -83,12 +82,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         <HeroBanner content={featuredContent} />
       )}
 
-      {!showContent && (
-        <div className="max-w-7xl mx-auto px-4 -mt-2">
-          <AdBanner slot="home-hero" className="w-full h-16 sm:h-20" />
-        </div>
-      )}
-
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">
         {/* Search Results */}
         {showContent && (
@@ -143,10 +136,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
             <p className="text-gray-400 text-sm md:text-base">Try adjusting your search or filters</p>
           </div>
         )}
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 pb-8">
-        <AdBanner slot="home-section" className="w-full h-20 sm:h-24" />
       </div>
 
       <Footer />

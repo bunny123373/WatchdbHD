@@ -9,7 +9,6 @@ import { IContent, IEpisode, ISeason } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
-import AdBanner from "@/components/AdBanner";
 import Badge from "@/components/ui/Badge";
 import { cn } from "@/utils/cn";
 
@@ -158,11 +157,6 @@ function SeriesWatchContent() {
             </h1>
             <p className="text-text-muted text-lg">{series.title}</p>
           </motion.div>
-
-          {/* Ad Banner */}
-          <div className="mb-8">
-            <AdBanner slot="series-watch" className="w-full h-24" />
-          </div>
 
           {/* Episode Selector */}
           <motion.div

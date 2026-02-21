@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/Provider";
 import { SITE_CONFIG } from "@/utils/constants";
-import { isAdsEnabled, getAdSenseClientId } from "@/utils/ads";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -80,15 +78,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        <meta name="google-adsense-account" content="ca-pub-8628683007968578" />
-        {isAdsEnabled() && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${getAdSenseClientId()}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
       </head>
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>{children}</ReduxProvider>

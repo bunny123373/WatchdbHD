@@ -13,7 +13,6 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import IframePlayer from "@/components/IframePlayer";
 import ContentGrid from "@/components/ContentGrid";
-import AdBanner from "@/components/AdBanner";
 
 export default function WatchMoviePage() {
   const params = useParams();
@@ -179,11 +178,6 @@ export default function WatchMoviePage() {
               )}
             </div>
           </motion.div>
-
-          {/* Ad Banner */}
-          <div className="mb-8">
-            <AdBanner slot="movie-watch" className="w-full h-24" />
-          </div>
         </div>
 
         {/* Related Movies */}

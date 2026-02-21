@@ -9,7 +9,6 @@ import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
-import AdBanner from "@/components/AdBanner";
 
 export default function MovieDetailsPage() {
   const params = useParams();
@@ -180,11 +179,6 @@ export default function MovieDetailsPage() {
 
         {/* Content Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
-          {/* Ad */}
-          <div className="mb-6 sm:mb-8">
-            <AdBanner slot="movie-details" className="w-full h-16 sm:h-20 md:h-24" />
-          </div>
-
           {/* Similar Movies */}
           {similarMovies.length > 0 && (
             <div>

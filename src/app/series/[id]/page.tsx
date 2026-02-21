@@ -10,7 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
-import AdBanner from "@/components/AdBanner";
 
 export default function SeriesDetailsPage() {
   const params = useParams();
@@ -180,11 +179,6 @@ export default function SeriesDetailsPage() {
 
         {/* Content Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-          {/* Ad */}
-          <div className="mb-6 sm:mb-8">
-            <AdBanner slot="series-details" className="w-full h-16 sm:h-20 md:h-24" />
-          </div>
-
           {/* Similar Series */}
           {similarSeries.length > 0 && (
             <div>
