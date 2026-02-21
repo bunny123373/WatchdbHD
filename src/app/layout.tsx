@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/Provider";
 import { SITE_CONFIG } from "@/utils/constants";
@@ -81,6 +82,10 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>{children}</ReduxProvider>
+        <Script
+          src="https://pl28759548.effectivegatecpm.com/25/7a/2a/257a2a568f9cd885d5d85d7d27d9b2ed.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
