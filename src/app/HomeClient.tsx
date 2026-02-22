@@ -47,19 +47,60 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     return matchesSearch && matchesType;
   });
 
-  const featuredContent =
-    filteredContent.find((item: IContent) => item.category === "Trending") ||
-    filteredContent[0];
+  const featuredContent = [...filteredContent]
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    })[0];
 
-  const trendingContent = filteredContent.filter((item: IContent) => item.category === "Trending");
-  const latestContent = filteredContent.filter((item: IContent) => item.category === "Latest");
-  const teluguMovies = filteredContent.filter(
-    (item: IContent) => item.type === "movie" && item.language === "Telugu"
-  );
-  const hindiDubbed = filteredContent.filter(
-    (item: IContent) => item.type === "movie" && (item.language === "Hindi" || item.category === "Dubbed")
-  );
-  const webSeries = filteredContent.filter((item: IContent) => item.type === "series");
+  const trendingContent = [...filteredContent]
+    .filter((item: IContent) => item.category === "Trending")
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  const latestContent = [...filteredContent]
+    .filter((item: IContent) => item.category === "Latest")
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  const teluguMovies = [...filteredContent]
+    .filter(
+      (item: IContent) => item.type === "movie" && item.language === "Telugu"
+    )
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  const hindiDubbed = [...filteredContent]
+    .filter(
+      (item: IContent) => item.type === "movie" && (item.language === "Hindi" || item.category === "Dubbed")
+    )
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  const webSeries = filteredContent
+    .filter((item: IContent) => item.type === "series")
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+
+  const latestUploaded = [...filteredContent]
+    .sort((a: IContent, b: IContent) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    })
+    .slice(0, 12);
 
   const showContent = search || typeFilter !== "all";
 
@@ -108,6 +149,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         {/* Regular Content Rows */}
         {!showContent && (
           <>
+            {latestUploaded.length > 0 && (
+              <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle />
+            )}
+
             {trendingContent.length > 0 && (
               <ContentGrid title="Trending Now" items={trendingContent.slice(0, 12)} isNetflixStyle />
             )}
