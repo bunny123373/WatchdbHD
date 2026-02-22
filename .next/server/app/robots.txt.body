@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+
+Host: https://watchdbhd.vercel.app
+Sitemap: https://watchdbhd.vercel.app/sitemap.xml

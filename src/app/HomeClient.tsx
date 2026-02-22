@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import ContentGrid from "@/components/ContentGrid";
+import ContentDetailModal from "@/components/ContentDetailModal";
 import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import { useAppSelector } from "@/redux/hooks";
@@ -16,6 +17,7 @@ interface HomeClientProps {
 
 export default function HomeClient({ initialContent }: HomeClientProps) {
   const [content, setContent] = useState<IContent[]>(initialContent);
+  const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
   const { search, typeFilter } = useAppSelector((state) => state.ui);
 
   useEffect(() => {
@@ -104,6 +106,14 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   const showContent = search || typeFilter !== "all";
 
+  const handleContentClick = (item: IContent) => {
+    setSelectedContent(item);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedContent(null);
+  };
+
   if (content.length === 0) {
     return (
       <div className="min-h-screen bg-[#141414]">
@@ -120,7 +130,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       <Navbar />
 
       {featuredContent && !showContent && (
-        <HeroBanner content={featuredContent} />
+        <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
       )}
 
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">
@@ -150,27 +160,27 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         {!showContent && (
           <>
             {latestUploaded.length > 0 && (
-              <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle />
+              <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {trendingContent.length > 0 && (
-              <ContentGrid title="Trending Now" items={trendingContent.slice(0, 12)} isNetflixStyle />
+              <ContentGrid title="Trending Now" items={trendingContent.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {latestContent.length > 0 && (
-              <ContentGrid title="Latest Releases" items={latestContent.slice(0, 12)} isNetflixStyle />
+              <ContentGrid title="Latest Releases" items={latestContent.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {teluguMovies.length > 0 && (
-              <ContentGrid title="Telugu Movies" items={teluguMovies.slice(0, 12)} isNetflixStyle />
+              <ContentGrid title="Telugu Movies" items={teluguMovies.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {hindiDubbed.length > 0 && (
-              <ContentGrid title="Hindi Dubbed" items={hindiDubbed.slice(0, 12)} isNetflixStyle />
+              <ContentGrid title="Hindi Dubbed" items={hindiDubbed.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {webSeries.length > 0 && (
-              <ContentGrid title="Web Series" items={webSeries.slice(0, 12)} isNetflixStyle />
+              <ContentGrid title="Web Series" items={webSeries.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
           </>
         )}
@@ -182,6 +192,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           </div>
         )}
       </div>
+
+      <ContentDetailModal content={selectedContent} isOpen={!!selectedContent} onClose={handleCloseModal} />
 
       <Footer />
     </main>

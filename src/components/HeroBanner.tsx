@@ -7,16 +7,23 @@ import { IContent } from "@/models/Content";
 
 interface HeroBannerProps {
   content: IContent;
+  onContentClick?: (content: IContent) => void;
 }
 
-export default function HeroBanner({ content }: HeroBannerProps) {
+export default function HeroBanner({ content, onContentClick }: HeroBannerProps) {
   if (!content) return null;
 
   const isMovie = content.type === "movie";
   const watchLink = isMovie ? `/watch/${content._id}` : `/series/watch/${content._id}`;
-  const detailLink = isMovie ? `/movie/${String(content._id)}` : `/series/${String(content._id)}`;
   
   const bannerImage = content.banner || content.poster;
+
+  const handleMoreInfoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onContentClick) {
+      onContentClick(content);
+    }
+  };
 
   return (
     <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
@@ -67,12 +74,13 @@ export default function HeroBanner({ content }: HeroBannerProps) {
                 Play
               </button>
             </Link>
-            <Link href={detailLink}>
-              <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm">
-                <Info className="w-4 h-4" />
-                More Info
-              </button>
-            </Link>
+            <button 
+              onClick={handleMoreInfoClick}
+              className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm"
+            >
+              <Info className="w-4 h-4" />
+              More Info
+            </button>
           </div>
         </div>
       </div>

@@ -33,7 +33,7 @@ export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
             )}
           </div>
         </div>
-        
+
         {movie.rating && (
           <div className="absolute top-1.5 left-1.5">
             <span className="text-[10px] md:text-xs px-1 py-0.5 bg-yellow-500/90 text-black font-semibold rounded flex items-center gap-0.5">

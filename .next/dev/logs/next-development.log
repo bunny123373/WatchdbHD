@@ -1,0 +1,13 @@
+[00:00:08.514] Server  LOG     ✓ Ready in 5.3s
+[00:00:08.720] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:55.351] Server  LOG     ○ Compiling / ...
+[00:01:08.775] Server  ERROR   MongoDB connection error: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net
+[00:01:08.779] Server  ERROR   Error fetching content: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net
+[00:01:09.759] Server  WARN    ⚠ The "images.domains" configuration is deprecated. Please use "images.remotePatterns" configuration instead.
+[00:01:09.794] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:10.205] Server  ERROR   MongoDB connection error: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net
+[00:01:10.258] Server  ERROR   Error fetching content: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net
+[00:04:04.737] Server  LOG       Reload env: .env.local
+[00:04:15.308] Server  LOG     ✓ Compiled in 7s
+[00:04:16.572] Server  ERROR   MongoDB connection error: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net
+[00:04:16.590] Server  ERROR   Error fetching content: Error: querySrv ECONNREFUSED _mongodb._tcp.cluster0.hqqoxgl.mongodb.net

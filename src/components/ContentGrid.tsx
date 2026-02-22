@@ -11,9 +11,10 @@ interface ContentGridProps {
   items: IContent[];
   horizontal?: boolean;
   isNetflixStyle?: boolean;
+  onContentClick?: (content: IContent) => void;
 }
 
-export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false }: ContentGridProps) {
+export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, onContentClick }: ContentGridProps) {
   if (items.length === 0) return null;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -72,8 +73,13 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             <div
               ref={scrollRef}
               className="flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
+              <style jsx>{`
+                div::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
               {items.map((item, index) => (
                 <div
                   key={String(item._id)}
@@ -116,7 +122,13 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             <div
               ref={scrollRef}
               className="flex gap-1 md:gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
+              <style jsx>{`
+                div::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
               {items.map((item, index) => (
                 <div key={String(item._id)} className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 snap-start">
                   {item.type === "movie" ? (

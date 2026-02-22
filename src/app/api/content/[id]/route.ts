@@ -5,12 +5,13 @@ import Content from "@/models/Content";
 // GET /api/content/[id] - Get single content (public)
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     await connectDB();
 
-    const content = await Content.findById(params.id);
+    const content = await Content.findById(id);
 
     if (!content) {
       return NextResponse.json(
@@ -35,8 +36,9 @@ export async function GET(
 // PUT /api/content/[id] - Update content (admin protected)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Verify admin key
     const adminKey = request.headers.get("x-admin-key");
@@ -52,7 +54,7 @@ export async function PUT(
     const body = await request.json();
 
     const content = await Content.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: body },
       { new: true, runValidators: true }
     );
@@ -81,8 +83,9 @@ export async function PUT(
 // DELETE /api/content/[id] - Delete content (admin protected)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     // Verify admin key
     const adminKey = request.headers.get("x-admin-key");
@@ -95,7 +98,7 @@ export async function DELETE(
 
     await connectDB();
 
-    const content = await Content.findByIdAndDelete(params.id);
+    const content = await Content.findByIdAndDelete(id);
 
     if (!content) {
       return NextResponse.json(

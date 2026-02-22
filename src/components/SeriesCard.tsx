@@ -35,7 +35,7 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
             )}
           </div>
         </div>
-        
+
         {series.rating && (
           <div className="absolute top-1.5 left-1.5">
             <span className="text-[10px] md:text-xs px-1 py-0.5 bg-yellow-500/90 text-black font-semibold rounded flex items-center gap-0.5">
