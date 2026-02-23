@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ["192.168.55.104", "192.168.55.105", "localhost:3000", "localhost:3001"],
   images: {
     domains: ["localhost", "res.cloudinary.com", "img.youtube.com", "i.ytimg.com", "drive.google.com", "lh3.googleusercontent.com"],
     remotePatterns: [
