@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { Play, Plus, ThumbsUp } from "lucide-react";
+import { Play, Share, Star } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
@@ -152,83 +152,137 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
   return (
     <main className="min-h-screen bg-[#141414]">
       <Navbar />
-
-      <div className="pt-16">
-        <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
-          <div className="absolute inset-0 w-full h-full">
+      
+      {/* Banner */}
+      <div className="relative">
+        {/* Backdrop */}
+        <div className="absolute inset-0 h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh]">
+          {movie.banner ? (
             <Image
-              src={movie.banner || movie.poster}
+              src={movie.banner}
               alt={movie.title}
               fill
               className="object-cover"
               priority
-              sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/40 to-[#141414]" />
-          </div>
+          ) : movie.poster ? (
+            <Image
+              src={movie.poster}
+              alt={movie.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/80 via-transparent to-transparent" />
+        </div>
 
-          <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-8 md:pb-12">
-            <div className="max-w-xl lg:max-w-2xl space-y-3 md:space-y-4">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
-                {movie.title}
-              </h1>
+        {/* Content */}
+        <div className="relative pt-[30vh] sm:pt-[40vh] md:pt-[50vh] lg:pt-[55vh] px-4 sm:px-6 md:px-8 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-12">
+              {/* Poster */}
+              <div className="flex-shrink-0">
+                <div className="relative w-40 sm:w-48 md:w-52 lg:w-60 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10">
+                  {movie.poster ? (
+                    <Image
+                      src={movie.poster}
+                      alt={movie.title}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                      <span className="text-gray-500">No Poster</span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-              <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm">
-                {movie.rating && (
-                  <span className="text-green-400 font-semibold">{movie.rating} Match</span>
-                )}
-                {movie.year && (
-                  <span className="text-white/80">{movie.year}</span>
-                )}
-                {movie.quality && (
-                  <span className="text-white font-bold bg-[#e50914] px-1.5 py-0.5 text-xs rounded">
-                    {movie.quality}
+              {/* Info */}
+              <div className="flex-1">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 drop-shadow-lg">
+                  {movie.title}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">
+                  {movie.year && (
+                    <span className="flex items-center gap-1">
+                      {movie.year}
+                    </span>
+                  )}
+                  {movie.rating && (
+                    <span className="flex items-center gap-1 text-yellow-500 font-semibold">
+                      <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                      {movie.rating}
+                    </span>
+                  )}
+                  {movie.quality && (
+                    <span className="px-2.5 py-1 text-xs font-bold bg-red-600 text-white rounded">
+                      {movie.quality}
+                    </span>
+                  )}
+                  {movie.language && (
+                    <span className="px-2.5 py-1 text-xs font-medium bg-gray-700/80 text-white rounded">
+                      {movie.language}
+                    </span>
+                  )}
+                  <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded">
+                    Movie
                   </span>
-                )}
-                <span className="text-white/80">{movie.language}</span>
-                <span className="text-white/60">Movie</span>
-              </div>
+                </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Link href={`/watch/${movie._id}`}>
-                  <button className="bg-white text-black hover:bg-white/90 rounded px-5 md:px-7 py-2 md:py-2.5 flex items-center gap-2 font-bold text-sm">
-                    <Play className="w-4 h-4 fill-black" />
-                    Play
-                  </button>
-                </Link>
-              </div>
-
-              {movie.description && (
-                <p className="text-white/90 text-sm md:text-base leading-relaxed line-clamp-2">
+                <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed line-clamp-3 sm:line-clamp-4">
                   {movie.description}
                 </p>
-              )}
 
-              {movie.tags && movie.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {movie.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 rounded-full bg-white/10 text-xs text-white/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                {/* Tags */}
+                {movie.tags && movie.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+                    {movie.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1.5 text-xs sm:text-sm bg-gray-800/80 text-gray-300 rounded-full border border-gray-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex flex-wrap gap-3 sm:gap-4">
+                  <Link
+                    href={`/watch/${movie._id}`}
+                    className="flex items-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-all transform hover:scale-105"
+                  >
+                    <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
+                    <span className="text-sm sm:text-base">Watch Now</span>
+                  </Link>
+                  <Link
+                    href={`/watch/${movie._id}`}
+                    className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-gray-700/80 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+                  >
+                    <Play className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-sm sm:text-base">Download</span>
+                  </Link>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
-          {similarMovies.length > 0 && (
-            <div>
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
-              <ContentGrid title="" items={similarMovies} isNetflixStyle />
-            </div>
-          )}
-        </div>
+      {/* Similar Movies */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        {similarMovies.length > 0 && (
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
+            <ContentGrid title="" items={similarMovies} isNetflixStyle />
+          </div>
+        )}
       </div>
 
       <Footer />

@@ -27,15 +27,9 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
   
   const bannerImage = getBannerUrl(content.banner || content.poster);
 
-  const handleMoreInfoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onContentClick) {
-      onContentClick(content);
-    }
-  };
-
   return (
-    <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
+    <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] overflow-hidden">
+      {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={bannerImage}
@@ -45,53 +39,71 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
           priority
           sizes="100vw"
         />
+        {/* Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/40 to-[#141414]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/20 to-[#141414]" />
       </div>
 
-      <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-8 md:pb-12">
-        <div className="max-w-xl lg:max-w-2xl space-y-3 md:space-y-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
+      {/* Content */}
+      <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-12 sm:pb-16 md:pb-20">
+        <div className="max-w-xl lg:max-w-2xl space-y-4 sm:space-y-5">
+          {/* Title */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-2xl leading-tight">
             {content.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm">
+          {/* Meta Info */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
             {content.rating && (
-              <span className="text-green-400 font-semibold">{content.rating} Match</span>
+              <span className="text-green-400 font-bold">{content.rating}% Match</span>
             )}
             {content.year && (
               <span className="text-white/80">{content.year}</span>
             )}
             {content.quality && (
-              <span className="text-white font-bold bg-[#e50914] px-1.5 py-0.5 text-xs rounded">
+              <span className="text-white font-bold bg-red-600 px-2 py-0.5 text-xs rounded">
                 {content.quality}
               </span>
             )}
             <span className="text-white/80">{content.language}</span>
+            <span className="px-2 py-0.5 bg-white/20 text-white/80 text-xs rounded">
+              {isMovie ? "Movie" : "TV Show"}
+            </span>
           </div>
 
+          {/* Description */}
           {content.description && (
-            <p className="text-white/90 text-sm md:text-base leading-relaxed line-clamp-2">
+            <p className="text-white/90 text-sm sm:text-base leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-lg">
               {content.description}
             </p>
           )}
 
+          {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 pt-1">
             <Link href={watchLink}>
-              <button className="bg-white text-black hover:bg-white/90 rounded px-5 md:px-7 py-2 md:py-2.5 flex items-center gap-2 font-bold text-sm">
-                <Play className="w-4 h-4 fill-black" />
+              <button className="bg-white text-black hover:bg-gray-200 rounded-lg px-6 sm:px-8 py-2.5 sm:py-3 flex items-center gap-2 font-bold text-sm sm:text-base transition-all hover:scale-105">
+                <Play className="w-5 h-5 fill-black" />
                 Play
               </button>
             </Link>
+            
             <Link href={detailLink}>
-              <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm">
-                <Info className="w-4 h-4" />
+              <button className="bg-gray-500/50 hover:bg-gray-500/70 text-white rounded-lg px-5 sm:px-7 py-2.5 sm:py-3 flex items-center gap-2 text-sm sm:text-base transition-colors">
+                <Info className="w-5 h-5" />
                 More Info
               </button>
             </Link>
+
+            <button className="bg-gray-500/30 hover:bg-gray-500/50 text-white rounded-full w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center transition-colors">
+              <Plus className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Bottom Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 bg-gradient-to-t from-[#141414] to-transparent" />
     </div>
   );
 }
