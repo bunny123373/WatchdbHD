@@ -1,203 +1,135 @@
-"use client";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { IContent } from "@/models/Content";
+import dbConnect from "@/lib/dbconnect";
+import Content from "@/models/Content";
+import SeriesDetailsClient from "./SeriesDetailsClient";
+import { SITE_CONFIG } from "@/utils/constants";
 
-import { useEffect, useState, Suspense } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { Play, Plus, ThumbsUp, Share } from "lucide-react";
-import { IContent, IEpisode } from "@/models/Content";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import EpisodeList from "@/components/EpisodeList";
-import ContentGrid from "@/components/ContentGrid";
-
-function SeriesDetailsContent() {
-  const params = useParams();
-  const [series, setSeries] = useState<IContent | null>(null);
-  const [similarSeries, setSimilarSeries] = useState<IContent[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (params.id) {
-      fetchSeries();
-    }
-  }, [params.id]);
-
-  const fetchSeries = async () => {
-    try {
-      const response = await fetch(`/api/content/${params.id}`);
-      const data = await response.json();
-      if (data.success) {
-        setSeries(data.data);
-        fetchSimilarSeries(data.data._id);
-      }
-    } catch (error) {
-      console.error("Failed to fetch series:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSimilarSeries = async (excludeId: string) => {
-    try {
-      const response = await fetch("/api/content?type=series");
-      const data = await response.json();
-      if (data.success) {
-        setSimilarSeries(data.data.filter((s: IContent) => String(s._id) !== excludeId).slice(0, 10));
-      }
-    } catch (error) {
-      console.error("Failed to fetch similar series:", error);
-    }
-  };
-
-  const handleEpisodeSelect = (episode: IEpisode, seasonNumber: number) => {
-    window.location.href = `/series/watch/${series?._id}?season=${seasonNumber}&episode=${episode.episodeNumber}`;
-  };
-
-  const getTotalEpisodes = () => {
-    return series?.seasons?.reduce((acc, season) => acc + (season.episodes?.length || 0), 0) || 0;
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#141414]">
-        <Navbar />
-        <div className="pt-16">
-          <div className="h-[50vh] bg-gray-900 animate-pulse" />
-        </div>
-      </div>
-    );
+async function getSeries(id: string) {
+  try {
+    await dbConnect();
+    const series = await Content.findById(id).lean() as unknown as Record<string, unknown> | null;
+    if (!series) return null;
+    
+    return {
+      _id: String(series._id || ""),
+      title: String(series.title || ""),
+      poster: String(series.poster || ""),
+      banner: series.banner ? String(series.banner) : "",
+      description: series.description ? String(series.description) : "",
+      year: series.year ? String(series.year) : "",
+      rating: series.rating != undefined ? Number(series.rating) : undefined,
+      quality: series.quality ? String(series.quality) : "",
+      language: series.language ? String(series.language) : "",
+      type: String(series.type || "series"),
+      tags: Array.isArray(series.tags) ? series.tags.map(String) : [],
+      seasons: Array.isArray(series.seasons) ? series.seasons : [],
+      category: series.category ? String(series.category) : "",
+      tmdbId: series.tmdbId != undefined ? Number(series.tmdbId) : undefined,
+      tmdbGenreIds: Array.isArray(series.tmdbGenreIds) ? series.tmdbGenreIds.map(Number) : undefined,
+      tmdbGenres: Array.isArray(series.tmdbGenres) ? series.tmdbGenres.map(String) : undefined,
+      createdAt: series.createdAt ? new Date(series.createdAt as string) : new Date(),
+      updatedAt: series.updatedAt ? new Date(series.updatedAt as string) : new Date(),
+    } as unknown as IContent;
+  } catch (error) {
+    console.error("Failed to fetch series:", error);
+    return null;
   }
-
-  if (!series) {
-    return (
-      <div className="min-h-screen bg-[#141414]">
-        <Navbar />
-        <div className="pt-32 text-center">
-          <h1 className="text-2xl font-bold text-white">Series not found</h1>
-          <Link href="/" className="text-red-600 mt-4 inline-block">
-            Go back home
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <main className="min-h-screen bg-[#141414]">
-      <Navbar />
-
-      <div className="pt-16">
-        {/* Netflix Hero Section */}
-        <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
-          {/* Background */}
-          <div className="absolute inset-0 w-full h-full">
-            <Image
-              src={series.banner || series.poster}
-              alt=""
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/40 to-[#141414]" />
-          </div>
-
-          {/* Content */}
-          <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-8 md:pb-12">
-            <div className="max-w-xl lg:max-w-2xl space-y-3 md:space-y-4">
-              {/* Title */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
-                {series.title}
-              </h1>
-
-              {/* Meta */}
-              <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm">
-                {series.rating && (
-                  <span className="text-green-400 font-semibold">{series.rating} Match</span>
-                )}
-                {series.year && (
-                  <span className="text-white/80">{series.year}</span>
-                )}
-                <span className="text-white font-bold bg-purple-600 px-1.5 py-0.5 text-xs rounded">
-                  SERIES
-                </span>
-                <span className="text-white/80">{series.seasons?.length || 0} Seasons</span>
-                <span className="text-white/60">{getTotalEpisodes()} Episodes</span>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex flex-wrap gap-3">
-                <Link href={`/series/watch/${String(series._id)}`}>
-                  <button className="bg-white text-black hover:bg-white/90 rounded px-5 md:px-7 py-2 md:py-2.5 flex items-center gap-2 font-bold text-sm">
-                    <Play className="w-4 h-4 fill-black" />
-                    Play
-                  </button>
-                </Link>
-                <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
-                <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors">
-                  <ThumbsUp className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Description */}
-              {series.description && (
-                <p className="text-white/90 text-sm md:text-base leading-relaxed line-clamp-2">
-                  {series.description}
-                </p>
-              )}
-
-              {/* Tags */}
-              {series.tags && series.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {series.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 rounded-full bg-white/10 text-xs text-white/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Episodes Section */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          {series.seasons && series.seasons.length > 0 && (
-            <EpisodeList
-              seasons={series.seasons}
-              onEpisodeSelect={handleEpisodeSelect}
-            />
-          )}
-        </div>
-
-        {/* Content Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-          {/* Similar Series */}
-          {similarSeries.length > 0 && (
-            <div>
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
-              <ContentGrid title="" items={similarSeries} isNetflixStyle />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Footer />
-    </main>
-  );
 }
 
-export default function SeriesDetailsPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#141414] flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" /></div>}>
-      <SeriesDetailsContent />
-    </Suspense>
-  );
+async function getSimilarSeries(language: string, excludeId: string) {
+  try {
+    await dbConnect();
+    const series = await Content.find({ 
+      type: "series", 
+      language: language,
+      _id: { $ne: excludeId }
+    })
+    .limit(10)
+    .lean() as unknown as Record<string, unknown>[];
+    
+    return series.map(s => ({
+      _id: String(s._id || ""),
+      title: String(s.title || ""),
+      poster: String(s.poster || ""),
+      banner: s.banner ? String(s.banner) : "",
+      description: s.description ? String(s.description) : "",
+      year: s.year ? String(s.year) : "",
+      rating: s.rating != undefined ? Number(s.rating) : undefined,
+      quality: s.quality ? String(s.quality) : "",
+      language: s.language ? String(s.language) : "",
+      type: String(s.type || "series"),
+      tags: Array.isArray(s.tags) ? s.tags.map(String) : [],
+      seasons: Array.isArray(s.seasons) ? s.seasons : [],
+      category: s.category ? String(s.category) : "",
+      tmdbId: s.tmdbId != undefined ? Number(s.tmdbId) : undefined,
+      tmdbGenreIds: Array.isArray(s.tmdbGenreIds) ? s.tmdbGenreIds.map(Number) : undefined,
+      tmdbGenres: Array.isArray(s.tmdbGenres) ? s.tmdbGenres.map(String) : undefined,
+      createdAt: s.createdAt ? new Date(s.createdAt as string) : new Date(),
+      updatedAt: s.updatedAt ? new Date(s.updatedAt as string) : new Date(),
+    })) as unknown as IContent[];
+  } catch (error) {
+    console.error("Failed to fetch similar series:", error);
+    return [];
+  }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const series = await getSeries(id);
+  
+  if (!series) {
+    return {
+      title: "Series Not Found",
+    };
+  }
+  
+  const title = `${series.title} ${series.year ? `(${series.year})` : ""} - Watch Online`;
+  const description = series.description || `Watch ${series.title} online in HD quality. ${series.language} web series.`;
+  const imageUrl = series.poster || series.banner || SITE_CONFIG.ogImage;
+  const url = `${SITE_CONFIG.url}/series/${id}`;
+  
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: SITE_CONFIG.name,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: series.title,
+        },
+      ],
+      type: "video.tv_show",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: url,
+    },
+  };
+}
+
+export default async function SeriesDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const series = await getSeries(id);
+  
+  if (!series) {
+    notFound();
+  }
+  
+  const similarSeries = await getSimilarSeries(series.language || "Telugu", id);
+  
+  return <SeriesDetailsClient series={series} similarSeries={similarSeries} />;
 }

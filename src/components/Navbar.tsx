@@ -4,16 +4,27 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSearch, setTypeFilter } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
+import { IContent } from "@/models/Content";
+
+interface SearchResult {
+  _id: string;
+  title: string;
+  poster: string;
+  type: string;
+  year: string;
+}
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searching, setSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { search, typeFilter } = useAppSelector((state) => state.ui);
@@ -50,6 +61,7 @@ export default function Navbar() {
     if (searchInput.trim()) {
       dispatch(setSearch(searchInput.trim()));
       setIsSearchActive(false);
+      setSearchResults([]);
       router.push("/");
     }
   };
@@ -57,7 +69,33 @@ export default function Navbar() {
   const clearSearch = () => {
     setSearchInput("");
     dispatch(setSearch(""));
+    setSearchResults([]);
   };
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (searchInput.length < 2) {
+        setSearchResults([]);
+        return;
+      }
+      
+      setSearching(true);
+      try {
+        const response = await fetch(`/api/content?search=${encodeURIComponent(searchInput)}&limit=8`);
+        const data = await response.json();
+        if (data.success) {
+          setSearchResults(data.data || []);
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setSearching(false);
+      }
+    };
+    
+    const debounceTimer = setTimeout(fetchSearchResults, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchInput]);
 
   const navLinks = [
     { href: "/", label: "Home", type: "all" },
@@ -163,17 +201,61 @@ export default function Navbar() {
               </div>
 
               {/* Search Dropdown */}
-              {isSearchActive && searchInput && (
-                <div className="absolute top-full right-0 mt-2 w-72 sm:w-80 bg-[#1f1f1f] rounded-lg shadow-xl border border-[#333] overflow-hidden">
-                  <div className="p-3">
-                    <p className="text-xs text-gray-400 mb-2">Search for "{searchInput}"</p>
-                    <button
-                      onClick={handleSearch}
-                      className="w-full py-2 px-3 bg-[#e50914] hover:bg-[#b2070f] text-white text-sm rounded font-medium transition-colors"
-                    >
-                      Search
-                    </button>
-                  </div>
+              {isSearchActive && (
+                <div className="absolute top-full right-0 mt-2 w-72 sm:w-80 max-h-96 overflow-y-auto bg-[#1f1f1f] rounded-lg shadow-xl border border-[#333]">
+                  {searchInput.length >= 2 ? (
+                    <>
+                      {searching ? (
+                        <div className="p-4 flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                        </div>
+                      ) : searchResults.length > 0 ? (
+                        <div className="py-2">
+                          {searchResults.map((result) => (
+                            <Link
+                              key={result._id}
+                              href={result.type === "series" ? `/series/${result._id}` : `/movie/${result._id}`}
+                              onClick={() => {
+                                setIsSearchActive(false);
+                                setSearchInput("");
+                                setSearchResults([]);
+                              }}
+                              className="flex items-center gap-3 px-3 py-2 hover:bg-[#333] transition-colors"
+                            >
+                              <div className="w-10 h-14 relative rounded overflow-hidden flex-shrink-0">
+                                {result.poster ? (
+                                  <Image
+                                    src={result.poster}
+                                    alt={result.title}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                                    {result.type === "series" ? <Tv className="w-4 h-4 text-gray-400" /> : <Film className="w-4 h-4 text-gray-400" />}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white text-sm font-medium truncate">{result.title}</p>
+                                <p className="text-gray-400 text-xs">
+                                  {result.year} • {result.type === "series" ? "TV Show" : "Movie"}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-4 text-center">
+                          <p className="text-gray-400 text-sm">No results found</p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-3">
+                      <p className="text-xs text-gray-400 mb-2">Type at least 2 characters to search</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

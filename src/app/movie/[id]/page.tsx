@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { Play, Plus, ThumbsUp } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
@@ -8,6 +9,7 @@ import Content from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
+import { SITE_CONFIG } from "@/utils/constants";
 
 async function getMovie(id: string) {
   try {
@@ -78,6 +80,52 @@ async function getSimilarMovies(language: string, excludeId: string) {
     console.error("Failed to fetch similar movies:", error);
     return [];
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const movie = await getMovie(id);
+  
+  if (!movie) {
+    return {
+      title: "Movie Not Found",
+    };
+  }
+  
+  const title = `${movie.title} ${movie.year ? `(${movie.year})` : ""} - Watch Online`;
+  const description = movie.description || `Watch ${movie.title} online in HD quality. ${movie.language} movie.`;
+  const imageUrl = movie.poster || movie.banner || SITE_CONFIG.ogImage;
+  const url = `${SITE_CONFIG.url}/movie/${id}`;
+  
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: SITE_CONFIG.name,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: movie.title,
+        },
+      ],
+      type: "video.movie",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+    alternates: {
+      canonical: url,
+    },
+  };
 }
 
 export default async function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
