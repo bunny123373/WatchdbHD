@@ -298,6 +298,28 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     return genre?.name || "";
   };
 
+  const getContentByLanguage = (language: string) => {
+    return [...filteredContent]
+      .filter((item: IContent) => item.language?.toLowerCase() === language.toLowerCase())
+      .sort((a: IContent, b: IContent) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+      })
+      .slice(0, 12);
+  };
+
+  const languages = [
+    { key: "telugu", name: "Telugu" },
+    { key: "hindi", name: "Hindi" },
+    { key: "tamil", name: "Tamil" },
+    { key: "malayalam", name: "Malayalam" },
+    { key: "kannada", name: "Kannada" },
+    { key: "english", name: "English" },
+    { key: "korean", name: "Korean" },
+    { key: "japanese", name: "Japanese" },
+  ];
+
   const topGenreIds = [28, 12, 35, 27, 10749, 878, 53, 16, 14, 80, 99, 36, 10402, 10770];
 
   const showContent = search || typeFilter !== "all";
@@ -372,94 +394,9 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           </section>
         )}
 
-        {/* TMDB Content Sections - Auto show when NOT searching */}
+        {/* Uploaded Content Sections - Only show uploaded movies/series */}
         {!showContent && (
           <>
-            {/* TMDB TRENDING */}
-            {tmdbData.trending.length > 0 && (
-              <TMDBContentGrid title="Trending Now" items={tmdbData.trending} />
-            )}
-
-            {/* TMDB POPULAR MOVIES */}
-            {tmdbData.popular.movies.length > 0 && (
-              <TMDBContentGrid title="Popular Movies" items={tmdbData.popular.movies} />
-            )}
-
-            {/* TMDB POPULAR TV SHOWS */}
-            {tmdbData.popular.series.length > 0 && (
-              <TMDBContentGrid title="Popular TV Shows" items={tmdbData.popular.series} />
-            )}
-
-            {/* TMDB TOP RATED MOVIES */}
-            {tmdbData.toprated.movies.length > 0 && (
-              <TMDBContentGrid title="Top Rated Movies" items={tmdbData.toprated.movies} />
-            )}
-
-            {/* TMDB TOP RATED TV SHOWS */}
-            {tmdbData.toprated.series.length > 0 && (
-              <TMDBContentGrid title="Top Rated TV Shows" items={tmdbData.toprated.series} />
-            )}
-
-            {/* TMDB UPCOMING */}
-            {tmdbData.upcoming.movies.length > 0 && (
-              <TMDBContentGrid title="Upcoming Movies" items={tmdbData.upcoming.movies} />
-            )}
-
-            {/* TMDB ON THE AIR TV */}
-            {tmdbData.upcoming.series.length > 0 && (
-              <TMDBContentGrid title="On Air TV Shows" items={tmdbData.upcoming.series} />
-            )}
-
-            {/* TMDB BY LANGUAGE - Always show all languages */}
-            {tmdbData.telugu.length > 0 && (
-              <TMDBContentGrid title="Telugu Movies" items={tmdbData.telugu} />
-            )}
-
-            {tmdbData.hindi.length > 0 && (
-              <TMDBContentGrid title="Hindi Movies" items={tmdbData.hindi} />
-            )}
-
-            {tmdbData.tamil.length > 0 && (
-              <TMDBContentGrid title="Tamil Movies" items={tmdbData.tamil} />
-            )}
-
-            {tmdbData.malayalam.length > 0 && (
-              <TMDBContentGrid title="Malayalam Movies" items={tmdbData.malayalam} />
-            )}
-
-            {tmdbData.kannada.length > 0 && (
-              <TMDBContentGrid title="Kannada Movies" items={tmdbData.kannada} />
-            )}
-
-            {tmdbData.english.length > 0 && (
-              <TMDBContentGrid title="English Movies" items={tmdbData.english} />
-            )}
-
-            {tmdbData.korean.length > 0 && (
-              <TMDBContentGrid title="Korean Movies" items={tmdbData.korean} />
-            )}
-
-            {tmdbData.japanese.length > 0 && (
-              <TMDBContentGrid title="Japanese Movies" items={tmdbData.japanese} />
-            )}
-
-            {/* TMDB BY GENRE - Show all genres */}
-            {topGenreIds.map((genreId) => {
-              const genreContent = tmdbData.byGenre[genreId];
-              const genreName = getGenreName(genreId);
-              if (genreContent && genreContent.length > 0 && genreName) {
-                return (
-                  <TMDBContentGrid 
-                    key={`tmdb-genre-${genreId}`}
-                    title={`${genreName} Movies`} 
-                    items={genreContent} 
-                  />
-                );
-              }
-              return null;
-            })}
-
-            {/* Uploaded Content Sections */}
             {latestUploaded.length > 0 && (
               <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
@@ -472,18 +409,28 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               <ContentGrid title="Latest Releases" items={latestContent.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
-            {teluguMovies.length > 0 && (
-              <ContentGrid title="Telugu Movies" items={teluguMovies.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
-            )}
-
-            {hindiDubbed.length > 0 && (
-              <ContentGrid title="Hindi Dubbed" items={hindiDubbed.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
-            )}
+            {/* Language-wise - Only show languages with uploaded content */}
+            {languages.map((lang) => {
+              const langContent = getContentByLanguage(lang.key);
+              if (langContent.length > 0) {
+                return (
+                  <ContentGrid 
+                    key={lang.key} 
+                    title={`${lang.name} Movies`} 
+                    items={langContent} 
+                    isNetflixStyle 
+                    onContentClick={handleContentClick} 
+                  />
+                );
+              }
+              return null;
+            })}
 
             {webSeries.length > 0 && (
               <ContentGrid title="Web Series" items={webSeries.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
+            {/* Genre-wise - Only show genres with uploaded content */}
             {!loadingGenres && topGenreIds.map((genreId) => {
               const genreContent = getContentByGenre(genreId);
               const genreName = getGenreName(genreId);
@@ -491,7 +438,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
                 return (
                   <ContentGrid 
                     key={genreId} 
-                    title={`${genreName} Movies (Uploaded)`} 
+                    title={`${genreName} Movies`} 
                     items={genreContent} 
                     isNetflixStyle 
                     onContentClick={handleContentClick} 
