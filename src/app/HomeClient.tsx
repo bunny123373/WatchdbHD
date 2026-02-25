@@ -511,7 +511,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         )}
       </div>
 
-      <TelegramPopup channelLink="https://t.me/telugudb" />
+      <TelegramPopup channelLink="https://t.me/telugudbmovies1" />
 
       <ContentDetailModal content={selectedContent} isOpen={!!selectedContent} onClose={handleCloseModal} />
 

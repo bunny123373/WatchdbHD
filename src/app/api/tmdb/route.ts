@@ -1,7 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Content from "@/models/Content";
 
 const GENRE_CACHE = new Map<string, { data: unknown; timestamp: number }>();
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
+const EXISTING_IDS_CACHE: { ids: Set<number>; timestamp: number } = { ids: new Set(), timestamp: 0 };
+const EXISTING_IDS_CACHE_DURATION = 60 * 1000;
+
+async function getExistingTmdbIds(): Promise<Set<number>> {
+  if (Date.now() - EXISTING_IDS_CACHE.timestamp < EXISTING_IDS_CACHE_DURATION && EXISTING_IDS_CACHE.ids.size > 0) {
+    return EXISTING_IDS_CACHE.ids;
+  }
+  
+  try {
+    await connectDB();
+    const contents = await Content.find({ tmdbId: { $exists: true, $ne: null } }).select("tmdbId").lean();
+    const ids = new Set(contents.map((c) => c.tmdbId as number).filter(Boolean));
+    EXISTING_IDS_CACHE.ids = ids;
+    EXISTING_IDS_CACHE.timestamp = Date.now();
+    return ids;
+  } catch (error) {
+    console.error("Error fetching existing tmdbIds:", error);
+    return new Set();
+  }
+}
+
+function filterExistingMovies<T extends { tmdbId: number }>(items: T[], existingIds: Set<number>): T[] {
+  return items.filter((item) => existingIds.has(item.tmdbId));
+}
 
 async function fetchWithCache(url: string, cacheKey: string) {
   const cached = GENRE_CACHE.get(cacheKey);
@@ -20,8 +46,8 @@ async function fetchWithCache(url: string, cacheKey: string) {
   return data;
 }
 
-function transformResults(items: unknown[], genreMap: Map<number, string>) {
-  return (items as {
+function transformResults(items: unknown[], genreMap: Map<number, string>, existingIds?: Set<number>) {
+  let filteredItems = items as {
     id: number;
     title?: string;
     name?: string;
@@ -33,7 +59,13 @@ function transformResults(items: unknown[], genreMap: Map<number, string>) {
     vote_average: number;
     genre_ids?: number[];
     media_type?: string;
-  }[]).slice(0, 20).map((item) => ({
+  }[];
+  
+  if (existingIds && existingIds.size > 0) {
+    filteredItems = filteredItems.filter((item) => existingIds.has(item.id));
+  }
+  
+  return filteredItems.slice(0, 20).map((item) => ({
     tmdbId: item.id,
     title: item.title || item.name,
     poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "",
@@ -96,6 +128,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "discover") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const genreId = searchParams.get("genreId");
       const tmdbType = type === "series" ? "tv" : "movie";
       
@@ -115,7 +148,9 @@ export async function GET(request: NextRequest) {
         const genreData = await genreResponse.json();
         const genreMap = new Map(genreData.genres?.map((g: { id: number; name: string }) => [g.id, g.name]) || []);
         
-        const results = data.results.slice(0, 20).map((item: { 
+        let filteredResults = data.results.filter((item: { id: number }) => existingIds.has(item.id));
+        
+        const results = filteredResults.slice(0, 20).map((item: { 
           id: number; 
           title?: string; 
           name?: string; 
@@ -150,6 +185,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "popular") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const tmdbType = type === "series" ? "tv" : "movie";
       console.log(`Fetching popular ${tmdbType}`);
       
@@ -171,7 +207,9 @@ export async function GET(request: NextRequest) {
       const genreMap = new Map(genreData.genres?.map((g: { id: number; name: string }) => [g.id, g.name]) || []);
       
       if (data.results) {
-        const results = data.results.slice(0, 20).map((item: { 
+        const filteredResults = data.results.filter((item: { id: number }) => existingIds.has(item.id));
+        
+        const results = filteredResults.slice(0, 20).map((item: { 
           id: number; 
           title?: string; 
           name?: string; 
@@ -206,6 +244,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "trending") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const timeWindow = searchParams.get("timeWindow") || "week";
       
       const movieResponse = await fetch(
@@ -227,6 +266,7 @@ export async function GET(request: NextRequest) {
       const tvData = await tvResponse.json();
       
       const allResults = [...(movieData.results || []), ...(tvData.results || [])]
+        .filter((item: { id: number }) => existingIds.has(item.id))
         .sort((a: { vote_average: number }, b: { vote_average: number }) => b.vote_average - a.vote_average)
         .slice(0, 20);
       
@@ -263,6 +303,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "toprated") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       
@@ -272,7 +313,7 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       
       if (data.results) {
-        const results = transformResults(data.results, genreMap);
+        const results = transformResults(data.results, genreMap, existingIds);
         return NextResponse.json({ success: true, data: results });
       }
       
@@ -285,6 +326,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "upcoming") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       
@@ -296,7 +338,7 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       
       if (data.results) {
-        const results = transformResults(data.results, genreMap);
+        const results = transformResults(data.results, genreMap, existingIds);
         return NextResponse.json({ success: true, data: results });
       }
       
@@ -309,6 +351,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "bygenre") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const genreId = searchParams.get("genreId");
       if (!genreId) {
         return NextResponse.json({ success: false, error: "genreId required" }, { status: 400 });
@@ -329,7 +372,7 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       
       if (data.results) {
-        const results = transformResults(data.results, genreMap);
+        const results = transformResults(data.results, genreMap, existingIds);
         return NextResponse.json({ success: true, data: results });
       }
       
@@ -342,6 +385,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "bylanguage") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const language = searchParams.get("language") || "te";
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
@@ -358,7 +402,7 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       
       if (data.results) {
-        const results = transformResults(data.results, genreMap);
+        const results = transformResults(data.results, genreMap, existingIds);
         return NextResponse.json({ success: true, data: results });
       }
       
@@ -371,6 +415,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "indian") {
     try {
+      const existingIds = await getExistingTmdbIds();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       
@@ -399,7 +444,7 @@ export async function GET(request: NextRequest) {
         .sort((a, b) => b.vote_average - a.vote_average)
         .slice(0, 20);
       
-      const results = transformResults(sortedResults, genreMap);
+      const results = transformResults(sortedResults, genreMap, existingIds);
       return NextResponse.json({ success: true, data: results });
     } catch (error) {
       console.error("TMDB indian error:", error);
