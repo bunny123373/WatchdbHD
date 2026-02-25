@@ -1,78 +1,88 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { Play, Plus, ThumbsUp, Share } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Play, Plus, ThumbsUp } from "lucide-react";
 import { IContent } from "@/models/Content";
+import dbConnect from "@/lib/dbconnect";
+import Content from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 
-export default function MovieDetailsPage() {
-  const params = useParams();
-  const [movie, setMovie] = useState<IContent | null>(null);
-  const [similarMovies, setSimilarMovies] = useState<IContent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const movieId = params.id;
-    if (movieId) {
-      console.log("Movie ID from params:", movieId);
-      fetchMovie(movieId as string);
-    }
-  }, [params.id]);
-
-  const fetchMovie = async (movieId: string) => {
-    try {
-      console.log("Fetching movie with ID:", movieId);
-      setError(null);
-      const response = await fetch(`/api/content/${movieId}`);
-      const data = await response.json();
-      console.log("API response:", data);
-      console.log("Response status:", response.status);
-      
-      if (data.success && data.data) {
-        setMovie(data.data);
-        if (data.data.language) {
-          fetchSimilarMovies(data.data.language, data.data._id);
-        }
-      } else {
-        setError(data.error || "Movie not found");
-        console.error("Movie not found or error:", data.error);
-      }
-    } catch (error) {
-      setError("Failed to fetch movie");
-      console.error("Failed to fetch movie:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSimilarMovies = async (language: string, excludeId: string) => {
-    try {
-      const response = await fetch(`/api/content?type=movie&language=${language}`);
-      const data = await response.json();
-      if (data.success) {
-        setSimilarMovies(data.data.filter((m: IContent) => String(m._id) !== excludeId).slice(0, 10));
-      }
-    } catch (error) {
-      console.error("Failed to fetch similar movies:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#141414]">
-        <Navbar />
-        <div className="pt-16">
-          <div className="h-[50vh] bg-gray-900 animate-pulse" />
-        </div>
-      </div>
-    );
+async function getMovie(id: string) {
+  try {
+    await dbConnect();
+    const movie = await Content.findById(id).lean() as unknown as Record<string, unknown> | null;
+    if (!movie) return null;
+    
+    return {
+      _id: String(movie._id || ""),
+      title: String(movie.title || ""),
+      poster: String(movie.poster || ""),
+      banner: movie.banner ? String(movie.banner) : "",
+      description: movie.description ? String(movie.description) : "",
+      year: movie.year ? String(movie.year) : "",
+      rating: movie.rating != undefined ? Number(movie.rating) : undefined,
+      quality: movie.quality ? String(movie.quality) : "",
+      language: movie.language ? String(movie.language) : "",
+      type: String(movie.type || "movie"),
+      tags: Array.isArray(movie.tags) ? movie.tags.map(String) : [],
+      seasons: Array.isArray(movie.seasons) ? movie.seasons : [],
+      episodes: Array.isArray(movie.episodes) ? movie.episodes : [],
+      category: movie.category ? String(movie.category) : "",
+      tmdbId: movie.tmdbId != undefined ? Number(movie.tmdbId) : undefined,
+      tmdbGenreIds: Array.isArray(movie.tmdbGenreIds) ? movie.tmdbGenreIds.map(Number) : undefined,
+      tmdbGenres: Array.isArray(movie.tmdbGenres) ? movie.tmdbGenres.map(String) : undefined,
+      createdAt: movie.createdAt ? new Date(movie.createdAt as string) : new Date(),
+      updatedAt: movie.updatedAt ? new Date(movie.updatedAt as string) : new Date(),
+    } as unknown as IContent;
+  } catch (error) {
+    console.error("Failed to fetch movie:", error);
+    return null;
   }
+}
+
+async function getSimilarMovies(language: string, excludeId: string) {
+  try {
+    await dbConnect();
+    const movies = await Content.find({ 
+      type: "movie", 
+      language: language,
+      _id: { $ne: excludeId }
+    })
+    .limit(10)
+    .lean() as unknown as Record<string, unknown>[];
+    
+    return movies.map(m => ({
+      _id: String(m._id || ""),
+      title: String(m.title || ""),
+      poster: String(m.poster || ""),
+      banner: m.banner ? String(m.banner) : "",
+      description: m.description ? String(m.description) : "",
+      year: m.year ? String(m.year) : "",
+      rating: m.rating != undefined ? Number(m.rating) : undefined,
+      quality: m.quality ? String(m.quality) : "",
+      language: m.language ? String(m.language) : "",
+      type: String(m.type || "movie"),
+      tags: Array.isArray(m.tags) ? m.tags.map(String) : [],
+      seasons: Array.isArray(m.seasons) ? m.seasons : [],
+      episodes: Array.isArray(m.episodes) ? m.episodes : [],
+      category: m.category ? String(m.category) : "",
+      tmdbId: m.tmdbId != undefined ? Number(m.tmdbId) : undefined,
+      tmdbGenreIds: Array.isArray(m.tmdbGenreIds) ? m.tmdbGenreIds.map(Number) : undefined,
+      tmdbGenres: Array.isArray(m.tmdbGenres) ? m.tmdbGenres.map(String) : undefined,
+      createdAt: m.createdAt ? new Date(m.createdAt as string) : new Date(),
+      updatedAt: m.updatedAt ? new Date(m.updatedAt as string) : new Date(),
+    })) as unknown as IContent[];
+  } catch (error) {
+    console.error("Failed to fetch similar movies:", error);
+    return [];
+  }
+}
+
+export default async function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const movie = await getMovie(id);
 
   if (!movie) {
     return (
@@ -80,25 +90,23 @@ export default function MovieDetailsPage() {
         <Navbar />
         <div className="pt-32 text-center px-4">
           <h1 className="text-2xl font-bold text-white mb-2">Movie not found</h1>
-          {error && (
-            <p className="text-gray-400 text-sm mb-4">{error}</p>
-          )}
           <Link href="/" className="text-red-600 hover:text-red-500 mt-4 inline-block">
             Go back home
           </Link>
         </div>
+        <Footer />
       </div>
     );
   }
+
+  const similarMovies = await getSimilarMovies(movie.language || "Telugu", movie._id);
 
   return (
     <main className="min-h-screen bg-[#141414]">
       <Navbar />
 
       <div className="pt-16">
-        {/* Netflix Hero Section */}
         <div className="relative w-full aspect-[16/9] h-auto min-h-[300px] max-h-[500px] overflow-hidden">
-          {/* Background */}
           <div className="absolute inset-0 w-full h-full">
             <Image
               src={movie.banner || movie.poster}
@@ -112,15 +120,12 @@ export default function MovieDetailsPage() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/40 to-[#141414]" />
           </div>
 
-          {/* Content */}
           <div className="relative h-full max-w-7xl mx-auto px-4 md:px-8 flex items-end pb-8 md:pb-12">
             <div className="max-w-xl lg:max-w-2xl space-y-3 md:space-y-4">
-              {/* Title */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg">
                 {movie.title}
               </h1>
 
-              {/* Meta */}
               <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm">
                 {movie.rating && (
                   <span className="text-green-400 font-semibold">{movie.rating} Match</span>
@@ -137,9 +142,8 @@ export default function MovieDetailsPage() {
                 <span className="text-white/60">Movie</span>
               </div>
 
-              {/* Buttons */}
               <div className="flex flex-wrap gap-3">
-                <Link href={`/watch/${String(movie._id)}`}>
+                <Link href={`/watch/${movie._id}`}>
                   <button className="bg-white text-black hover:bg-white/90 rounded px-5 md:px-7 py-2 md:py-2.5 flex items-center gap-2 font-bold text-sm">
                     <Play className="w-4 h-4 fill-black" />
                     Play
@@ -153,14 +157,12 @@ export default function MovieDetailsPage() {
                 </button>
               </div>
 
-              {/* Description */}
               {movie.description && (
                 <p className="text-white/90 text-sm md:text-base leading-relaxed line-clamp-2">
                   {movie.description}
                 </p>
               )}
 
-              {/* Tags */}
               {movie.tags && movie.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {movie.tags.map((tag, index) => (
@@ -177,9 +179,7 @@ export default function MovieDetailsPage() {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
-          {/* Similar Movies */}
           {similarMovies.length > 0 && (
             <div>
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>

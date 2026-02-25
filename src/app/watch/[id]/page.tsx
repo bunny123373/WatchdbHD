@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -14,7 +14,7 @@ import Badge from "@/components/ui/Badge";
 import IframePlayer from "@/components/IframePlayer";
 import ContentGrid from "@/components/ContentGrid";
 
-export default function WatchMoviePage() {
+function WatchMovieContent() {
   const params = useParams();
   const [movie, setMovie] = useState<IContent | null>(null);
   const [relatedMovies, setRelatedMovies] = useState<IContent[]>([]);
@@ -188,5 +188,13 @@ export default function WatchMoviePage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function WatchMoviePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#141414] flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" /></div>}>
+      <WatchMovieContent />
+    </Suspense>
   );
 }

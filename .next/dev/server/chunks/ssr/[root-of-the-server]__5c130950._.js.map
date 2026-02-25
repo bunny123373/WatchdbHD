@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 20, "column": 0}, "map": {"version":3,"sources":["file:///D:/downloads/WatchDB%20Streaming%20Platform/telugudb/src/app/page.tsx"],"sourcesContent":["import { IContent } from \"@/models/Content\";\nimport HomeClient from \"./HomeClient\";\n\nexport const dynamic = \"force-dynamic\";\n\nasync function getContent() {\n  try {\n    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || \"http://localhost:3000\";\n    const res = await fetch(`${baseUrl}/api/content`, {\n      next: { revalidate: 60 },\n    });\n    const data = await res.json();\n    return data.success ? data.data : [];\n  } catch {\n    return [];\n  }\n}\n\nexport default async function HomePage() {\n  const content: IContent[] = await getContent();\n\n  return <HomeClient initialContent={content} />;\n}\n"],"names":[],"mappings":";;;;;;;AACA;;;AAEO,MAAM,UAAU;AAEvB,eAAe;IACb,IAAI;QACF,MAAM,UAAU,QAAQ,GAAG,CAAC,oBAAoB,IAAI;QACpD,MAAM,MAAM,MAAM,MAAM,GAAG,QAAQ,YAAY,CAAC,EAAE;YAChD,MAAM;gBAAE,YAAY;YAAG;QACzB;QACA,MAAM,OAAO,MAAM,IAAI,IAAI;QAC3B,OAAO,KAAK,OAAO,GAAG,KAAK,IAAI,GAAG,EAAE;IACtC,EAAE,OAAM;QACN,OAAO,EAAE;IACX;AACF;AAEe,eAAe;IAC5B,MAAM,UAAsB,MAAM;IAElC,qBAAO,8OAAC,oIAAU;QAAC,gBAAgB;;;;;;AACrC"}}]
+}

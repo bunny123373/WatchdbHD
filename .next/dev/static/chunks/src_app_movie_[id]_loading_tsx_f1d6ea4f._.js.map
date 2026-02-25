@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/downloads/WatchDB%20Streaming%20Platform/telugudb/src/app/movie/%5Bid%5D/loading.tsx"],"sourcesContent":["\"use client\";\n\nexport default function Loading() {\n  return (\n    <div className=\"min-h-screen bg-black flex items-center justify-center\">\n      <div className=\"flex flex-col items-center gap-4\">\n        <div className=\"w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin\" />\n        <p className=\"text-white text-sm\">Loading...</p>\n      </div>\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS;IACtB,qBACE,6LAAC;QAAI,WAAU;kBACb,cAAA,6LAAC;YAAI,WAAU;;8BACb,6LAAC;oBAAI,WAAU;;;;;;8BACf,6LAAC;oBAAE,WAAU;8BAAqB;;;;;;;;;;;;;;;;;AAI1C;KATwB"}}]
+}

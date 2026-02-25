@@ -118,6 +118,11 @@ body {
   outline-offset: 2px;
 }
 
+/* Remove focus outline from movie/series cards */
+a:focus-visible, div[role="link"]:focus-visible {
+  outline: none;
+}
+
 /* Selection styles */
 ::selection {
   background: rgba(245, 197, 66, 0.3);

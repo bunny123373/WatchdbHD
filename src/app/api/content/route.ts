@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category");
     const language = searchParams.get("language");
     const search = searchParams.get("search");
+    const genreId = searchParams.get("genreId");
 
     let query: Record<string, unknown> = {};
 
@@ -27,10 +28,15 @@ export async function GET(request: NextRequest) {
       query.language = language;
     }
 
+    if (genreId) {
+      query.tmdbGenreIds = parseInt(genreId);
+    }
+
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: "i" } },
         { tags: { $in: [new RegExp(search, "i")] } },
+        { tmdbGenres: { $in: [new RegExp(search, "i")] } },
       ];
     }
 

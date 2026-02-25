@@ -9,7 +9,27 @@ import ContentGrid from "@/components/ContentGrid";
 import ContentDetailModal from "@/components/ContentDetailModal";
 import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
+import TMDBContentGrid from "@/components/TMDBContentGrid";
+import TelegramPopup from "@/components/TelegramPopup";
 import { useAppSelector } from "@/redux/hooks";
+
+interface Genre {
+  id: number;
+  name: string;
+}
+
+interface TMDBContent {
+  tmdbId: number;
+  title: string;
+  poster: string;
+  banner: string;
+  description: string;
+  year: string;
+  rating: number;
+  genreIds?: number[];
+  genres?: string[];
+  type?: string;
+}
 
 interface HomeClientProps {
   initialContent: IContent[];
@@ -18,13 +38,171 @@ interface HomeClientProps {
 export default function HomeClient({ initialContent }: HomeClientProps) {
   const [content, setContent] = useState<IContent[]>(initialContent);
   const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
+  const [movieGenres, setMovieGenres] = useState<Genre[]>([]);
+  const [tvGenres, setTvGenres] = useState<Genre[]>([]);
+  const [loadingGenres, setLoadingGenres] = useState(true);
+  const [tmdbData, setTmdbData] = useState<{
+    popular: { movies: TMDBContent[]; series: TMDBContent[] };
+    trending: TMDBContent[];
+    toprated: { movies: TMDBContent[]; series: TMDBContent[] };
+    upcoming: { movies: TMDBContent[]; series: TMDBContent[] };
+    telugu: TMDBContent[];
+    hindi: TMDBContent[];
+    tamil: TMDBContent[];
+    malayalam: TMDBContent[];
+    kannada: TMDBContent[];
+    english: TMDBContent[];
+    korean: TMDBContent[];
+    japanese: TMDBContent[];
+    byGenre: { [key: number]: TMDBContent[] };
+  }>({
+    popular: { movies: [], series: [] },
+    trending: [],
+    toprated: { movies: [], series: [] },
+    upcoming: { movies: [], series: [] },
+    telugu: [],
+    hindi: [],
+    tamil: [],
+    malayalam: [],
+    kannada: [],
+    english: [],
+    korean: [],
+    japanese: [],
+    byGenre: {},
+  });
+  const [loadingTmdb, setLoadingTmdb] = useState(true);
+  const [tmdbError, setTmdbError] = useState("");
   const { search, typeFilter } = useAppSelector((state) => state.ui);
 
   useEffect(() => {
     if (initialContent.length === 0) {
       fetchContent();
     }
+    fetchGenres();
+    fetchAllTmdbContent();
   }, []);
+
+  const fetchGenres = async () => {
+    try {
+      const response = await fetch("/api/tmdb?action=genres");
+      const data = await response.json();
+      if (data.success) {
+        setMovieGenres(data.data.movieGenres || []);
+        setTvGenres(data.data.tvGenres || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch genres:", error);
+    } finally {
+      setLoadingGenres(false);
+    }
+  };
+
+  const fetchAllTmdbContent = async () => {
+    try {
+      const [
+        popularMoviesRes,
+        popularSeriesRes,
+        trendingRes,
+        topratedMoviesRes,
+        topratedSeriesRes,
+        upcomingMoviesRes,
+        upcomingSeriesRes,
+      ] = await Promise.all([
+        fetch("/api/tmdb?action=popular&type=movie"),
+        fetch("/api/tmdb?action=popular&type=series"),
+        fetch("/api/tmdb?action=trending&timeWindow=week"),
+        fetch("/api/tmdb?action=toprated&type=movie"),
+        fetch("/api/tmdb?action=toprated&type=series"),
+        fetch("/api/tmdb?action=upcoming&type=movie"),
+        fetch("/api/tmdb?action=upcoming&type=series"),
+      ]);
+
+      const [
+        popularMovies,
+        popularSeries,
+        trending,
+        topratedMovies,
+        topratedSeries,
+        upcomingMovies,
+        upcomingSeries,
+      ] = await Promise.all([
+        popularMoviesRes.json(),
+        popularSeriesRes.json(),
+        trendingRes.json(),
+        topratedMoviesRes.json(),
+        topratedSeriesRes.json(),
+        upcomingMoviesRes.json(),
+        upcomingSeriesRes.json(),
+      ]);
+
+      const languages = [
+        { code: "te", key: "telugu" },
+        { code: "hi", key: "hindi" },
+        { code: "ta", key: "tamil" },
+        { code: "ml", key: "malayalam" },
+        { code: "kn", key: "kannada" },
+        { code: "en", key: "english" },
+        { code: "ko", key: "korean" },
+        { code: "ja", key: "japanese" },
+      ];
+
+      const languageData: Record<string, TMDBContent[]> = {};
+      for (const lang of languages) {
+        try {
+          const res = await fetch(`/api/tmdb?action=bylanguage&language=${lang.code}&type=movie`);
+          const data = await res.json();
+          languageData[lang.key] = data.success ? data.data : [];
+        } catch (e) {
+          console.error(`Failed to fetch ${lang.key}:`, e);
+          languageData[lang.key] = [];
+        }
+      }
+
+      const topGenreIds = [28, 12, 35, 27, 10749, 878, 53, 16, 14, 80, 99, 36, 10402, 10770];
+      const byGenre: { [key: number]: TMDBContent[] } = {};
+      
+      for (const genreId of topGenreIds) {
+        try {
+          const res = await fetch(`/api/tmdb?action=bygenre&genreId=${genreId}&type=movie`);
+          const data = await res.json();
+          byGenre[genreId] = data.success ? data.data : [];
+        } catch (e) {
+          console.error(`Failed to fetch genre ${genreId}:`, e);
+          byGenre[genreId] = [];
+        }
+      }
+
+      setTmdbData({
+        popular: {
+          movies: popularMovies.success ? popularMovies.data : [],
+          series: popularSeries.success ? popularSeries.data : [],
+        },
+        trending: trending.success ? trending.data : [],
+        toprated: {
+          movies: topratedMovies.success ? topratedMovies.data : [],
+          series: topratedSeries.success ? topratedSeries.data : [],
+        },
+        upcoming: {
+          movies: upcomingMovies.success ? upcomingMovies.data : [],
+          series: upcomingSeries.success ? upcomingSeries.data : [],
+        },
+        telugu: languageData.telugu || [],
+        hindi: languageData.hindi || [],
+        tamil: languageData.tamil || [],
+        malayalam: languageData.malayalam || [],
+        kannada: languageData.kannada || [],
+        english: languageData.english || [],
+        korean: languageData.korean || [],
+        japanese: languageData.japanese || [],
+        byGenre,
+      });
+    } catch (error) {
+      console.error("Failed to fetch TMDB content:", error);
+      setTmdbError("Failed to load TMDB content. Please check TMDB API key.");
+    } finally {
+      setLoadingTmdb(false);
+    }
+  };
 
   const fetchContent = async () => {
     try {
@@ -104,6 +282,24 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     })
     .slice(0, 12);
 
+  const getContentByGenre = (genreId: number) => {
+    return [...filteredContent]
+      .filter((item: IContent) => item.tmdbGenreIds?.includes(genreId))
+      .sort((a: IContent, b: IContent) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+      })
+      .slice(0, 12);
+  };
+
+  const getGenreName = (genreId: number): string => {
+    const genre = movieGenres.find(g => g.id === genreId) || tvGenres.find(g => g.id === genreId);
+    return genre?.name || "";
+  };
+
+  const topGenreIds = [28, 12, 35, 27, 10749, 878, 53, 16, 14, 80, 99, 36, 10402, 10770];
+
   const showContent = search || typeFilter !== "all";
 
   const handleContentClick = (item: IContent) => {
@@ -129,7 +325,27 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     <main className="min-h-screen bg-[#141414]">
       <Navbar />
 
-      {featuredContent && !showContent && (
+      {/* TMDB Hero Banner - Show first TMDB content */}
+      {!showContent && !loadingTmdb && tmdbData.trending.length > 0 && (
+        <HeroBanner 
+          content={{
+            _id: `tmdb-${tmdbData.trending[0].tmdbId}`,
+            title: tmdbData.trending[0].title,
+            poster: tmdbData.trending[0].banner || tmdbData.trending[0].poster,
+            banner: tmdbData.trending[0].banner || tmdbData.trending[0].poster,
+            description: tmdbData.trending[0].description,
+            year: tmdbData.trending[0].year,
+            rating: tmdbData.trending[0].rating,
+            type: tmdbData.trending[0].type === "tv" ? "series" : "movie",
+            tmdbId: tmdbData.trending[0].tmdbId,
+            tmdbGenres: tmdbData.trending[0].genres,
+          } as IContent} 
+          onContentClick={() => {}} 
+        />
+      )}
+
+      {/* Fallback to uploaded content hero */}
+      {featuredContent && !showContent && !tmdbData.trending.length && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
       )}
 
@@ -156,9 +372,94 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           </section>
         )}
 
-        {/* Regular Content Rows */}
+        {/* TMDB Content Sections - Auto show when NOT searching */}
         {!showContent && (
           <>
+            {/* TMDB TRENDING */}
+            {tmdbData.trending.length > 0 && (
+              <TMDBContentGrid title="Trending Now" items={tmdbData.trending} />
+            )}
+
+            {/* TMDB POPULAR MOVIES */}
+            {tmdbData.popular.movies.length > 0 && (
+              <TMDBContentGrid title="Popular Movies" items={tmdbData.popular.movies} />
+            )}
+
+            {/* TMDB POPULAR TV SHOWS */}
+            {tmdbData.popular.series.length > 0 && (
+              <TMDBContentGrid title="Popular TV Shows" items={tmdbData.popular.series} />
+            )}
+
+            {/* TMDB TOP RATED MOVIES */}
+            {tmdbData.toprated.movies.length > 0 && (
+              <TMDBContentGrid title="Top Rated Movies" items={tmdbData.toprated.movies} />
+            )}
+
+            {/* TMDB TOP RATED TV SHOWS */}
+            {tmdbData.toprated.series.length > 0 && (
+              <TMDBContentGrid title="Top Rated TV Shows" items={tmdbData.toprated.series} />
+            )}
+
+            {/* TMDB UPCOMING */}
+            {tmdbData.upcoming.movies.length > 0 && (
+              <TMDBContentGrid title="Upcoming Movies" items={tmdbData.upcoming.movies} />
+            )}
+
+            {/* TMDB ON THE AIR TV */}
+            {tmdbData.upcoming.series.length > 0 && (
+              <TMDBContentGrid title="On Air TV Shows" items={tmdbData.upcoming.series} />
+            )}
+
+            {/* TMDB BY LANGUAGE - Always show all languages */}
+            {tmdbData.telugu.length > 0 && (
+              <TMDBContentGrid title="Telugu Movies" items={tmdbData.telugu} />
+            )}
+
+            {tmdbData.hindi.length > 0 && (
+              <TMDBContentGrid title="Hindi Movies" items={tmdbData.hindi} />
+            )}
+
+            {tmdbData.tamil.length > 0 && (
+              <TMDBContentGrid title="Tamil Movies" items={tmdbData.tamil} />
+            )}
+
+            {tmdbData.malayalam.length > 0 && (
+              <TMDBContentGrid title="Malayalam Movies" items={tmdbData.malayalam} />
+            )}
+
+            {tmdbData.kannada.length > 0 && (
+              <TMDBContentGrid title="Kannada Movies" items={tmdbData.kannada} />
+            )}
+
+            {tmdbData.english.length > 0 && (
+              <TMDBContentGrid title="English Movies" items={tmdbData.english} />
+            )}
+
+            {tmdbData.korean.length > 0 && (
+              <TMDBContentGrid title="Korean Movies" items={tmdbData.korean} />
+            )}
+
+            {tmdbData.japanese.length > 0 && (
+              <TMDBContentGrid title="Japanese Movies" items={tmdbData.japanese} />
+            )}
+
+            {/* TMDB BY GENRE - Show all genres */}
+            {topGenreIds.map((genreId) => {
+              const genreContent = tmdbData.byGenre[genreId];
+              const genreName = getGenreName(genreId);
+              if (genreContent && genreContent.length > 0 && genreName) {
+                return (
+                  <TMDBContentGrid 
+                    key={`tmdb-genre-${genreId}`}
+                    title={`${genreName} Movies`} 
+                    items={genreContent} 
+                  />
+                );
+              }
+              return null;
+            })}
+
+            {/* Uploaded Content Sections */}
             {latestUploaded.length > 0 && (
               <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
@@ -182,6 +483,23 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
             {webSeries.length > 0 && (
               <ContentGrid title="Web Series" items={webSeries.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
+
+            {!loadingGenres && topGenreIds.map((genreId) => {
+              const genreContent = getContentByGenre(genreId);
+              const genreName = getGenreName(genreId);
+              if (genreContent.length > 0 && genreName) {
+                return (
+                  <ContentGrid 
+                    key={genreId} 
+                    title={`${genreName} Movies (Uploaded)`} 
+                    items={genreContent} 
+                    isNetflixStyle 
+                    onContentClick={handleContentClick} 
+                  />
+                );
+              }
+              return null;
+            })}
           </>
         )}
 
@@ -192,6 +510,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           </div>
         )}
       </div>
+
+      <TelegramPopup channelLink="https://t.me/telugudb" />
 
       <ContentDetailModal content={selectedContent} isOpen={!!selectedContent} onClose={handleCloseModal} />
 

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, X, Plus, Sparkles } from "lucide-react";
+import { Upload, X, Plus, Sparkles, ChevronDown, Check } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { LANGUAGES, QUALITIES } from "@/utils/constants";
+import { LANGUAGES, QUALITIES, TMDB_GENRES } from "@/utils/constants";
 import { ISeason } from "@/models/Content";
 import SeasonEpisodeBuilder from "./SeasonEpisodeBuilder";
 import TMDBSearch from "./TMDBSearch";
@@ -16,8 +16,12 @@ interface UploadSeriesFormProps {
 
 export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
   const [showTMDBSearch, setShowTMDBSearch] = useState(false);
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
-  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number }) => {
+  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[] }) => {
+    const selectedGenres = TMDB_GENRES.filter(g => result.genreIds?.includes(g.id));
+    setSelectedGenres(selectedGenres);
+    
     setFormData((prev) => ({
       ...prev,
       title: result.title || prev.title,
@@ -26,8 +30,32 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       description: result.description || prev.description,
       year: result.year || prev.year,
       rating: result.rating ? String(result.rating) : prev.rating,
+      tags: result.genres && result.genres.length > 0 ? [...new Set([...prev.tags, ...result.genres])] : prev.tags,
     }));
+    setTmdbData({
+      tmdbId: 0,
+      genreIds: result.genreIds || [],
+      genres: result.genres || [],
+    });
     setShowTMDBSearch(false);
+  };
+
+  const [tmdbData, setTmdbData] = useState({
+    tmdbId: 0,
+    genreIds: [] as number[],
+    genres: [] as string[],
+  });
+
+  const [selectedGenres, setSelectedGenres] = useState<{ id: number; name: string }[]>([]);
+
+  const toggleGenre = (genre: { id: number; name: string }) => {
+    setSelectedGenres(prev => {
+      const exists = prev.find(g => g.id === genre.id);
+      if (exists) {
+        return prev.filter(g => g.id !== genre.id);
+      }
+      return [...prev, genre];
+    });
   };
 
   const [formData, setFormData] = useState({
@@ -86,6 +114,9 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
           category: "Web Series",
           rating: formData.rating ? parseFloat(formData.rating) : undefined,
           seasons,
+          tmdbId: tmdbData.tmdbId || undefined,
+          tmdbGenreIds: selectedGenres.length > 0 ? selectedGenres.map(g => g.id) : (tmdbData.genreIds.length > 0 ? tmdbData.genreIds : undefined),
+          tmdbGenres: selectedGenres.length > 0 ? selectedGenres.map(g => g.name) : (tmdbData.genres.length > 0 ? tmdbData.genres : undefined),
         }),
       });
 
@@ -104,6 +135,8 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
           tags: [],
         });
         setSeasons([]);
+        setSelectedGenres([]);
+        setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
         onSuccess?.();
       } else {
         setMessage(data.error || "Failed to upload series");
@@ -216,6 +249,38 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
           onChange={handleChange}
           placeholder="e.g., 8.5"
         />
+
+        {/* TMDB Genre Selection */}
+        <div className="relative">
+          <label className="block text-sm font-medium text-[#808080] mb-1.5">TMDB Genres</label>
+          <button
+            type="button"
+            onClick={() => setShowGenreDropdown(!showGenreDropdown)}
+            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm flex items-center justify-between"
+          >
+            <span className={selectedGenres.length > 0 ? "text-white" : "text-[#808080]"}>
+              {selectedGenres.length > 0 ? selectedGenres.map(g => g.name).join(", ") : "Select genres..."}
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${showGenreDropdown ? "rotate-180" : ""}`} />
+          </button>
+          {showGenreDropdown && (
+            <div className="absolute z-10 w-full mt-1 bg-[#1f1f1f] border border-[#333] rounded-lg shadow-xl max-h-60 overflow-y-auto">
+              {TMDB_GENRES.map((genre) => (
+                <button
+                  key={genre.id}
+                  type="button"
+                  onClick={() => toggleGenre(genre)}
+                  className="w-full px-3 py-2 text-left text-sm text-white hover:bg-[#333] flex items-center justify-between"
+                >
+                  {genre.name}
+                  {selectedGenres.find(g => g.id === genre.id) && (
+                    <Check className="w-4 h-4 text-green-500" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Description */}

@@ -1,6 +1,8 @@
 import { IContent } from "@/models/Content";
 import HomeClient from "./HomeClient";
 
+export const dynamic = "force-dynamic";
+
 async function getContent() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";

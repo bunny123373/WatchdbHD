@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
 
-export default function SeriesDetailsPage() {
+function SeriesDetailsContent() {
   const params = useParams();
   const [series, setSeries] = useState<IContent | null>(null);
   const [similarSeries, setSimilarSeries] = useState<IContent[]>([]);
@@ -191,5 +191,13 @@ export default function SeriesDetailsPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function SeriesDetailsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#141414] flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" /></div>}>
+      <SeriesDetailsContent />
+    </Suspense>
   );
 }

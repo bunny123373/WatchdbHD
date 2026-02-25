@@ -29,6 +29,9 @@ export interface IContent {
   embedIframeLink?: string;
   downloadLink?: string;
   seasons?: ISeason[];
+  tmdbId?: number;
+  tmdbGenreIds?: number[];
+  tmdbGenres?: string[];
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -49,6 +52,9 @@ export interface IContentDocument extends Document {
   embedIframeLink?: string;
   downloadLink?: string;
   seasons?: ISeason[];
+  tmdbId?: number;
+  tmdbGenreIds?: number[];
+  tmdbGenres?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -82,6 +88,9 @@ const ContentSchema = new Schema<IContent>(
     embedIframeLink: { type: String },
     downloadLink: { type: String },
     seasons: [SeasonSchema],
+    tmdbId: { type: Number },
+    tmdbGenreIds: [{ type: Number }],
+    tmdbGenres: [{ type: String }],
   },
   { timestamps: true }
 );
