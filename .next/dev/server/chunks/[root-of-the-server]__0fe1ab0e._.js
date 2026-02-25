@@ -270,7 +270,8 @@ function transformResults(items, genreMap, existingIds) {
             rating: Math.round(item.vote_average * 10) / 10,
             genreIds: item.genre_ids || [],
             genres: item.genre_ids?.map((id)=>genreMap.get(id)).filter(Boolean) || [],
-            type: item.media_type
+            type: item.media_type,
+            originalLanguage: item.original_language || ""
         }));
 }
 async function getGenreMap(tmdbType, apiKey) {

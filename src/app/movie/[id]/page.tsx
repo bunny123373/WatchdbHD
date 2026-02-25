@@ -158,7 +158,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
           <div className="absolute inset-0 w-full h-full">
             <Image
               src={movie.banner || movie.poster}
-              alt=""
+              alt={movie.title}
               fill
               className="object-cover"
               priority
@@ -197,12 +197,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                     Play
                   </button>
                 </Link>
-                <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors">
-                  <Plus className="w-4 h-4" />
-                </button>
-                <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors">
-                  <ThumbsUp className="w-4 h-4" />
-                </button>
               </div>
 
               {movie.description && (

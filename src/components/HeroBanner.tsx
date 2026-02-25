@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Info } from "lucide-react";
+import { Play, Info, Plus } from "lucide-react";
 import { IContent } from "@/models/Content";
 
 interface HeroBannerProps {
@@ -15,8 +15,17 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
 
   const isMovie = content.type === "movie";
   const watchLink = isMovie ? `/watch/${content._id}` : `/series/watch/${content._id}`;
+  const detailLink = isMovie ? `/movie/${content._id}` : `/series/${content._id}`;
   
-  const bannerImage = content.banner || content.poster;
+  const getBannerUrl = (url: string) => {
+    if (!url) return url;
+    if (url.includes("tmdb.org/t/p/")) {
+      return url.replace("/w780/", "/original/").replace("/w1280/", "/original/");
+    }
+    return url;
+  };
+  
+  const bannerImage = getBannerUrl(content.banner || content.poster);
 
   const handleMoreInfoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -30,7 +39,7 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={bannerImage}
-          alt=""
+          alt={content.title}
           fill
           className="object-cover"
           priority
@@ -74,13 +83,12 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
                 Play
               </button>
             </Link>
-            <button 
-              onClick={handleMoreInfoClick}
-              className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm"
-            >
-              <Info className="w-4 h-4" />
-              More Info
-            </button>
+            <Link href={detailLink}>
+              <button className="bg-gray-500/60 hover:bg-gray-500/80 text-white rounded px-4 md:px-6 py-2 md:py-2.5 flex items-center gap-2 text-sm">
+                <Info className="w-4 h-4" />
+                More Info
+              </button>
+            </Link>
           </div>
         </div>
       </div>

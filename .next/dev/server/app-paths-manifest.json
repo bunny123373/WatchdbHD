@@ -1,1 +1,8 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/content/route": "app/api/content/route.js",
+  "/api/tmdb/route": "app/api/tmdb/route.js",
+  "/movie/[id]/page": "app/movie/[id]/page.js",
+  "/page": "app/page.js",
+  "/series/[id]/page": "app/series/[id]/page.js"
+}
