@@ -13,6 +13,7 @@ interface TMDBSearchResult {
   rating: number;
   genreIds?: number[];
   genres?: string[];
+  originalLanguage?: string;
 }
 
 interface TMDBSearchProps {
@@ -71,7 +72,7 @@ export default function TMDBSearch({ type, onSelect }: TMDBSearchProps) {
     setError("");
 
     try {
-      let url = `/api/tmdb?type=${type}`;
+      let url = `/api/tmdb?type=${type}&filterExisting=false`;
       
       if (searchQuery.length >= 2) {
         url += `&query=${encodeURIComponent(searchQuery)}`;

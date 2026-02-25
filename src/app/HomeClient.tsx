@@ -234,13 +234,16 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       return dateB - dateA;
     })[0];
 
-  const trendingContent = [...filteredContent]
-    .filter((item: IContent) => item.category === "Trending")
-    .sort((a: IContent, b: IContent) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
-      return dateB - dateA;
-    });
+  const tmdbTrendingMovies = [...filteredContent]
+    .filter((item: IContent) => item.type === "movie" && item.tmdbId)
+    .sort((a: IContent, b: IContent) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 12);
+
+  const tmdbTrendingSeries = [...filteredContent]
+    .filter((item: IContent) => item.type === "series" && item.tmdbId)
+    .sort((a: IContent, b: IContent) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 12);
+
   const latestContent = [...filteredContent]
     .filter((item: IContent) => item.category === "Latest")
     .sort((a: IContent, b: IContent) => {
@@ -347,27 +350,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     <main className="min-h-screen bg-[#141414]">
       <Navbar />
 
-      {/* TMDB Hero Banner - Show first TMDB content */}
-      {!showContent && !loadingTmdb && tmdbData.trending.length > 0 && (
-        <HeroBanner 
-          content={{
-            _id: `tmdb-${tmdbData.trending[0].tmdbId}`,
-            title: tmdbData.trending[0].title,
-            poster: tmdbData.trending[0].banner || tmdbData.trending[0].poster,
-            banner: tmdbData.trending[0].banner || tmdbData.trending[0].poster,
-            description: tmdbData.trending[0].description,
-            year: tmdbData.trending[0].year,
-            rating: tmdbData.trending[0].rating,
-            type: tmdbData.trending[0].type === "tv" ? "series" : "movie",
-            tmdbId: tmdbData.trending[0].tmdbId,
-            tmdbGenres: tmdbData.trending[0].genres,
-          } as IContent} 
-          onContentClick={() => {}} 
-        />
-      )}
-
-      {/* Fallback to uploaded content hero */}
-      {featuredContent && !showContent && !tmdbData.trending.length && (
+      {/* Hero Banner - Show uploaded content */}
+      {featuredContent && !showContent && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
       )}
 
@@ -401,8 +385,13 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
-            {trendingContent.length > 0 && (
-              <ContentGrid title="Trending Now" items={trendingContent.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
+            {/* TMDB-style Trending - Only uploaded movies/series with tmdbId */}
+            {tmdbTrendingMovies.length > 0 && (
+              <ContentGrid title="Trending Movies" items={tmdbTrendingMovies} isNetflixStyle onContentClick={handleContentClick} />
+            )}
+
+            {tmdbTrendingSeries.length > 0 && (
+              <ContentGrid title="Trending TV Shows" items={tmdbTrendingSeries} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {latestContent.length > 0 && (

@@ -1,6 +1,1 @@
-{
-  "/api/content/route": "app/api/content/route.js",
-  "/api/tmdb/route": "app/api/tmdb/route.js",
-  "/movie/[id]/page": "app/movie/[id]/page.js",
-  "/page": "app/page.js"
-}
+{}

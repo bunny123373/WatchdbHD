@@ -905,7 +905,7 @@ function TMDBSearch({ type, onSelect }) {
         setLoading(true);
         setError("");
         try {
-            let url = `/api/tmdb?type=${type}`;
+            let url = `/api/tmdb?type=${type}&filterExisting=false`;
             if (searchQuery.length >= 2) {
                 url += `&query=${encodeURIComponent(searchQuery)}`;
             } else if (language) {
@@ -967,12 +967,12 @@ function TMDBSearch({ type, onSelect }) {
                 children: "⚠️ TMDB API key not configured. Add TMDB_API_KEY in .env.local to enable auto-fill."
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 128,
+                lineNumber: 129,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-            lineNumber: 127,
+            lineNumber: 128,
             columnNumber: 7
         }, this);
     }
@@ -989,7 +989,7 @@ function TMDBSearch({ type, onSelect }) {
                                 className: "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 139,
+                                lineNumber: 140,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1000,20 +1000,20 @@ function TMDBSearch({ type, onSelect }) {
                                 className: "w-full pl-10 pr-4 py-3 rounded-xl bg-background border border-border text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary-gold"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 140,
+                                lineNumber: 141,
                                 columnNumber: 11
                             }, this),
                             loading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                 className: "absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted animate-spin"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 148,
+                                lineNumber: 149,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 138,
+                        lineNumber: 139,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1025,14 +1025,14 @@ function TMDBSearch({ type, onSelect }) {
                                 className: `w-4 h-4 transition-transform ${showFilters ? "rotate-180" : ""}`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 160,
+                                lineNumber: 161,
                                 columnNumber: 11
                             }, this),
                             "Filters"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 151,
+                        lineNumber: 152,
                         columnNumber: 9
                     }, this),
                     (selectedLanguage || selectedGenre) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1042,13 +1042,13 @@ function TMDBSearch({ type, onSelect }) {
                         children: "Clear"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 164,
+                        lineNumber: 165,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 137,
+                lineNumber: 138,
                 columnNumber: 7
             }, this),
             showFilters && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1064,7 +1064,7 @@ function TMDBSearch({ type, onSelect }) {
                                         children: "Language"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 178,
+                                        lineNumber: 179,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1076,18 +1076,18 @@ function TMDBSearch({ type, onSelect }) {
                                                 children: lang.label
                                             }, lang.code, false, {
                                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                                lineNumber: 185,
+                                                lineNumber: 186,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 179,
+                                        lineNumber: 180,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 177,
+                                lineNumber: 178,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1097,7 +1097,7 @@ function TMDBSearch({ type, onSelect }) {
                                         children: "Genre"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 190,
+                                        lineNumber: 191,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1109,24 +1109,24 @@ function TMDBSearch({ type, onSelect }) {
                                                 children: genre.name
                                             }, genre.id, false, {
                                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                                lineNumber: 197,
+                                                lineNumber: 198,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 191,
+                                        lineNumber: 192,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 189,
+                                lineNumber: 190,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 176,
+                        lineNumber: 177,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1138,18 +1138,18 @@ function TMDBSearch({ type, onSelect }) {
                             children: "Apply Filters"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                            lineNumber: 203,
+                            lineNumber: 204,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 202,
+                        lineNumber: 203,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 175,
+                lineNumber: 176,
                 columnNumber: 9
             }, this),
             (selectedLanguage || selectedGenre) && !showFilters && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1163,7 +1163,7 @@ function TMDBSearch({ type, onSelect }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 217,
+                        lineNumber: 218,
                         columnNumber: 13
                     }, this),
                     selectedGenre && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1174,13 +1174,13 @@ function TMDBSearch({ type, onSelect }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 222,
+                        lineNumber: 223,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 215,
+                lineNumber: 216,
                 columnNumber: 9
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1188,7 +1188,7 @@ function TMDBSearch({ type, onSelect }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 230,
+                lineNumber: 231,
                 columnNumber: 9
             }, this),
             results.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1206,7 +1206,7 @@ function TMDBSearch({ type, onSelect }) {
                                     className: "w-full h-full object-cover"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                    lineNumber: 244,
+                                    lineNumber: 245,
                                     columnNumber: 19
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "w-full h-full bg-border flex items-center justify-center",
@@ -1214,23 +1214,23 @@ function TMDBSearch({ type, onSelect }) {
                                         className: "w-8 h-8 text-text-muted"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 253,
                                         columnNumber: 23
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$tv$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Tv$3e$__["Tv"], {
                                         className: "w-8 h-8 text-text-muted"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                        lineNumber: 254,
+                                        lineNumber: 255,
                                         columnNumber: 23
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                    lineNumber: 250,
+                                    lineNumber: 251,
                                     columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 242,
+                                lineNumber: 243,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
@@ -1238,7 +1238,7 @@ function TMDBSearch({ type, onSelect }) {
                                 children: result.title
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 259,
+                                lineNumber: 260,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1246,7 +1246,7 @@ function TMDBSearch({ type, onSelect }) {
                                 children: result.year
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 260,
+                                lineNumber: 261,
                                 columnNumber: 15
                             }, this),
                             result.genres && result.genres.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1254,18 +1254,18 @@ function TMDBSearch({ type, onSelect }) {
                                 children: result.genres.slice(0, 2).join(", ")
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                                lineNumber: 262,
+                                lineNumber: 263,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, result.tmdbId, true, {
                         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                        lineNumber: 236,
+                        lineNumber: 237,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 234,
+                lineNumber: 235,
                 columnNumber: 9
             }, this),
             results.length === 0 && !loading && !error && (query || selectedLanguage || selectedGenre) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1273,13 +1273,13 @@ function TMDBSearch({ type, onSelect }) {
                 children: "No results found. Try different filters."
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-                lineNumber: 270,
+                lineNumber: 271,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/TMDBSearch.tsx",
-        lineNumber: 136,
+        lineNumber: 137,
         columnNumber: 5
     }, this);
 }
@@ -1328,6 +1328,19 @@ function UploadMovieForm({ onSuccess }) {
     const handleTMDBFill = (result)=>{
         const selectedGenres = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TMDB_GENRES"].filter((g)=>result.genreIds?.includes(g.id));
         setSelectedGenres(selectedGenres);
+        const languageMap = {
+            te: "Telugu",
+            hi: "Hindi",
+            ta: "Tamil",
+            ml: "Malayalam",
+            kn: "Kannada",
+            en: "English",
+            ko: "Korean",
+            ja: "Japanese",
+            zh: "Chinese",
+            es: "Spanish"
+        };
+        const detectedLanguage = result.originalLanguage ? languageMap[result.originalLanguage] || "Telugu" : "Telugu";
         setFormData((prev)=>({
                 ...prev,
                 title: result.title || prev.title,
@@ -1336,6 +1349,8 @@ function UploadMovieForm({ onSuccess }) {
                 description: result.description || prev.description,
                 year: result.year || prev.year,
                 rating: result.rating ? String(result.rating) : prev.rating,
+                language: detectedLanguage,
+                category: "Latest",
                 tags: result.genres && result.genres.length > 0 ? [
                     ...new Set([
                         ...prev.tags,
@@ -1478,14 +1493,14 @@ function UploadMovieForm({ onSuccess }) {
                                 className: "w-5 h-5 text-[#e50914]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 154,
+                                lineNumber: 171,
                                 columnNumber: 11
                             }, this),
                             "Upload Movie"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 153,
+                        lineNumber: 170,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1498,20 +1513,20 @@ function UploadMovieForm({ onSuccess }) {
                                 className: "w-4 h-4"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 163,
+                                lineNumber: 180,
                                 columnNumber: 11
                             }, this),
                             "Auto Fill"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 157,
+                        lineNumber: 174,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 152,
+                lineNumber: 169,
                 columnNumber: 7
             }, this),
             showTMDBSearch && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1521,12 +1536,12 @@ function UploadMovieForm({ onSuccess }) {
                     onSelect: handleTMDBFill
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                    lineNumber: 170,
+                    lineNumber: 187,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 169,
+                lineNumber: 186,
                 columnNumber: 9
             }, this),
             message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1534,7 +1549,7 @@ function UploadMovieForm({ onSuccess }) {
                 children: message
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 175,
+                lineNumber: 192,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1549,7 +1564,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "Enter movie title"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 182,
+                        lineNumber: 199,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1560,7 +1575,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "e.g., 2024"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 192,
+                        lineNumber: 209,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1572,7 +1587,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "https://example.com/poster.jpg"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 201,
+                        lineNumber: 218,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1583,7 +1598,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "https://example.com/banner.jpg"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 211,
+                        lineNumber: 228,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1593,7 +1608,7 @@ function UploadMovieForm({ onSuccess }) {
                                 children: "Language"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 221,
+                                lineNumber: 238,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1605,40 +1620,6 @@ function UploadMovieForm({ onSuccess }) {
                                         value: lang,
                                         children: lang
                                     }, lang, false, {
-                                        fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                        lineNumber: 229,
-                                        columnNumber: 15
-                                    }, this))
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 222,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 220,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "block text-sm font-medium text-[#808080] mb-1.5",
-                                children: "Category"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 238,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                name: "category",
-                                value: formData.category,
-                                onChange: handleChange,
-                                className: "w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm",
-                                children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CATEGORIES"].map((cat)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: cat,
-                                        children: cat
-                                    }, cat, false, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
                                         lineNumber: 246,
                                         columnNumber: 15
@@ -1658,21 +1639,21 @@ function UploadMovieForm({ onSuccess }) {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "block text-sm font-medium text-[#808080] mb-1.5",
-                                children: "Quality"
+                                children: "Category"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
                                 lineNumber: 255,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                name: "quality",
-                                value: formData.quality,
+                                name: "category",
+                                value: formData.category,
                                 onChange: handleChange,
                                 className: "w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm",
-                                children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["QUALITIES"].map((q)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                        value: q,
-                                        children: q
-                                    }, q, false, {
+                                children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CATEGORIES"].map((cat)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: cat,
+                                        children: cat
+                                    }, cat, false, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
                                         lineNumber: 263,
                                         columnNumber: 15
@@ -1688,6 +1669,40 @@ function UploadMovieForm({ onSuccess }) {
                         lineNumber: 254,
                         columnNumber: 9
                     }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                className: "block text-sm font-medium text-[#808080] mb-1.5",
+                                children: "Quality"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
+                                lineNumber: 272,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                name: "quality",
+                                value: formData.quality,
+                                onChange: handleChange,
+                                className: "w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm",
+                                children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["QUALITIES"].map((q)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: q,
+                                        children: q
+                                    }, q, false, {
+                                        fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
+                                        lineNumber: 280,
+                                        columnNumber: 15
+                                    }, this))
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
+                                lineNumber: 273,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
+                        lineNumber: 271,
+                        columnNumber: 9
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                         label: "Rating (0-10)",
                         name: "rating",
@@ -1700,7 +1715,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "e.g., 8.5"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 271,
+                        lineNumber: 288,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1711,7 +1726,7 @@ function UploadMovieForm({ onSuccess }) {
                                 children: "TMDB Genres"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 285,
+                                lineNumber: 302,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1724,20 +1739,20 @@ function UploadMovieForm({ onSuccess }) {
                                         children: selectedGenres.length > 0 ? selectedGenres.map((g)=>g.name).join(", ") : "Select genres..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                        lineNumber: 291,
+                                        lineNumber: 308,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                         className: `w-4 h-4 transition-transform ${showGenreDropdown ? "rotate-180" : ""}`
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                        lineNumber: 294,
+                                        lineNumber: 311,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 286,
+                                lineNumber: 303,
                                 columnNumber: 11
                             }, this),
                             showGenreDropdown && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1752,30 +1767,30 @@ function UploadMovieForm({ onSuccess }) {
                                                 className: "w-4 h-4 text-green-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                                lineNumber: 307,
+                                                lineNumber: 324,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, genre.id, true, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                        lineNumber: 299,
+                                        lineNumber: 316,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 297,
+                                lineNumber: 314,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 284,
+                        lineNumber: 301,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 180,
+                lineNumber: 197,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1785,7 +1800,7 @@ function UploadMovieForm({ onSuccess }) {
                         children: "Description"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 318,
+                        lineNumber: 335,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -1797,13 +1812,13 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "Enter movie description..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 319,
+                        lineNumber: 336,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 317,
+                lineNumber: 334,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1813,7 +1828,7 @@ function UploadMovieForm({ onSuccess }) {
                         children: "Tags"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 331,
+                        lineNumber: 348,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1828,7 +1843,7 @@ function UploadMovieForm({ onSuccess }) {
                                 className: "flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white placeholder:text-[#808080]/50 focus:outline-none focus:border-[#e50914] text-sm"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 333,
+                                lineNumber: 350,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1840,18 +1855,18 @@ function UploadMovieForm({ onSuccess }) {
                                     className: "w-4 h-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                    lineNumber: 342,
+                                    lineNumber: 359,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 341,
+                                lineNumber: 358,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 332,
+                        lineNumber: 349,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1869,29 +1884,29 @@ function UploadMovieForm({ onSuccess }) {
                                             className: "w-3 h-3"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                            lineNumber: 350,
+                                            lineNumber: 367,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                        lineNumber: 349,
+                                        lineNumber: 366,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, tag, true, {
                                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                                lineNumber: 347,
+                                lineNumber: 364,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 345,
+                        lineNumber: 362,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 330,
+                lineNumber: 347,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1905,7 +1920,7 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "https://example.com/embed/..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 359,
+                        lineNumber: 376,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1917,13 +1932,13 @@ function UploadMovieForm({ onSuccess }) {
                         placeholder: "https://drive.google.com/..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                        lineNumber: 366,
+                        lineNumber: 383,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 358,
+                lineNumber: 375,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1934,13 +1949,13 @@ function UploadMovieForm({ onSuccess }) {
                 children: "Upload Movie"
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-                lineNumber: 376,
+                lineNumber: 393,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/UploadMovieForm.tsx",
-        lineNumber: 148,
+        lineNumber: 165,
         columnNumber: 5
     }, this);
 }
@@ -2478,6 +2493,19 @@ function UploadSeriesForm({ onSuccess }) {
     const handleTMDBFill = (result)=>{
         const selectedGenres = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TMDB_GENRES"].filter((g)=>result.genreIds?.includes(g.id));
         setSelectedGenres(selectedGenres);
+        const languageMap = {
+            te: "Telugu",
+            hi: "Hindi",
+            ta: "Tamil",
+            ml: "Malayalam",
+            kn: "Kannada",
+            en: "English",
+            ko: "Korean",
+            ja: "Japanese",
+            zh: "Chinese",
+            es: "Spanish"
+        };
+        const detectedLanguage = result.originalLanguage ? languageMap[result.originalLanguage] || "Telugu" : "Telugu";
         setFormData((prev)=>({
                 ...prev,
                 title: result.title || prev.title,
@@ -2486,6 +2514,8 @@ function UploadSeriesForm({ onSuccess }) {
                 description: result.description || prev.description,
                 year: result.year || prev.year,
                 rating: result.rating ? String(result.rating) : prev.rating,
+                language: detectedLanguage,
+                category: "Web Series",
                 tags: result.genres && result.genres.length > 0 ? [
                     ...new Set([
                         ...prev.tags,
@@ -2629,14 +2659,14 @@ function UploadSeriesForm({ onSuccess }) {
                                 className: "w-5 h-5 text-[#e50914]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 158,
+                                lineNumber: 175,
                                 columnNumber: 11
                             }, this),
                             "Upload Web Series"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 157,
+                        lineNumber: 174,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2649,20 +2679,20 @@ function UploadSeriesForm({ onSuccess }) {
                                 className: "w-4 h-4"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 167,
+                                lineNumber: 184,
                                 columnNumber: 11
                             }, this),
                             "Auto Fill"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 161,
+                        lineNumber: 178,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 156,
+                lineNumber: 173,
                 columnNumber: 7
             }, this),
             showTMDBSearch && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2672,12 +2702,12 @@ function UploadSeriesForm({ onSuccess }) {
                     onSelect: handleTMDBFill
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                    lineNumber: 174,
+                    lineNumber: 191,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 173,
+                lineNumber: 190,
                 columnNumber: 9
             }, this),
             message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2685,7 +2715,7 @@ function UploadSeriesForm({ onSuccess }) {
                 children: message
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 179,
+                lineNumber: 196,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2700,7 +2730,7 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "Enter series title"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 186,
+                        lineNumber: 203,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2711,7 +2741,7 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "e.g., 2024"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 196,
+                        lineNumber: 213,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2723,7 +2753,7 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "https://example.com/poster.jpg"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 205,
+                        lineNumber: 222,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2734,7 +2764,7 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "https://example.com/banner.jpg"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 215,
+                        lineNumber: 232,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2744,7 +2774,7 @@ function UploadSeriesForm({ onSuccess }) {
                                 children: "Language"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 225,
+                                lineNumber: 242,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2757,18 +2787,18 @@ function UploadSeriesForm({ onSuccess }) {
                                         children: lang
                                     }, lang, false, {
                                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                        lineNumber: 233,
+                                        lineNumber: 250,
                                         columnNumber: 15
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 226,
+                                lineNumber: 243,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 224,
+                        lineNumber: 241,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2783,7 +2813,7 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "e.g., 8.5"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 241,
+                        lineNumber: 258,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2794,7 +2824,7 @@ function UploadSeriesForm({ onSuccess }) {
                                 children: "TMDB Genres"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 255,
+                                lineNumber: 272,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2807,20 +2837,20 @@ function UploadSeriesForm({ onSuccess }) {
                                         children: selectedGenres.length > 0 ? selectedGenres.map((g)=>g.name).join(", ") : "Select genres..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 278,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                         className: `w-4 h-4 transition-transform ${showGenreDropdown ? "rotate-180" : ""}`
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                        lineNumber: 264,
+                                        lineNumber: 281,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 256,
+                                lineNumber: 273,
                                 columnNumber: 11
                             }, this),
                             showGenreDropdown && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2835,30 +2865,30 @@ function UploadSeriesForm({ onSuccess }) {
                                                 className: "w-4 h-4 text-green-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                                lineNumber: 277,
+                                                lineNumber: 294,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, genre.id, true, {
                                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                        lineNumber: 269,
+                                        lineNumber: 286,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 267,
+                                lineNumber: 284,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 254,
+                        lineNumber: 271,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 184,
+                lineNumber: 201,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2868,7 +2898,7 @@ function UploadSeriesForm({ onSuccess }) {
                         children: "Description"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 288,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -2880,13 +2910,13 @@ function UploadSeriesForm({ onSuccess }) {
                         placeholder: "Enter series description..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 289,
+                        lineNumber: 306,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 287,
+                lineNumber: 304,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2896,7 +2926,7 @@ function UploadSeriesForm({ onSuccess }) {
                         children: "Tags"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 301,
+                        lineNumber: 318,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2911,7 +2941,7 @@ function UploadSeriesForm({ onSuccess }) {
                                 className: "flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white placeholder:text-[#808080]/50 focus:outline-none focus:border-[#e50914] text-sm"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 303,
+                                lineNumber: 320,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2923,18 +2953,18 @@ function UploadSeriesForm({ onSuccess }) {
                                     className: "w-4 h-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                    lineNumber: 312,
+                                    lineNumber: 329,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 311,
+                                lineNumber: 328,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 302,
+                        lineNumber: 319,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2952,29 +2982,29 @@ function UploadSeriesForm({ onSuccess }) {
                                             className: "w-3 h-3"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                            lineNumber: 320,
+                                            lineNumber: 337,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                        lineNumber: 319,
+                                        lineNumber: 336,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, tag, true, {
                                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                                lineNumber: 317,
+                                lineNumber: 334,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                        lineNumber: 315,
+                        lineNumber: 332,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 300,
+                lineNumber: 317,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$admin$2f$SeasonEpisodeBuilder$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2982,7 +3012,7 @@ function UploadSeriesForm({ onSuccess }) {
                 onChange: setSeasons
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 328,
+                lineNumber: 345,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2993,13 +3023,13 @@ function UploadSeriesForm({ onSuccess }) {
                 children: "Upload Series"
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-                lineNumber: 330,
+                lineNumber: 347,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/UploadSeriesForm.tsx",
-        lineNumber: 152,
+        lineNumber: 169,
         columnNumber: 5
     }, this);
 }

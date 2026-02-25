@@ -76,6 +76,7 @@ function transformResults(items: unknown[], genreMap: Map<number, string>, exist
     genreIds: item.genre_ids || [],
     genres: item.genre_ids?.map((id) => genreMap.get(id)).filter(Boolean) || [],
     type: item.media_type,
+    originalLanguage: (item as { original_language?: string }).original_language || "",
   }));
 }
 
@@ -92,6 +93,7 @@ export async function GET(request: NextRequest) {
   const query = searchParams.get("query");
   const type = searchParams.get("type") || "movie";
   const action = searchParams.get("action");
+  const filterExisting = searchParams.get("filterExisting") !== "false";
 
   const apiKey = process.env.TMDB_API_KEY;
   
@@ -128,7 +130,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "discover") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const genreId = searchParams.get("genreId");
       const tmdbType = type === "series" ? "tv" : "movie";
       
@@ -185,7 +187,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "popular") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const tmdbType = type === "series" ? "tv" : "movie";
       console.log(`Fetching popular ${tmdbType}`);
       
@@ -244,7 +246,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "trending") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const timeWindow = searchParams.get("timeWindow") || "week";
       
       const movieResponse = await fetch(
@@ -303,7 +305,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "toprated") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       
@@ -326,7 +328,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "upcoming") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       
@@ -351,7 +353,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "bygenre") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const genreId = searchParams.get("genreId");
       if (!genreId) {
         return NextResponse.json({ success: false, error: "genreId required" }, { status: 400 });
@@ -385,7 +387,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "bylanguage") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const language = searchParams.get("language") || "te";
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
@@ -415,7 +417,7 @@ export async function GET(request: NextRequest) {
 
   if (action === "indian") {
     try {
-      const existingIds = await getExistingTmdbIds();
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const tmdbType = type === "series" ? "tv" : "movie";
       const genreMap = await getGenreMap(tmdbType, apiKey);
       

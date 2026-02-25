@@ -285,6 +285,7 @@ async function GET(request) {
     const query = searchParams.get("query");
     const type = searchParams.get("type") || "movie";
     const action = searchParams.get("action");
+    const filterExisting = searchParams.get("filterExisting") !== "false";
     const apiKey = process.env.TMDB_API_KEY;
     console.log("TMDB API Key present:", !!apiKey, apiKey ? "yes" : "no");
     if (!apiKey || apiKey === "YOUR_TMDB_API_KEY") {
@@ -319,7 +320,7 @@ async function GET(request) {
     }
     if (action === "discover") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const genreId = searchParams.get("genreId");
             const tmdbType = type === "series" ? "tv" : "movie";
             let url = `https://api.themoviedb.org/3/discover/${tmdbType}?api_key=${apiKey}&sort_by=popularity.desc`;
@@ -368,7 +369,7 @@ async function GET(request) {
     }
     if (action === "popular") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const tmdbType = type === "series" ? "tv" : "movie";
             console.log(`Fetching popular ${tmdbType}`);
             const response = await fetch(`https://api.themoviedb.org/3/${tmdbType}/popular?api_key=${apiKey}&language=en-US&page=1`);
@@ -418,7 +419,7 @@ async function GET(request) {
     }
     if (action === "trending") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const timeWindow = searchParams.get("timeWindow") || "week";
             const movieResponse = await fetch(`https://api.themoviedb.org/3/trending/movie/${timeWindow}?api_key=${apiKey}`);
             if (!movieResponse.ok) {
@@ -441,7 +442,7 @@ async function GET(request) {
             const allResults = [
                 ...movieData.results || [],
                 ...tvData.results || []
-            ].sort((a, b)=>b.vote_average - a.vote_average).slice(0, 20);
+            ].filter((item)=>existingIds.has(item.id)).sort((a, b)=>b.vote_average - a.vote_average).slice(0, 20);
             const results = allResults.map((item)=>({
                     tmdbId: item.id,
                     title: item.title || item.name,
@@ -467,7 +468,7 @@ async function GET(request) {
     }
     if (action === "toprated") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const tmdbType = type === "series" ? "tv" : "movie";
             const genreMap = await getGenreMap(tmdbType, apiKey);
             const response = await fetch(`https://api.themoviedb.org/3/${tmdbType}/top_rated?api_key=${apiKey}&language=en-US&page=1`);
@@ -493,7 +494,7 @@ async function GET(request) {
     }
     if (action === "upcoming") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const tmdbType = type === "series" ? "tv" : "movie";
             const genreMap = await getGenreMap(tmdbType, apiKey);
             let url = `https://api.themoviedb.org/3/${tmdbType}/`;
@@ -522,7 +523,7 @@ async function GET(request) {
     }
     if (action === "bygenre") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const genreId = searchParams.get("genreId");
             if (!genreId) {
                 return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
@@ -568,7 +569,7 @@ async function GET(request) {
     }
     if (action === "bylanguage") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const language = searchParams.get("language") || "te";
             const tmdbType = type === "series" ? "tv" : "movie";
             const genreMap = await getGenreMap(tmdbType, apiKey);
@@ -606,7 +607,7 @@ async function GET(request) {
     }
     if (action === "indian") {
         try {
-            const existingIds = await getExistingTmdbIds();
+            const existingIds = filterExisting ? await getExistingTmdbIds() : new Set();
             const tmdbType = type === "series" ? "tv" : "movie";
             const genreMap = await getGenreMap(tmdbType, apiKey);
             const languages = [

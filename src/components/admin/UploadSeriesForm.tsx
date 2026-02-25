@@ -18,9 +18,24 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
   const [showTMDBSearch, setShowTMDBSearch] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
-  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[] }) => {
+  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[]; originalLanguage?: string }) => {
     const selectedGenres = TMDB_GENRES.filter(g => result.genreIds?.includes(g.id));
     setSelectedGenres(selectedGenres);
+    
+    const languageMap: Record<string, string> = {
+      te: "Telugu",
+      hi: "Hindi",
+      ta: "Tamil",
+      ml: "Malayalam",
+      kn: "Kannada",
+      en: "English",
+      ko: "Korean",
+      ja: "Japanese",
+      zh: "Chinese",
+      es: "Spanish",
+    };
+    
+    const detectedLanguage = result.originalLanguage ? languageMap[result.originalLanguage] || "Telugu" : "Telugu";
     
     setFormData((prev) => ({
       ...prev,
@@ -30,6 +45,8 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       description: result.description || prev.description,
       year: result.year || prev.year,
       rating: result.rating ? String(result.rating) : prev.rating,
+      language: detectedLanguage,
+      category: "Web Series",
       tags: result.genres && result.genres.length > 0 ? [...new Set([...prev.tags, ...result.genres])] : prev.tags,
     }));
     setTmdbData({
