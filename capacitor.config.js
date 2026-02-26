@@ -2,7 +2,7 @@
 module.exports = {
   appId: 'com.telugudb.app',
   appName: 'TeluguDB',
-  webDir: 'out',
+  webDir: '.next',
   server: {
     androidScheme: 'https',
     url: 'https://your-app.vercel.app',
