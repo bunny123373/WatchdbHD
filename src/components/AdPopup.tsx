@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { X, Megaphone, Timer, Lock, Unlock } from "lucide-react";
+import { X, Megaphone, Unlock } from "lucide-react";
 
 interface MegaphonePopupProps {
   adUrl?: string;
@@ -106,7 +106,6 @@ export default function MegaphonePopup({
         {adClicked && !isCountingDown && !canUnlock && (
           <div className="flex items-center justify-center py-4">
             <div className="flex items-center gap-2 bg-amber-500/20 px-4 py-2 rounded-full">
-              <Timer className="w-4 h-4 text-amber-500 animate-pulse" />
               <span className="text-sm font-medium text-amber-500">Return to app to unlock</span>
             </div>
           </div>
@@ -139,17 +138,10 @@ export default function MegaphonePopup({
             </div>
           ) : isCountingDown ? (
             <div className="py-8 text-center">
-              <div className="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-10 h-10 text-amber-500" />
+              <div className="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-4xl font-bold text-amber-500">{countdown}</span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">App Locked</h3>
-              <p className="text-amber-400 mb-4">Unlocking in {countdown} seconds...</p>
-              <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-                <div 
-                  className="bg-amber-500 h-2 rounded-full transition-all duration-1000"
-                  style={{ width: `${((10 - countdown) / 10) * 100}%` }}
-                />
-              </div>
+              <p className="text-amber-400 text-lg">seconds to unlock</p>
             </div>
           ) : !adClicked ? (
             <div 
