@@ -85,7 +85,9 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>
           <MobileNavbar />
-          {children}
+          <main className="min-h-screen pb-20 pt-14 lg:pt-16">
+            {children}
+          </main>
         </ReduxProvider>
         <BottomNav />
       </body>

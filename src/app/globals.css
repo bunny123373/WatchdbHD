@@ -20,12 +20,14 @@ body {
 body {
   background-color: #050608;
   color: #F9FAFB;
-  padding-bottom: 80px;
+}
+
+.fixed-nav {
   padding-top: 56px;
 }
 
 @media (min-width: 1024px) {
-  body {
+  .fixed-nav {
     padding-top: 64px;
   }
 }
