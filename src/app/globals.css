@@ -21,6 +21,13 @@ body {
   background-color: #050608;
   color: #F9FAFB;
   padding-bottom: 80px;
+  padding-top: 56px;
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-top: 64px;
+  }
 }
 
 .lg\:body-pad {
