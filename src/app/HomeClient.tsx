@@ -11,6 +11,7 @@ import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import TelegramPopup from "@/components/TelegramPopup";
+import GenreFilter from "@/components/GenreFilter";
 import { useAppSelector } from "@/redux/hooks";
 
 interface Genre {
@@ -354,6 +355,9 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       {featuredContent && !showContent && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
       )}
+
+      {/* Genre Filter - Mobile */}
+      <GenreFilter />
 
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">
         {/* Search Results */}

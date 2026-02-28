@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Play, Plus, ThumbsUp, ThumbsDown, ChevronDown, Info } from "lucide-react";
+import { X, Play, Plus, ThumbsUp, ThumbsDown, ChevronDown, Info, Share2, Clapperboard } from "lucide-react";
 import { IContent } from "@/models/Content";
 
 interface ContentDetailModalProps {
@@ -16,15 +16,25 @@ export default function ContentDetailModal({ content, isOpen, onClose }: Content
   const [mounted, setMounted] = useState(false);
   const [inMyList, setInMyList] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    if (content && mounted) {
+      const saved = localStorage.getItem("watchlist");
+      if (saved) {
+        const watchlist = JSON.parse(saved);
+        setInMyList(watchlist.some((w: IContent) => String(w._id) === String(content._id)));
+      }
+    }
+  }, [content, mounted]);
+
+  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      setInMyList(false);
       setLiked(false);
     } else {
       document.body.style.overflow = "unset";
@@ -97,7 +107,19 @@ export default function ContentDetailModal({ content, isOpen, onClose }: Content
                 </Link>
                 
                 <button 
-                  onClick={() => setInMyList(!inMyList)}
+                  onClick={() => {
+                    const saved = localStorage.getItem("watchlist");
+                    let watchlist = saved ? JSON.parse(saved) : [];
+                    
+                    if (inMyList) {
+                      watchlist = watchlist.filter((w: IContent) => String(w._id) !== String(content._id));
+                    } else {
+                      watchlist.push(content);
+                    }
+                    
+                    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+                    setInMyList(!inMyList);
+                  }}
                   className={`p-3 sm:p-4 rounded-full border-2 transition-all ${inMyList ? 'bg-white border-white text-black' : 'bg-transparent border-white/60 hover:border-white text-white/80 hover:text-white'}`}
                 >
                   {inMyList ? (
@@ -124,6 +146,35 @@ export default function ContentDetailModal({ content, isOpen, onClose }: Content
                   className="p-3 sm:p-4 rounded-full border-2 border-white/60 hover:border-white bg-transparent hover:bg-black/50 text-white/80 hover:text-white transition-all"
                 >
                   <ThumbsDown className="w-5 h-5" />
+                </button>
+
+                <button 
+                  onClick={async () => {
+                    if (navigator.share) {
+                      try {
+                        await navigator.share({
+                          title: content.title,
+                          text: `Check out ${content.title}`,
+                          url: typeof window !== 'undefined' ? window.location.origin + (isMovie ? `/movie/${content._id}` : `/series/${content._id}`) : '',
+                        });
+                      } catch (err) {
+                        console.log('Share cancelled');
+                      }
+                    } else {
+                      navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.origin + (isMovie ? `/movie/${content._id}` : `/series/${content._id}`) : '');
+                      alert('Link copied to clipboard!');
+                    }
+                  }}
+                  className="p-3 sm:p-4 rounded-full border-2 border-white/60 hover:border-white bg-transparent hover:bg-black/50 text-white/80 hover:text-white transition-all"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+
+                <button 
+                  onClick={() => setShowTrailer(true)}
+                  className="p-3 sm:p-4 rounded-full border-2 border-white/60 hover:border-white bg-transparent hover:bg-black/50 text-white/80 hover:text-white transition-all"
+                >
+                  <Clapperboard className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -228,6 +279,29 @@ export default function ContentDetailModal({ content, isOpen, onClose }: Content
             </div>
           </div>
         </div>
+
+        {/* Trailer Modal */}
+        {showTrailer && (
+          <div className="fixed inset-0 z-[60] bg-black flex items-center justify-center">
+            <button
+              onClick={() => setShowTrailer(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-black/60 text-white"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="w-full aspect-video">
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed?list=search&search_query=${encodeURIComponent(content.title + ' trailer')}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
