@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Bell, X } from "lucide-react";
 
 interface Notification {
@@ -8,11 +8,7 @@ interface Notification {
   title: string;
   body: string;
   time: string;
-  contentId?: string;
-  contentType?: string;
 }
-
-const NOTIFICATION_CHANNEL = "watchdb-notifications";
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -20,11 +16,10 @@ export default function NotificationBell() {
   const [loading, setLoading] = useState(true);
   const [newNotification, setNewNotification] = useState<Notification | null>(null);
 
-  const loadNotifications = useCallback(() => {
+  useEffect(() => {
     const saved = localStorage.getItem("notifications");
     if (saved) {
-      const parsed = JSON.parse(saved);
-      setNotifications(parsed);
+      setNotifications(JSON.parse(saved));
     } else {
       setNotifications([
         {
@@ -39,42 +34,26 @@ export default function NotificationBell() {
   }, []);
 
   useEffect(() => {
-    loadNotifications();
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "notifications" && e.newValue) {
-        const newNotifs = JSON.parse(e.newValue);
-        const latest = newNotifs[0];
-        if (latest && notifications.length > 0 && latest.id !== notifications[0]?.id) {
-          setNewNotification(latest);
-          setTimeout(() => setNewNotification(null), 5000);
-        }
-        setNotifications(newNotifs);
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent;
       const newNotif = customEvent.detail as Notification;
       setNewNotification(newNotif);
       setTimeout(() => setNewNotification(null), 5000);
-      loadNotifications();
+      
+      setNotifications(prev => {
+        const updated = [newNotif, ...prev].slice(0, 50);
+        localStorage.setItem("notifications", JSON.stringify(updated));
+        return updated;
+      });
     };
 
     window.addEventListener("watchdb-notification", handleCustomEvent);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [loadNotifications, notifications]);
+    return () => window.removeEventListener("watchdb-notification", handleCustomEvent);
+  }, []);
 
   useEffect(() => {
-    if (newNotification) {
-      if (navigator.vibrate) {
-        navigator.vibrate(200);
-      }
+    if (newNotification && navigator.vibrate) {
+      navigator.vibrate(200);
     }
   }, [newNotification]);
 
@@ -102,10 +81,7 @@ export default function NotificationBell() {
 
       <div className="relative lg:hidden">
         <button
-          onClick={() => {
-            setShowNotifications(!showNotifications);
-            if (!showNotifications) loadNotifications();
-          }}
+          onClick={() => setShowNotifications(!showNotifications)}
           className="relative p-2 hover:bg-white/10 rounded-full transition-colors"
         >
           <Bell className="w-5 h-5 text-white" />
