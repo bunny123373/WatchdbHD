@@ -1,7 +1,7 @@
 /** @type {import('@capacitor/cli').CapacitorConfig} */
 module.exports = {
   appId: 'com.telugudb.app',
-  appName: 'TeluguDB',
+  appName: 'Watchdb HD',
   webDir: 'out',
   server: {
     androidScheme: 'https',
