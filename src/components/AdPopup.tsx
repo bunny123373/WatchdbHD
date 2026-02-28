@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { X, Ad } from "lucide-react";
+import { X, Megaphone } from "lucide-react";
 
-interface AdPopupProps {
+interface MegaphonePopupProps {
   adUrl?: string;
   showInterval?: number; // in milliseconds (default: 1 hour)
 }
 
-export default function AdPopup({ 
+export default function MegaphonePopup({ 
   adUrl = "https://omg10.com/4/10665900",
   showInterval = 60 * 60 * 1000 // 1 hour default
-}: AdPopupProps) {
+}: MegaphonePopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -19,7 +19,7 @@ export default function AdPopup({
     setIsMounted(true);
   }, []);
 
-  const showAd = useCallback(() => {
+  const showMegaphone = useCallback(() => {
     if (!isMounted) return;
     
     // Check if ad was shown in last hour
@@ -37,11 +37,11 @@ export default function AdPopup({
     if (!isMounted) return;
     
     const timer = setTimeout(() => {
-      showAd();
+      showMegaphone();
     }, 5000);
     
     return () => clearTimeout(timer);
-  }, [isMounted, showAd]);
+  }, [isMounted, showMegaphone]);
 
   // Also try on page visibility change (when user returns to app)
   useEffect(() => {
@@ -49,19 +49,19 @@ export default function AdPopup({
     
     const handleVisibility = () => {
       if (!document.hidden) {
-        showAd();
+        showMegaphone();
       }
     };
     
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [isMounted, showAd]);
+  }, [isMounted, showMegaphone]);
 
   const handleClose = () => {
     setIsVisible(false);
   };
 
-  const handleAdClick = () => {
+  const handleMegaphoneClick = () => {
     // Open ad in new tab
     window.open(adUrl, "_blank");
   };
@@ -82,29 +82,29 @@ export default function AdPopup({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Ad Content */}
+        {/* Megaphone Content */}
         <div 
-          onClick={handleAdClick}
+          onClick={handleMegaphoneClick}
           className="cursor-pointer"
         >
-          {/* Ad Header */}
+          {/* Megaphone Header */}
           <div className="flex items-center gap-2 px-4 pt-4 pb-2">
             <div className="flex items-center gap-2 bg-amber-500/20 px-3 py-1 rounded-full">
-              <Ad className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-medium text-amber-500">Advertisement</span>
+              <Megaphone className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-medium text-amber-500">Megaphonevertisement</span>
             </div>
           </div>
 
-          {/* Ad Image/Content */}
+          {/* Megaphone Image/Content */}
           <div className="px-4 pb-4">
             <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl flex items-center justify-center border border-amber-500/20">
               <div className="text-center">
                 <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Ad className="w-8 h-8 text-amber-500" />
+                  <Megaphone className="w-8 h-8 text-amber-500" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-1">WatchDB HD</h3>
                 <p className="text-amber-400 text-sm">Click to support us!</p>
-                <p className="text-gray-400 text-xs mt-2">Ad appears every hour</p>
+                <p className="text-gray-400 text-xs mt-2">Megaphone appears every hour</p>
               </div>
             </div>
           </div>
