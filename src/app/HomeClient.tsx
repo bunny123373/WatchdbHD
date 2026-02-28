@@ -13,6 +13,7 @@ import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import TelegramPopup from "@/components/TelegramPopup";
 import GenreFilter from "@/components/GenreFilter";
+import PullToRefresh from "@/components/PullToRefresh";
 import { useAppSelector } from "@/redux/hooks";
 
 interface Genre {
@@ -356,7 +357,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <PullToRefresh onRefresh={fetchContent}>
+      <main className="min-h-screen bg-[#141414]">
       <Navbar />
 
       {/* Hero Banner - Show uploaded content */}
@@ -465,5 +467,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
       <Footer />
     </main>
+    </PullToRefresh>
   );
 }

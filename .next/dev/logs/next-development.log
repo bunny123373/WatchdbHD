@@ -1648,3 +1648,374 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
 [00:10:00.963] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
 [00:10:01.002] Server  LOG     TMDB API Key present: true "yes"
 [00:10:01.314] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:17.956] Server  LOG     TMDB API Key present: true "yes"
+[00:13:18.101] Server  LOG     TMDB API Key present: true "yes"
+[00:13:18.338] Server  LOG     TMDB API Key present: true "yes"
+[00:13:18.434] Server  LOG     TMDB API Key present: true "yes"
+[00:13:18.554] Server  LOG     TMDB API Key present: true "yes"
+[00:13:18.706] Server  LOG     TMDB API Key present: true "yes"
+[00:13:19.146] Server  ERROR   TMDB genres error: TypeError: fetch failed
+[00:13:19.156] Server  LOG     Fetching popular movie
+[00:13:19.197] Server  LOG     Fetching popular tv
+[00:13:19.702] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:13:20.014] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:13:20.243] Server  ERROR   TMDB trending error: TypeError: fetch failed
+[00:13:20.499] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:13:20.731] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:13:20.850] Server  LOG     TMDB API Key present: true "yes"
+[00:13:20.875] Server  LOG     TMDB API Key present: true "yes"
+[00:13:21.313] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:13:21.645] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:13:22.046] Server  LOG     TMDB API Key present: true "yes"
+[00:13:22.295] Server  ERROR   TMDB genres error: TypeError: fetch failed
+[00:13:22.780] Server  LOG     TMDB API Key present: true "yes"
+[00:13:23.509] Server  LOG     Fetching popular movie
+[00:13:23.527] Server  LOG     TMDB API Key present: true "yes"
+[00:13:23.557] Server  LOG     TMDB API Key present: true "yes"
+[00:13:23.921] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:13:23.945] Server  LOG     Fetching popular tv
+[00:13:24.397] Server  ERROR   TMDB trending error: TypeError: fetch failed
+[00:13:24.637] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:13:24.683] Server  LOG     TMDB API Key present: true "yes"
+[00:13:24.736] Server  LOG     TMDB API Key present: true "yes"
+[00:13:24.986] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:13:25.038] Server  LOG     TMDB API Key present: true "yes"
+[00:13:25.333] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:13:25.359] Server  LOG     TMDB API Key present: true "yes"
+[00:13:25.385] Server  LOG     TMDB API Key present: true "yes"
+[00:13:25.711] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:13:25.939] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:13:26.323] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:26.646] Server  LOG     TMDB API Key present: true "yes"
+[00:13:26.687] Server  LOG     TMDB API Key present: true "yes"
+[00:13:27.064] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:27.825] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:30.705] Server  LOG     TMDB API Key present: true "yes"
+[00:13:31.225] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:31.537] Server  LOG     TMDB API Key present: true "yes"
+[00:13:31.903] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:33.782] Server  LOG     TMDB API Key present: true "yes"
+[00:13:33.832] Server  LOG     TMDB API Key present: true "yes"
+[00:13:34.345] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:34.880] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:35.859] Server  LOG     TMDB API Key present: true "yes"
+[00:13:35.882] Server  LOG     TMDB API Key present: true "yes"
+[00:13:36.266] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:36.491] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:36.974] Server  LOG     TMDB API Key present: true "yes"
+[00:13:36.994] Server  LOG     TMDB API Key present: true "yes"
+[00:13:37.440] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:37.794] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:44.197] Server  LOG     TMDB API Key present: true "yes"
+[00:13:44.489] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:44.754] Server  LOG     TMDB API Key present: true "yes"
+[00:13:45.009] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:45.075] Server  LOG     TMDB API Key present: true "yes"
+[00:13:45.135] Server  LOG     TMDB API Key present: true "yes"
+[00:13:45.400] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:45.611] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:46.638] Server  LOG     TMDB API Key present: true "yes"
+[00:13:46.657] Server  LOG     TMDB API Key present: true "yes"
+[00:13:46.836] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:13:47.053] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:47.079] Server  LOG     TMDB API Key present: true "yes"
+[00:13:47.106] Server  LOG     TMDB API Key present: true "yes"
+[00:13:47.307] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:47.552] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:47.868] Server  LOG     TMDB API Key present: true "yes"
+[00:13:47.897] Server  LOG     TMDB API Key present: true "yes"
+[00:13:48.077] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:48.288] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:48.326] Server  LOG     TMDB API Key present: true "yes"
+[00:13:48.537] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:48.574] Server  LOG     TMDB API Key present: true "yes"
+[00:13:48.849] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:48.878] Server  LOG     TMDB API Key present: true "yes"
+[00:13:48.900] Server  LOG     TMDB API Key present: true "yes"
+[00:13:49.102] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:49.391] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:49.397] Browser WARN    Image with src "https://image.tmdb.org/t/p/w500/wLKypXb7St0UknM2JIKZB2RtHXV.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:13:49.425] Server  LOG     TMDB API Key present: true "yes"
+[00:13:49.452] Server  LOG     TMDB API Key present: true "yes"
+[00:13:49.688] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:50.083] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:50.112] Server  LOG     TMDB API Key present: true "yes"
+[00:13:50.317] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:50.344] Server  LOG     TMDB API Key present: true "yes"
+[00:13:50.609] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:50.677] Server  LOG     TMDB API Key present: true "yes"
+[00:13:50.700] Server  LOG     TMDB API Key present: true "yes"
+[00:13:50.950] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:51.155] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:51.191] Server  LOG     TMDB API Key present: true "yes"
+[00:13:51.222] Server  LOG     TMDB API Key present: true "yes"
+[00:13:51.442] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:51.651] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:51.673] Server  LOG     TMDB API Key present: true "yes"
+[00:13:51.695] Server  LOG     TMDB API Key present: true "yes"
+[00:13:51.885] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:52.099] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:52.127] Server  LOG     TMDB API Key present: true "yes"
+[00:13:52.155] Server  LOG     TMDB API Key present: true "yes"
+[00:13:52.407] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:52.822] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:52.878] Server  LOG     TMDB API Key present: true "yes"
+[00:13:52.905] Server  LOG     TMDB API Key present: true "yes"
+[00:13:53.159] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:53.364] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:53.457] Server  LOG     TMDB API Key present: true "yes"
+[00:13:53.470] Server  LOG     TMDB API Key present: true "yes"
+[00:13:53.680] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:53.920] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:54.001] Server  LOG     TMDB API Key present: true "yes"
+[00:13:54.237] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:54.306] Server  LOG     TMDB API Key present: true "yes"
+[00:13:54.517] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:13:54.572] Server  LOG     TMDB API Key present: true "yes"
+[00:13:54.799] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:17:03.090] Server  LOG     ✓ Compiled in 30.1s
+[00:17:07.217] Server  ERROR   ⨯ Error: Module [project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js [app-ssr] (ecmascript) was instantiated because it was required from module [project]/node_modules/next/dist/esm/build/templates/app-page.js?page=/_not-found/page { MODULE_0 => "[project]/src/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_1 => "[project]/node_modules/next/dist/client/components/builtin/not-found.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_2 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_3 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_4 => "[project]/node_modules/next/dist/client/components/builtin/not-found.js [app-rsc] (ecmascript, Next.js Server Component)" } [app-rsc] (ecmascript) <locals>, but the module factory is not available.
+[00:17:12.682] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:42.168] Browser WARN    Image with src "https://image.tmdb.org/t/p/w500/wLKypXb7St0UknM2JIKZB2RtHXV.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:17:47.393] Server  LOG     ✓ Finished filesystem cache database compaction in 33.9s
+[00:17:48.456] Server  LOG     ✓ Finished writing to filesystem cache in 32.5s
+[00:18:05.008] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.034] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.261] Server  ERROR   TMDB genres error: TypeError: fetch failed
+[00:18:05.283] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.298] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.386] Server  LOG     Fetching popular movie
+[00:18:05.496] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.512] Server  LOG     TMDB API Key present: true "yes"
+[00:18:05.520] Server  LOG     Fetching popular tv
+[00:18:05.722] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:18:05.968] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:18:06.138] Server  ERROR   TMDB trending error: TypeError: fetch failed
+[00:18:06.323] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:18:06.540] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:18:06.584] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.612] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.633] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.805] Server  ERROR   TMDB genres error: TypeError: fetch failed
+[00:18:06.817] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.833] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.847] Server  LOG     TMDB API Key present: true "yes"
+[00:18:06.852] Server  LOG     Fetching popular movie
+[00:18:07.022] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:18:07.208] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:18:07.230] Server  LOG     Fetching popular tv
+[00:18:07.859] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:18:08.146] Server  ERROR   TMDB popular error: TypeError: fetch failed
+[00:18:08.396] Server  ERROR   TMDB trending error: TypeError: fetch failed
+[00:18:08.478] Server  LOG     TMDB API Key present: true "yes"
+[00:18:08.580] Server  LOG     TMDB API Key present: true "yes"
+[00:18:08.928] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:18:08.994] Server  LOG     TMDB API Key present: true "yes"
+[00:18:09.029] Server  LOG     TMDB API Key present: true "yes"
+[00:18:09.288] Server  ERROR   TMDB toprated error: TypeError: fetch failed
+[00:18:09.559] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:18:09.807] Server  ERROR   TMDB upcoming error: TypeError: fetch failed
+[00:18:09.871] Server  LOG     TMDB API Key present: true "yes"
+[00:18:10.108] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:10.144] Server  LOG     TMDB API Key present: true "yes"
+[00:18:10.195] Server  LOG     TMDB API Key present: true "yes"
+[00:18:10.425] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:10.618] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:10.638] Server  LOG     TMDB API Key present: true "yes"
+[00:18:10.667] Server  LOG     TMDB API Key present: true "yes"
+[00:18:10.791] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:11.010] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:11.070] Server  LOG     TMDB API Key present: true "yes"
+[00:18:11.106] Server  LOG     TMDB API Key present: true "yes"
+[00:18:11.295] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:11.515] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:11.540] Server  LOG     TMDB API Key present: true "yes"
+[00:18:11.727] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:11.752] Server  LOG     TMDB API Key present: true "yes"
+[00:18:12.013] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:12.037] Server  LOG     TMDB API Key present: true "yes"
+[00:18:12.076] Server  LOG     TMDB API Key present: true "yes"
+[00:18:12.261] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:12.434] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:12.518] Server  LOG     TMDB API Key present: true "yes"
+[00:18:12.541] Server  LOG     TMDB API Key present: true "yes"
+[00:18:12.722] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:12.892] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:12.964] Server  LOG     TMDB API Key present: true "yes"
+[00:18:13.227] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:13.297] Server  LOG     TMDB API Key present: true "yes"
+[00:18:13.635] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:13.740] Server  LOG     TMDB API Key present: true "yes"
+[00:18:13.967] Server  ERROR   TMDB bylanguage error: TypeError: fetch failed
+[00:18:13.996] Server  LOG     TMDB API Key present: true "yes"
+[00:18:14.192] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:14.235] Server  LOG     TMDB API Key present: true "yes"
+[00:18:14.289] Server  LOG     TMDB API Key present: true "yes"
+[00:18:14.601] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:14.844] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:14.895] Server  LOG     TMDB API Key present: true "yes"
+[00:18:14.947] Server  LOG     TMDB API Key present: true "yes"
+[00:18:15.193] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:15.445] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:15.592] Server  LOG     TMDB API Key present: true "yes"
+[00:18:15.619] Server  LOG     TMDB API Key present: true "yes"
+[00:18:15.816] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:16.445] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:16.544] Server  LOG     TMDB API Key present: true "yes"
+[00:18:16.572] Server  LOG     TMDB API Key present: true "yes"
+[00:18:16.818] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:17.187] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:17.255] Server  LOG     TMDB API Key present: true "yes"
+[00:18:17.488] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:17.526] Server  LOG     TMDB API Key present: true "yes"
+[00:18:17.829] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:17.867] Server  LOG     TMDB API Key present: true "yes"
+[00:18:17.918] Server  LOG     TMDB API Key present: true "yes"
+[00:18:18.143] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:18.511] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:18.590] Server  LOG     TMDB API Key present: true "yes"
+[00:18:18.664] Server  LOG     TMDB API Key present: true "yes"
+[00:18:18.841] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:19.024] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:19.046] Server  LOG     TMDB API Key present: true "yes"
+[00:18:19.064] Server  LOG     TMDB API Key present: true "yes"
+[00:18:19.211] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:19.329] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:19.866] Server  LOG     TMDB API Key present: true "yes"
+[00:18:19.960] Server  LOG     TMDB API Key present: true "yes"
+[00:18:20.195] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:20.433] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:20.510] Server  LOG     TMDB API Key present: true "yes"
+[00:18:20.527] Server  LOG     TMDB API Key present: true "yes"
+[00:18:20.830] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:21.097] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:21.168] Server  LOG     TMDB API Key present: true "yes"
+[00:18:21.210] Server  LOG     TMDB API Key present: true "yes"
+[00:18:21.579] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:22.215] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:22.444] Server  LOG     TMDB API Key present: true "yes"
+[00:18:22.462] Server  LOG     TMDB API Key present: true "yes"
+[00:18:22.772] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:22.910] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:22.925] Server  LOG     TMDB API Key present: true "yes"
+[00:18:23.106] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:23.138] Server  LOG     TMDB API Key present: true "yes"
+[00:18:23.347] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:18:23.417] Server  LOG     TMDB API Key present: true "yes"
+[00:18:23.770] Server  ERROR   TMDB bygenre error: TypeError: fetch failed
+[00:24:50.552] Server  LOG     ✓ Compiled in 917ms
+[00:25:24.831] Server  LOG     ✓ Compiled in 1210ms
+[00:26:02.666] Server  LOG     ✓ Compiled in 11s
+[00:26:03.230] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:26:17.233] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:26:19.826] Server  LOG     ○ Compiling /_error ...
+[00:26:31.229] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:26:34.232] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:26:46.301] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:26:46.301] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:31:47.231] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
+[00:37:17.254] Browser ERROR   ./src/app/HomeClient.tsx:471:1
+Parsing ecmascript source code failed
+  469 |     </main>
+  470 |   );
+> 471 | }
+      | ^
+  472 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import trace:
+  Server Component:
+    ./src/app/HomeClient.tsx
+    ./src/app/page.tsx
