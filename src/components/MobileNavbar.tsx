@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv } from "lucide-react";
-import NotificationBell from "./NotificationBell";
+import { Search, X, Film, Tv, Clock, TrendingUp } from "lucide-react";
 
 interface SearchResult {
   _id: string;
@@ -20,6 +19,7 @@ export default function MobileNavbar() {
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -43,6 +43,13 @@ export default function MobileNavbar() {
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isSearchActive]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("recentSearches");
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
@@ -73,14 +80,38 @@ export default function MobileNavbar() {
     setSearchResults([]);
   };
 
+  const saveSearch = (term: string) => {
+    if (!term.trim()) return;
+    const updated = [term, ...recentSearches.filter(s => s !== term)].slice(0, 10);
+    setRecentSearches(updated);
+    localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      saveSearch(searchInput.trim());
+    }
+  };
+
+  const handleRecentClick = (term: string) => {
+    setSearchInput(term);
+  };
+
+  const clearRecent = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentSearches");
+  };
+
   if (pathname.startsWith("/admin")) return null;
 
   if (isSearchActive) {
     return (
-      <div className="fixed inset-0 z-[100] bg-[#141414] overflow-y-auto">
-        <div className="px-4 pt-4">
-          <div className="flex items-center gap-3">
+      <div ref={searchRef} className="fixed inset-0 z-[100] bg-[#141414] overflow-y-auto">
+        <div className="sticky top-0 bg-[#141414] px-4 pt-4 pb-2">
+          <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <button
+              type="button"
               onClick={closeSearch}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
             >
@@ -90,55 +121,106 @@ export default function MobileNavbar() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Titles, people, genres"
+                placeholder="Search movies, TV shows..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="w-full bg-white/10 border border-white/20 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-white/40 text-lg"
                 autoFocus
               />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => setSearchInput("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              )}
             </div>
-          </div>
+          </form>
         </div>
 
         <div className="p-4">
           {loading ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex items-center justify-center py-12">
               <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : searchResults.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3">
-              {searchResults.map((result) => (
-                <Link
-                  key={result._id}
-                  href={result.type === "movie" ? `/movie/${result._id}` : `/series/${result._id}`}
-                  onClick={closeSearch}
-                  className="group"
-                >
-                  <div className="aspect-[2/3] bg-zinc-800 rounded-lg overflow-hidden relative">
-                    {result.poster ? (
-                      <img src={result.poster} alt={result.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        {result.type === "movie" ? (
-                          <Film className="w-10 h-10 text-zinc-600" />
-                        ) : (
-                          <Tv className="w-10 h-10 text-zinc-600" />
-                        )}
+            <>
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="w-4 h-4 text-gray-400" />
+                <span className="text-gray-400 text-sm">Results</span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {searchResults.map((result) => (
+                  <Link
+                    key={result._id}
+                    href={result.type === "movie" ? `/movie/${result._id}` : `/series/${result._id}`}
+                    onClick={() => {
+                      closeSearch();
+                      saveSearch(result.title);
+                    }}
+                    className="group"
+                  >
+                    <div className="aspect-[2/3] bg-zinc-800 rounded-lg overflow-hidden relative">
+                      {result.poster ? (
+                        <img src={result.poster} alt={result.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          {result.type === "movie" ? (
+                            <Film className="w-8 h-8 text-zinc-600" />
+                          ) : (
+                            <Tv className="w-8 h-8 text-zinc-600" />
+                          )}
+                        </div>
+                      )}
+                      <div className="absolute top-1 right-1">
+                        <span className="text-[10px] bg-black/70 text-white px-1.5 py-0.5 rounded">
+                          {result.type === "movie" ? "Movie" : "Series"}
+                        </span>
                       </div>
-                    )}
-                  </div>
-                  <p className="text-white text-sm mt-2 truncate">{result.title}</p>
-                  <p className="text-gray-500 text-xs">{result.year}</p>
-                </Link>
-              ))}
-            </div>
+                    </div>
+                    <p className="text-white text-xs mt-2 truncate font-medium">{result.title}</p>
+                    <p className="text-gray-500 text-[10px]">{result.year}</p>
+                  </Link>
+                ))}
+              </div>
+            </>
           ) : searchInput.length > 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center py-12">
+              <Film className="w-12 h-12 text-gray-600 mx-auto mb-3" />
               <p className="text-gray-400">No results found for "{searchInput}"</p>
+              <p className="text-gray-500 text-sm mt-1">Try different keywords</p>
             </div>
+          ) : recentSearches.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="text-gray-400 text-sm">Recent Searches</span>
+                </div>
+                <button onClick={clearRecent} className="text-gray-500 text-xs hover:text-white">
+                  Clear
+                </button>
+              </div>
+              <div className="space-y-2">
+                {recentSearches.map((term, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleRecentClick(term)}
+                    className="flex items-center gap-3 w-full p-3 hover:bg-white/5 rounded-lg transition-colors text-left"
+                  >
+                    <Clock className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-300">{term}</span>
+                  </button>
+                ))}
+              </div>
+            </>
           ) : (
-            <div className="text-center py-8">
+            <div className="text-center py-12">
+              <Search className="w-12 h-12 text-gray-600 mx-auto mb-3" />
               <p className="text-gray-400">Search for movies and TV shows</p>
+              <p className="text-gray-500 text-sm mt-1">Find your favorite content</p>
             </div>
           )}
         </div>
@@ -160,14 +242,14 @@ export default function MobileNavbar() {
             </span>
           </Link>
 
-          <button
-            onClick={() => setIsSearchActive(true)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <Search className="w-5 h-5 text-white" />
-          </button>
-
-          <NotificationBell />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsSearchActive(true)}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <Search className="w-5 h-5 text-white" />
+            </button>
+          </div>
         </div>
       </div>
     </nav>
