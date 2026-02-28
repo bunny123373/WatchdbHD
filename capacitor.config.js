@@ -5,6 +5,6 @@ module.exports = {
   webDir: 'out',
   server: {
     androidScheme: 'https',
-    url: 'https://your-vercel-app.vercel.app',
+    url: 'https://watchdbhd.vercel.app',
   },
 };

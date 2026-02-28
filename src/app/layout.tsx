@@ -83,17 +83,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>{children}</ReduxProvider>
-        <Script
-          src="https://pl28759548.effectivegatecpm.com/25/7a/2a/257a2a568f9cd885d5d85d7d27d9b2ed.js"
-          strategy="afterInteractive"
-        />
-        <Script id="register-sw" strategy="afterInteractive">
-          {`if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw.js').catch(() => {});
-            });
-          }`}
-        </Script>
       </body>
     </html>
   );
