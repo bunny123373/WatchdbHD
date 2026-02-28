@@ -88,6 +88,11 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
               </button>
             </Link>
             
+            <button className="bg-gray-500/50 hover:bg-gray-500/70 text-white rounded-lg px-5 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2 text-sm sm:text-base transition-colors">
+              <Plus className="w-5 h-5" />
+              My List
+            </button>
+            
             <Link href={detailLink}>
               <button className="bg-gray-500/50 hover:bg-gray-500/70 text-white rounded-lg px-5 sm:px-7 py-2.5 sm:py-3 flex items-center gap-2 text-sm sm:text-base transition-colors">
                 <Info className="w-5 h-5" />

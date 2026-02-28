@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { ReduxProvider } from "@/redux/Provider";
 import { SITE_CONFIG } from "@/utils/constants";
+import BottomNav from "@/components/BottomNav";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -83,6 +84,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>{children}</ReduxProvider>
+        <BottomNav />
       </body>
     </html>
   );
