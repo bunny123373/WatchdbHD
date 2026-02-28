@@ -10,29 +10,41 @@ interface TelegramPopupProps {
 export default function TelegramPopup({ channelLink = "https://t.me/yourchannel" }: TelegramPopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const hasSeenPopup = sessionStorage.getItem("telegram_popup_seen");
-    if (!hasSeenPopup) {
-      const timer = setTimeout(() => {
+    setIsMounted(true);
+    
+    // Show popup after 5 seconds (increased delay)
+    const timer = setTimeout(() => {
+      // Check if popup was closed in last 24 hours
+      const lastClosed = localStorage.getItem("telegram_popup_closed");
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000;
+      
+      if (!lastClosed || (now - parseInt(lastClosed)) > oneDay) {
         setIsVisible(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsClosing(true);
-    sessionStorage.setItem("telegram_popup_seen", "true");
+    localStorage.setItem("telegram_popup_closed", Date.now().toString());
     setTimeout(() => {
       setIsVisible(false);
     }, 300);
   };
 
+  // Don't render on server
+  if (!isMounted) return null;
+  
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       <div 
         className="absolute inset-0 bg-black/60" 
         onClick={handleClose}
