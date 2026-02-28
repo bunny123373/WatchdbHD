@@ -1,10 +1,6 @@
 const CACHE_NAME = 'telugudb-v1';
-const urlsToCache = ['/'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
   self.skipWaiting();
 });
 
@@ -24,20 +20,29 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  if (url.origin !== location.origin) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(request).then((response) => {
       if (response) {
         return response;
       }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+      return fetch(request).then((response) => {
+        if (!response || response.status !== 200) {
           return response;
         }
         const responseToCache = response.clone();
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+          cache.put(request, responseToCache);
         });
         return response;
+      }).catch(() => {
+        return caches.match('/');
       });
     })
   );
