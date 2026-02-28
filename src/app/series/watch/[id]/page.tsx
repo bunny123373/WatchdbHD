@@ -20,6 +20,7 @@ function SeriesWatchContent() {
   const [currentEpisode, setCurrentEpisode] = useState<IEpisode | null>(null);
   const [loading, setLoading] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(false);
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
 
   const seasonParam = searchParams.get("season");
   const episodeParam = searchParams.get("episode");
@@ -74,6 +75,25 @@ function SeriesWatchContent() {
     url.searchParams.set("season", seasonNumber.toString());
     url.searchParams.set("episode", episode.episodeNumber.toString());
     window.history.replaceState({}, "", url);
+  };
+
+  const playNextEpisode = () => {
+    if (!series || !currentEpisode) return;
+    
+    const currentSeasonData = series.seasons?.find((s) => s.seasonNumber === currentSeason);
+    const currentEpisodeIndex = currentSeasonData?.episodes.findIndex((e) => e.episodeNumber === currentEpisode?.episodeNumber);
+    
+    if (currentEpisodeIndex !== undefined && currentEpisodeIndex < (currentSeasonData?.episodes.length || 0) - 1) {
+      const nextEpisode = currentSeasonData?.episodes[currentEpisodeIndex + 1];
+      if (nextEpisode) {
+        handleEpisodeSelect(nextEpisode, currentSeason);
+      }
+    } else {
+      const nextSeason = series.seasons?.find((s) => s.seasonNumber === currentSeason + 1);
+      if (nextSeason && nextSeason.episodes.length > 0) {
+        handleEpisodeSelect(nextSeason.episodes[0], nextSeason.seasonNumber);
+      }
+    }
   };
 
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
@@ -151,6 +171,16 @@ function SeriesWatchContent() {
               {currentEpisode?.quality && (
                 <Badge variant="outline">{currentEpisode.quality}</Badge>
               )}
+              <button
+                onClick={() => setAutoPlayNext(!autoPlayNext)}
+                className={`ml-auto px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  autoPlayNext 
+                    ? "bg-green-600 text-white" 
+                    : "bg-gray-600 text-gray-300"
+                }`}
+              >
+                {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
+              </button>
             </div>
             <h1 className="text-2xl font-bold text-text-primary mb-2">
               {currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}

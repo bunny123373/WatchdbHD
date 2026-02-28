@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, X, Film, Tv } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 
 interface SearchResult {
   _id: string;
@@ -165,6 +166,8 @@ export default function MobileNavbar() {
           >
             <Search className="w-5 h-5 text-white" />
           </button>
+
+          <NotificationBell />
         </div>
       </div>
     </nav>
