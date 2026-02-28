@@ -170,6 +170,8 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         notifications = notifications.slice(0, 50);
         localStorage.setItem("notifications", JSON.stringify(notifications));
         
+        window.dispatchEvent(new CustomEvent("watchdb-notification", { detail: notification }));
+        
         onSuccess?.();
       } else {
         setMessage(data.error || "Failed to upload series");

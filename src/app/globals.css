@@ -133,3 +133,19 @@ a:focus-visible, div[role="link"]:focus-visible {
   background: rgba(245, 197, 66, 0.3);
   color: #F9FAFB;
 }
+
+/* Notification animation */
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}

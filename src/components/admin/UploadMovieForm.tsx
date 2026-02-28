@@ -166,6 +166,8 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         notifications = notifications.slice(0, 50);
         localStorage.setItem("notifications", JSON.stringify(notifications));
         
+        window.dispatchEvent(new CustomEvent("watchdb-notification", { detail: notification }));
+        
         onSuccess?.();
       } else {
         setMessage(data.error || "Failed to upload movie");

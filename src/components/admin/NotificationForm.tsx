@@ -26,6 +26,8 @@ export default function NotificationForm() {
     notifications.unshift(notification);
     notifications = notifications.slice(0, 50);
     localStorage.setItem("notifications", JSON.stringify(notifications));
+    
+    window.dispatchEvent(new CustomEvent("watchdb-notification", { detail: notification }));
 
     setTimeout(() => {
       setSending(false);
