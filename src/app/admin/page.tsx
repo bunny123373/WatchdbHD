@@ -7,12 +7,14 @@ import AdminStats from "@/components/admin/AdminStats";
 import UploadMovieForm from "@/components/admin/UploadMovieForm";
 import UploadSeriesForm from "@/components/admin/UploadSeriesForm";
 import AdminContentTable from "@/components/admin/AdminContentTable";
+import NotificationForm from "@/components/admin/NotificationForm";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard" },
   { id: "upload-movie", label: "Upload Movie" },
   { id: "upload-series", label: "Upload Series" },
   { id: "manage", label: "Manage Content" },
+  { id: "notification", label: "Send Notification" },
 ];
 
 function AdminPageContent() {
@@ -105,6 +107,15 @@ function AdminPageContent() {
 
           {activeTab === "manage" && (
             <AdminContentTable refreshTrigger={refreshTrigger} />
+          )}
+
+          {activeTab === "notification" && (
+            <div className="max-w-2xl">
+              <div className="bg-[#1a1a1a] rounded-lg p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Send Notification</h2>
+                <NotificationForm />
+              </div>
+            </div>
           )}
         </div>
       </div>

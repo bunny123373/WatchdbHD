@@ -1,52 +1,67 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, X, Check } from "lucide-react";
+import { Bell, X } from "lucide-react";
 
 interface Notification {
   id: string;
   title: string;
   body: string;
   time: string;
+  contentId?: string;
+  contentType?: string;
 }
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem("notifications");
-    if (saved) {
-      setNotifications(JSON.parse(saved));
-    } else {
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch("/api/notifications");
+      const data = await response.json();
+      if (data.success && data.data) {
+        setNotifications(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
       const defaultNotifications: Notification[] = [
         {
           id: "1",
-          title: "New Movie Added",
-          body: "New Telugu movies are now available!",
-          time: "Just now"
-        },
-        {
-          id: "2",
           title: "Welcome to Watchdb HD",
           body: "Start watching your favorite movies and series",
           time: "Today"
         }
       ];
       setNotifications(defaultNotifications);
-      localStorage.setItem("notifications", JSON.stringify(defaultNotifications));
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
-  const clearAll = () => {
+  const clearAll = async () => {
     setNotifications([]);
-    localStorage.removeItem("notifications");
+    try {
+      await fetch("/api/notifications", {
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.error("Failed to clear notifications:", error);
+    }
   };
 
   return (
     <div className="relative lg:hidden">
       <button
-        onClick={() => setShowNotifications(!showNotifications)}
+        onClick={() => {
+          setShowNotifications(!showNotifications);
+          if (!showNotifications) fetchNotifications();
+        }}
         className="relative p-2 hover:bg-white/10 rounded-full transition-colors"
       >
         <Bell className="w-5 h-5 text-white" />
@@ -68,7 +83,11 @@ export default function NotificationBell() {
             )}
           </div>
           
-          {notifications.length === 0 ? (
+          {loading ? (
+            <div className="p-4 flex justify-center">
+              <div className="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : notifications.length === 0 ? (
             <div className="p-4 text-center text-gray-400">
               No notifications
             </div>
