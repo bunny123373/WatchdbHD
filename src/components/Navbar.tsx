@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home, Loader2 } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home, Loader2, Download } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSearch, setTypeFilter } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
@@ -124,6 +124,15 @@ export default function Navbar() {
               <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#e50914]">
                 WATCH<span className="text-white">TMDB</span>
               </span>
+            </Link>
+
+            {/* Download App Button */}
+            <Link
+              href="/download"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded text-white text-xs sm:text-sm font-medium transition-colors"
+            >
+              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden md:inline">App</span>
             </Link>
 
             {/* Back to Home Button */}
