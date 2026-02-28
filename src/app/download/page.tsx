@@ -10,7 +10,7 @@ export default function DownloadApp() {
           <Download className="w-12 h-12 text-white" />
         </div>
         
-        <h1 className="text-3xl font-bold mb-2">TeluguDB App</h1>
+        <h1 className="text-3xl font-bold mb-2">Watchdb HD</h1>
         <p className="text-zinc-400 mb-6">
           Download our app for the best experience
         </p>
