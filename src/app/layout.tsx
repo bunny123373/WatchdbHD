@@ -5,6 +5,7 @@ import { ReduxProvider } from "@/redux/Provider";
 import { SITE_CONFIG } from "@/utils/constants";
 import BottomNav from "@/components/BottomNav";
 import MobileNavbar from "@/components/MobileNavbar";
+import AdPopup from "@/components/AdPopup";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,6 +86,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>
           <MobileNavbar />
+          <AdPopup />
           <main className="min-h-screen pb-20 pt-14 lg:pt-16">
             {children}
           </main>
