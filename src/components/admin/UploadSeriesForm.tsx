@@ -141,6 +141,9 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
 
       if (data.success) {
         setMessage("Series uploaded successfully!");
+        
+        const seriesTitle = formData.title;
+        
         setFormData({
           title: "",
           poster: "",
@@ -158,7 +161,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         const notification = {
           id: Date.now().toString(),
           title: "New Series Added",
-          body: `${formData.title} is now available to watch!`,
+          body: `${seriesTitle} is now available to watch!`,
           time: "Just now",
         };
         const saved = localStorage.getItem("notifications");

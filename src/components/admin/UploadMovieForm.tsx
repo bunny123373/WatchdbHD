@@ -134,6 +134,9 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
 
       if (data.success) {
         setMessage("Movie uploaded successfully!");
+        
+        const movieTitle = formData.title;
+        
         setFormData({
           title: "",
           poster: "",
@@ -154,7 +157,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         const notification = {
           id: Date.now().toString(),
           title: "New Movie Added",
-          body: `${formData.title} is now available to watch!`,
+          body: `${movieTitle} is now available to watch!`,
           time: "Just now",
         };
         const saved = localStorage.getItem("notifications");
