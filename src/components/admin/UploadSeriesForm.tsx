@@ -154,6 +154,19 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         setSeasons([]);
         setSelectedGenres([]);
         setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
+        
+        const notification = {
+          id: Date.now().toString(),
+          title: "New Series Added",
+          body: `${formData.title} is now available to watch!`,
+          time: "Just now",
+        };
+        const saved = localStorage.getItem("notifications");
+        let notifications = saved ? JSON.parse(saved) : [];
+        notifications.unshift(notification);
+        notifications = notifications.slice(0, 50);
+        localStorage.setItem("notifications", JSON.stringify(notifications));
+        
         onSuccess?.();
       } else {
         setMessage(data.error || "Failed to upload series");
