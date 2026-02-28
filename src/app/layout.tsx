@@ -86,7 +86,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ReduxProvider>
           <MobileNavbar />
-          <div className="lg:pt-16">
+          <div className="pt-14 lg:pt-16">
             {children}
           </div>
         </ReduxProvider>
