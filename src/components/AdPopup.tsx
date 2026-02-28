@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { X, Megaphone, Unlock } from "lucide-react";
+import { Megaphone, Unlock, Play } from "lucide-react";
 
 interface MegaphonePopupProps {
   adUrl?: string;
@@ -54,7 +54,6 @@ export default function MegaphonePopup({
           setIsCountingDown(true);
           setCountdown(10);
         } else if (canUnlock) {
-          // Stay visible, user must click unlock
         } else {
           showAdPopup();
         }
@@ -101,80 +100,72 @@ export default function MegaphonePopup({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/90">
-      <div className="relative bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-2xl p-1 max-w-md w-full shadow-2xl border border-amber-500/30">
+    <div className="fixed top-0 left-0 right-0 z-[99999]">
+      <div className="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] shadow-lg border-b border-amber-500/30">
         {adClicked && !isCountingDown && !canUnlock && (
-          <div className="flex items-center justify-center py-4">
-            <div className="flex items-center gap-2 bg-amber-500/20 px-4 py-2 rounded-full">
-              <span className="text-sm font-medium text-amber-500">Return to app to unlock</span>
-            </div>
+          <div className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500/20">
+            <span className="text-sm font-medium text-amber-500">Return to app to unlock</span>
           </div>
         )}
 
         {!adClicked && (
-          <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-            <div className="flex items-center gap-2 bg-amber-500/20 px-3 py-1 rounded-full">
-              <Megaphone className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-medium text-amber-500">Advertisement</span>
-            </div>
-          </div>
-        )}
-
-        <div className="px-4 pb-4">
-          {canUnlock ? (
-            <div className="py-8 text-center">
-              <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Unlock className="w-10 h-10 text-green-500" />
+          <div className="flex items-center justify-between px-4 py-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+                <Play className="w-4 h-4 text-white fill-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Ready to Unlock!</h3>
-              <p className="text-green-400 mb-6">Click the button below to continue watching</p>
+              <span className="text-white font-bold">WatchDB HD</span>
+              <span className="text-amber-500 text-xs ml-1">• Ad</span>
+            </div>
+
+            {canUnlock ? (
               <button
                 onClick={handleUnlock}
-                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-semibold px-8 py-3 rounded-full transition-colors"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded-full text-sm transition-colors"
               >
-                <Unlock className="w-5 h-5" />
-                Unlock Now
+                <Unlock className="w-4 h-4" />
+                Unlock
               </button>
-            </div>
-          ) : isCountingDown ? (
-            <div className="py-8 text-center">
-              <div className="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl font-bold text-amber-500">{countdown}</span>
-              </div>
-              <p className="text-amber-400 text-lg">seconds to unlock</p>
-            </div>
-          ) : !adClicked ? (
-            <div 
-              onClick={handleAdClick}
-              className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl flex items-center justify-center border border-amber-500/20 cursor-pointer"
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Megaphone className="w-8 h-8 text-amber-500" />
+            ) : isCountingDown ? (
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                  <span className="text-lg font-bold text-amber-500">{countdown}</span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-1">WatchDB HD</h3>
-                <p className="text-amber-400 text-sm">Click to support us!</p>
-                <p className="text-gray-400 text-xs mt-2">Ad appears every hour</p>
               </div>
-            </div>
-          ) : (
-            <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl flex items-center justify-center border border-amber-500/20">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Megaphone className="w-8 h-8 text-amber-500 animate-pulse" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-1">Check out the ad!</h3>
-                <p className="text-amber-400 text-sm">Return to app when done</p>
-              </div>
-            </div>
-          )}
-        </div>
+            ) : (
+              <button
+                onClick={handleAdClick}
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-semibold px-4 py-2 rounded-full text-sm transition-colors"
+              >
+                <Megaphone className="w-4 h-4" />
+                Click Ad
+              </button>
+            )}
+          </div>
+        )}
 
-        {!adClicked && (
-          <div className="px-4 pb-4 text-center">
-            <p className="text-xs text-gray-500">
-              Click ad → return to app → wait 10 sec → click unlock
-            </p>
+        {adClicked && !isCountingDown && !canUnlock && (
+          <div className="flex items-center justify-center gap-2 px-4 py-2">
+            <button
+              onClick={handleAdClick}
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-semibold px-4 py-2 rounded-full text-sm transition-colors"
+            >
+              <Megaphone className="w-4 h-4" />
+              Check Ad
+            </button>
+          </div>
+        )}
+
+        {canUnlock && (
+          <div className="flex items-center justify-center gap-3 px-4 py-2">
+            <span className="text-green-400 font-medium">Ready to unlock!</span>
+            <button
+              onClick={handleUnlock}
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded-full text-sm transition-colors"
+            >
+              <Unlock className="w-4 h-4" />
+              Unlock Now
+            </button>
           </div>
         )}
       </div>
