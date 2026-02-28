@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Watchdb Admin</string>
+    <string name="title_activity_main">Watchdb Admin</string>
+    <string name="package_name">com.watchdbhd.admin</string>
+    <string name="custom_url_scheme">com.watchdbhd.admin</string>
+</resources>
