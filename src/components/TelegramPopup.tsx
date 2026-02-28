@@ -41,44 +41,29 @@ export default function TelegramPopup({ channelLink = "https://t.me/yourchannel"
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 touch-manipulation">
-      <div 
-        className="absolute inset-0 bg-black/60" 
-        onClick={handleClose}
-      />
-      <div className={`relative bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-2xl p-1 max-w-md w-full shadow-2xl border border-[#229ED9]/30 transform transition-all duration-300 ${isClosing ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-        <div className="bg-gradient-to-br from-[#1f1f1f] to-[#2a2a2a] rounded-xl p-4 sm:p-6">
-          <button
-            onClick={handleClose}
-            className="absolute top-2 right-2 sm:top-3 sm:right-3 text-gray-400 hover:text-white transition-colors p-1"
-          >
-            <X className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
+    <div className="fixed top-0 left-0 right-0 z-[9998] touch-manipulation">
+      <div className={`relative bg-gradient-to-r from-[#229ED9] to-[#1a8ac4] shadow-lg transform transition-all duration-300 ${isClosing ? 'opacity-0 -translate-y-full' : 'opacity-100 translate-y-0'}`}>
+        <button
+          onClick={handleClose}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors p-1"
+        >
+          <X className="w-4 h-4" />
+        </button>
 
-          <div className="text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#229ED9] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-            </div>
-            
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Join Our Telegram</h3>
-            <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">
-              Get latest movies, web series updates directly on Telegram
-            </p>
-            
-            <a
-              href={channelLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#229ED9] hover:bg-[#1a8ac4] text-white font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-colors text-sm"
-            >
-              <Send className="w-4 h-4" />
-              Join Channel
-            </a>
-            
-            <p className="text-xs text-gray-500 mt-3 sm:mt-4">
-              Click outside to close
-            </p>
-          </div>
+        <div className="flex items-center justify-center gap-3 px-4 py-3">
+          <MessageCircle className="w-5 h-5 text-white flex-shrink-0" />
+          <p className="text-white text-sm font-medium text-center">
+            Join our Telegram for latest movies & web series updates
+          </p>
+          <a
+            href={channelLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 bg-white text-[#229ED9] font-semibold px-3 py-1.5 rounded-full text-xs transition-colors flex-shrink-0"
+          >
+            <Send className="w-3 h-3" />
+            Join
+          </a>
         </div>
       </div>
     </div>
