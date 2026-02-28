@@ -5,14 +5,17 @@ import { Play, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface IframePlayerProps {
-  src?: string;
-  title: string;
+  src?: string; // Embed URL for the video player
+  title: string; // Video title for accessibility
 }
 
 export default function IframePlayer({ src, title }: IframePlayerProps) {
+  // State to track loading status of the iframe
   const [isLoading, setIsLoading] = useState(true);
+  // State to track if video failed to load
   const [hasError, setHasError] = useState(false);
 
+  // Handle case when no streaming link is available
   if (!src) {
     return (
       <div className="relative w-full aspect-video bg-card rounded-2xl border border-border flex items-center justify-center">
@@ -29,7 +32,7 @@ export default function IframePlayer({ src, title }: IframePlayerProps) {
 
   return (
     <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border shadow-2xl">
-      {/* Loading Skeleton */}
+      {/* Loading Skeleton - Shows while iframe is loading */}
       {isLoading && (
         <motion.div
           initial={{ opacity: 1 }}
@@ -43,7 +46,7 @@ export default function IframePlayer({ src, title }: IframePlayerProps) {
         </motion.div>
       )}
 
-      {/* Error State */}
+      {/* Error State - Shows if video fails to load */}
       {hasError && (
         <div className="absolute inset-0 bg-card flex items-center justify-center">
           <div className="text-center p-8">
@@ -56,12 +59,13 @@ export default function IframePlayer({ src, title }: IframePlayerProps) {
         </div>
       )}
 
-      {/* Iframe */}
+      {/* Video Iframe - Embeds the streaming player */}
       <iframe
         src={src}
         title={title}
         className="w-full h-full"
         allowFullScreen
+        // Required permissions for video playback
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         onLoad={() => setIsLoading(false)}
         onError={() => {
