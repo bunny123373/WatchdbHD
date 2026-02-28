@@ -23,6 +23,10 @@ body {
   padding-bottom: 80px;
 }
 
+.lg\:body-pad {
+  padding-top: 80px;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
