@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -217,6 +218,9 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     }
   };
 
+  const searchParams = useSearchParams();
+  const genreFilter = searchParams.get("genre");
+
   const filteredContent = content.filter((item: IContent) => {
     const matchesSearch =
       !search ||
@@ -225,7 +229,11 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
     const matchesType = typeFilter === "all" || item.type === typeFilter;
 
-    return matchesSearch && matchesType;
+    const matchesGenre = !genreFilter || genreFilter === "all" || 
+      item.tags?.some((tag: string) => tag.toLowerCase() === genreFilter.toLowerCase()) ||
+      item.tmdbGenres?.some((g: string) => g.toLowerCase() === genreFilter.toLowerCase());
+
+    return matchesSearch && matchesType && matchesGenre;
   });
 
   const featuredContent = [...filteredContent]
