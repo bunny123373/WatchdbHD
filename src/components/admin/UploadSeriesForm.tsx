@@ -72,7 +72,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
     }
 
     setIsAutoFilling(true);
-    setMessage("");
+    setMessage("Fetching series details...");
 
     try {
       const newSeasons: ISeason[] = [];
@@ -81,47 +81,64 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       const response = await fetch(`/api/tmdb?action=details&type=series&id=${tmdbData.tmdbId}`);
       const data = await response.json();
       
-      if (data.success && data.data.number_of_seasons) {
-        const numSeasons = Math.min(data.data.number_of_seasons, 5); // Limit to 5 seasons
+      console.log("Series details response:", data);
+      
+      if (!data.success) {
+        setMessage("Could not fetch series details from TMDB");
+        setIsAutoFilling(false);
+        return;
+      }
+      
+      // Get seasons from the series data
+      const seasonsData = data.data?.seasons || [];
+      const validSeasons = seasonsData.filter((s: any) => s.season_number > 0); // Exclude special seasons
+      
+      if (validSeasons.length === 0) {
+        setMessage("No seasons found for this series");
+        setIsAutoFilling(false);
+        return;
+      }
+      
+      setMessage(`Auto-filling episodes for ${validSeasons.length} seasons...`);
+      
+      for (const season of validSeasons.slice(0, 5)) { // Limit to 5 seasons
+        const s = season.season_number;
+        const epCount = season.episode_count || 6;
         
-        for (let s = 1; s <= numSeasons; s++) {
-          const episodes = [];
-          const epCount = data.data.seasons?.find((x: any) => x.season_number === s)?.episode_count || 6;
+        const episodes = [];
+        
+        for (let e = 1; e <= Math.min(epCount, 10); e++) {
+          const embedResponse = await fetch("/api/embed", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tmdbId: tmdbData.tmdbId,
+              type: "series",
+              season: s,
+              episode: e,
+            }),
+          });
+          const embedData = await embedResponse.json();
           
-          for (let e = 1; e <= Math.min(epCount, 10); e++) {
-            const embedResponse = await fetch("/api/embed", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                tmdbId: tmdbData.tmdbId,
-                type: "series",
-                season: s,
-                episode: e,
-              }),
-            });
-            const embedData = await embedResponse.json();
-            
-            episodes.push({
-              episodeNumber: e,
-              episodeTitle: `Episode ${e}`,
-              embedIframeLink: embedData.success ? embedData.embedUrl : "",
-              downloadLink: "",
-              quality: "720p",
-            });
-          }
-          
-          newSeasons.push({
-            seasonNumber: s,
-            episodes,
+          episodes.push({
+            episodeNumber: e,
+            episodeTitle: `Episode ${e}`,
+            embedIframeLink: embedData.success ? embedData.embedUrl : "",
+            downloadLink: "",
+            quality: "720p",
           });
         }
         
-        setSeasons(newSeasons);
-        setMessage(`Auto-filled ${numSeasons} seasons with embed links!`);
-      } else {
-        setMessage("Could not fetch series details");
+        newSeasons.push({
+          seasonNumber: s,
+          episodes,
+        });
       }
+      
+      setSeasons(newSeasons);
+      setMessage(`Auto-filled ${newSeasons.length} seasons with embed links!`);
     } catch (error) {
+      console.error("Auto-fill error:", error);
       setMessage("Error auto-filling episodes");
     } finally {
       setIsAutoFilling(false);
