@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Plus, Download, Bookmark } from "lucide-react";
+import { Home, Search, Plus, Download } from "lucide-react";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -33,16 +33,6 @@ export default function BottomNav() {
         >
           <Search className="w-6 h-6" />
           <span className="text-xs mt-1">Search</span>
-        </Link>
-
-        <Link
-          href="/watchlist"
-          className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/watchlist") ? "text-red-600" : "text-gray-400"
-          }`}
-        >
-          <Bookmark className="w-6 h-6" />
-          <span className="text-xs mt-1">Watchlist</span>
         </Link>
 
         <Link
