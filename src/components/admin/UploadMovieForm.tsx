@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, X, Plus, Sparkles, ChevronDown, Check } from "lucide-react";
+import { Upload, X, Plus, Sparkles, ChevronDown, Check, Link } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -90,6 +90,43 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
   const [tagInput, setTagInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
+
+  const handleAutoFillEmbed = async () => {
+    if (!tmdbData.tmdbId) {
+      setMessage("Please search and select a movie from TMDB first");
+      return;
+    }
+
+    setIsAutoFilling(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/embed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tmdbId: tmdbData.tmdbId,
+          type: "movie",
+        }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setFormData((prev) => ({
+          ...prev,
+          embedIframeLink: data.embedUrl,
+        }));
+        setMessage("Embed URL auto-filled successfully!");
+      } else {
+        setMessage(data.error || "Failed to auto-fill embed URL");
+      }
+    } catch (error) {
+      setMessage("Error auto-filling embed URL");
+    } finally {
+      setIsAutoFilling(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -391,13 +428,24 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
 
       {/* Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-        <Input
-          label="Embed Iframe URL (Watch Link)"
-          name="embedIframeLink"
-          value={formData.embedIframeLink}
-          onChange={handleChange}
-          placeholder="https://example.com/embed/..."
-        />
+        <div className="relative">
+          <Input
+            label="Embed Iframe URL (Watch Link)"
+            name="embedIframeLink"
+            value={formData.embedIframeLink}
+            onChange={handleChange}
+            placeholder="https://example.com/embed/..."
+          />
+          <button
+            type="button"
+            onClick={handleAutoFillEmbed}
+            disabled={isAutoFilling || !tmdbData.tmdbId}
+            className="absolute right-2 top-8 flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
+          >
+            <Link className="w-3 h-3" />
+            {isAutoFilling ? "Filling..." : "Auto"}
+          </button>
+        </div>
         <Input
           label="Download URL *"
           name="downloadLink"
