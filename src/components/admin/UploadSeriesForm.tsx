@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, X, Plus, Sparkles, ChevronDown, Check } from "lucide-react";
+import { Upload, X, Plus, Sparkles, ChevronDown, Check, Link } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -18,7 +18,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
   const [showTMDBSearch, setShowTMDBSearch] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
-  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[]; originalLanguage?: string }) => {
+  const handleTMDBFill = (result: { tmdbId?: number; title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[]; originalLanguage?: string }) => {
     const selectedGenres = TMDB_GENRES.filter(g => result.genreIds?.includes(g.id));
     setSelectedGenres(selectedGenres);
     
@@ -50,7 +50,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       tags: result.genres && result.genres.length > 0 ? [...new Set([...prev.tags, ...result.genres])] : prev.tags,
     }));
     setTmdbData({
-      tmdbId: 0,
+      tmdbId: result.tmdbId || 0,
       genreIds: result.genreIds || [],
       genres: result.genres || [],
     });
@@ -62,6 +62,71 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
     genreIds: [] as number[],
     genres: [] as string[],
   });
+
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
+
+  const handleAutoFillEpisodes = async () => {
+    if (!tmdbData.tmdbId) {
+      setMessage("Please search and select a series from TMDB first");
+      return;
+    }
+
+    setIsAutoFilling(true);
+    setMessage("");
+
+    try {
+      const newSeasons: ISeason[] = [];
+      
+      // Fetch TV show details to get number of seasons
+      const response = await fetch(`/api/tmdb?action=details&type=series&id=${tmdbData.tmdbId}`);
+      const data = await response.json();
+      
+      if (data.success && data.data.number_of_seasons) {
+        const numSeasons = Math.min(data.data.number_of_seasons, 5); // Limit to 5 seasons
+        
+        for (let s = 1; s <= numSeasons; s++) {
+          const episodes = [];
+          const epCount = data.data.seasons?.find((x: any) => x.season_number === s)?.episode_count || 6;
+          
+          for (let e = 1; e <= Math.min(epCount, 10); e++) {
+            const embedResponse = await fetch("/api/embed", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                tmdbId: tmdbData.tmdbId,
+                type: "series",
+                season: s,
+                episode: e,
+              }),
+            });
+            const embedData = await embedResponse.json();
+            
+            episodes.push({
+              episodeNumber: e,
+              episodeTitle: `Episode ${e}`,
+              embedIframeLink: embedData.success ? embedData.embedUrl : "",
+              downloadLink: "",
+              quality: "720p",
+            });
+          }
+          
+          newSeasons.push({
+            seasonNumber: s,
+            episodes,
+          });
+        }
+        
+        setSeasons(newSeasons);
+        setMessage(`Auto-filled ${numSeasons} seasons with embed links!`);
+      } else {
+        setMessage("Could not fetch series details");
+      }
+    } catch (error) {
+      setMessage("Error auto-filling episodes");
+    } finally {
+      setIsAutoFilling(false);
+    }
+  };
 
   const [selectedGenres, setSelectedGenres] = useState<{ id: number; name: string }[]>([]);
 
@@ -201,6 +266,16 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         >
           <Sparkles className="w-4 h-4" />
           Auto Fill
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleAutoFillEpisodes}
+          disabled={isAutoFilling || !tmdbData.tmdbId}
+          className="flex items-center gap-2 text-sm"
+        >
+          <Link className="w-4 h-4" />
+          {isAutoFilling ? "Filling..." : "Auto Fill Episodes"}
         </Button>
       </div>
 

@@ -499,6 +499,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, data: results });
     }
 
+    if (action === "details") {
+      const id = searchParams.get("id");
+      if (!id) {
+        return NextResponse.json({ success: false, error: "ID is required" }, { status: 400 });
+      }
+      const tmdbType = type === "series" ? "tv" : "movie";
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${apiKey}&language=en-US`
+        );
+        const data = await response.json();
+        return NextResponse.json({ success: true, data });
+      } catch (error) {
+        console.error("TMDB details error:", error);
+        return NextResponse.json({ success: false, error: "Failed to fetch details" }, { status: 500 });
+      }
+    }
+
     return NextResponse.json({ success: true, data: [] });
   } catch (error) {
     console.error("TMDB search error:", error);
