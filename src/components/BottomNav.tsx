@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Plus, Download } from "lucide-react";
+import { Home, Film, Tv, Download } from "lucide-react";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -31,8 +31,18 @@ export default function BottomNav() {
             isActive("/?type=movie") || isActive("/movie") ? "text-red-600" : "text-gray-400"
           }`}
         >
-          <Search className="w-6 h-6" />
-          <span className="text-xs mt-1">Search</span>
+          <Film className="w-6 h-6" />
+          <span className="text-xs mt-1">Movies</span>
+        </Link>
+
+        <Link
+          href="/?type=series"
+          className={`flex flex-col items-center justify-center w-full h-full ${
+            isActive("/?type=series") || isActive("/series") ? "text-red-600" : "text-gray-400"
+          }`}
+        >
+          <Tv className="w-6 h-6" />
+          <span className="text-xs mt-1">Series</span>
         </Link>
 
         <Link
