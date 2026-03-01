@@ -4,7 +4,7 @@ export interface IEpisode {
   episodeNumber: number;
   episodeTitle: string;
   embedIframeLink?: string;
-  downloadLink: string;
+  downloadLink?: string;
   quality?: string;
 }
 
@@ -63,7 +63,7 @@ const EpisodeSchema = new Schema<IEpisode>({
   episodeNumber: { type: Number, required: true },
   episodeTitle: { type: String, required: true },
   embedIframeLink: { type: String },
-  downloadLink: { type: String, required: true },
+  downloadLink: { type: String },
   quality: { type: String },
 });
 

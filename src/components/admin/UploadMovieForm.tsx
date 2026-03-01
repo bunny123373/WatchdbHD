@@ -447,11 +447,10 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           </button>
         </div>
         <Input
-          label="Download URL *"
+          label="Download URL"
           name="downloadLink"
           value={formData.downloadLink}
           onChange={handleChange}
-          required
           placeholder="https://drive.google.com/..."
         />
       </div>
