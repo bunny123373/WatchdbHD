@@ -1,19 +1,38 @@
 "use client";
 
+import { Suspense, useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
 import { Home, Film, Tv, Download } from "lucide-react";
+import { store } from "@/redux/store";
+import { setTypeFilter } from "@/redux/slices/uiSlice";
+
+function useStore() {
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getState,
+    () => null
+  );
+}
 
 function BottomNavContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const reduxState = useStore();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const type = searchParams.get("type") || "all";
-    setTypeFilter(type);
-  }, [searchParams]);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const type = searchParams.get("type") || "all";
+      store.dispatch(setTypeFilter(type as "all" | "movie" | "series"));
+    }
+  }, [searchParams, mounted]);
+
+  const typeFilter = reduxState?.ui?.typeFilter || "all";
 
   const isActive = (path: string, type?: string) => {
     if (path === "/" && !type) return pathname === "/";
@@ -94,6 +113,16 @@ function BottomNavFallback() {
 }
 
 export default function BottomNav() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <BottomNavFallback />;
+  }
+
   return (
     <Suspense fallback={<BottomNavFallback />}>
       <BottomNavContent />
