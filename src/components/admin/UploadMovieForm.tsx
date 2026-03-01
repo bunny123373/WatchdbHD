@@ -16,7 +16,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
   const [showTMDBSearch, setShowTMDBSearch] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
-  const handleTMDBFill = (result: { title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[]; originalLanguage?: string }) => {
+  const handleTMDBFill = (result: { tmdbId?: number; title: string; poster: string; banner: string; description: string; year: string; rating: number; genreIds?: number[]; genres?: string[]; originalLanguage?: string }) => {
     const selectedGenres = TMDB_GENRES.filter(g => result.genreIds?.includes(g.id));
     setSelectedGenres(selectedGenres);
     
@@ -48,7 +48,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
       tags: result.genres && result.genres.length > 0 ? [...new Set([...prev.tags, ...result.genres])] : prev.tags,
     }));
     setTmdbData({
-      tmdbId: 0,
+      tmdbId: result.tmdbId || 0,
       genreIds: result.genreIds || [],
       genres: result.genres || [],
     });
