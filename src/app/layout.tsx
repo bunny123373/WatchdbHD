@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import { ReduxProvider } from "@/redux/Provider";
 import { SITE_CONFIG } from "@/utils/constants";
 import BottomNav from "@/components/BottomNav";
 import MobileNavbar from "@/components/MobileNavbar";
 import AdPopup from "@/components/AdPopup";
+import ReduxProviderClient from "@/components/ReduxProviderClient";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -84,13 +84,13 @@ export default function RootLayout({
       <head>
       </head>
       <body className={`${inter.className} antialiased`}>
-        <ReduxProvider>
+        <ReduxProviderClient>
           <MobileNavbar />
           <AdPopup />
           <main className="min-h-screen pb-20 pt-14 lg:pt-16">
             {children}
           </main>
-        </ReduxProvider>
+        </ReduxProviderClient>
         <BottomNav />
       </body>
     </html>
