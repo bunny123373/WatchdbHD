@@ -11,7 +11,7 @@ function VerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<"ready" | "verifying" | "verified">("ready");
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(10);
   const adOpenedRef = useRef(false);
   const contentId = searchParams.get("id");
   const contentType = searchParams.get("type") || "movie";
@@ -29,7 +29,7 @@ function VerifyContent() {
       window.open(SMARTLINK_URL, "_blank");
     }
 
-    let seconds = 5;
+    let seconds = 10;
     const countdownInterval = setInterval(() => {
       seconds--;
       setCountdown(seconds);
