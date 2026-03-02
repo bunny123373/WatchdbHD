@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -40,7 +40,23 @@ interface HomeClientProps {
   initialContent: IContent[];
 }
 
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#e50914]"></div>
+    </div>
+  );
+}
+
 export default function HomeClient({ initialContent }: HomeClientProps) {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <HomeClientContent initialContent={initialContent} />
+    </Suspense>
+  );
+}
+
+function HomeClientContent({ initialContent }: HomeClientProps) {
   const router = useRouter();
   const [isVerified, setIsVerified] = useState(false);
   const [verifyStatus, setVerifyStatus] = useState<"ready" | "verifying" | "verified">("ready");
