@@ -11,7 +11,6 @@ import ContentDetailModal from "@/components/ContentDetailModal";
 import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
-import TelegramPopup from "@/components/TelegramPopup";
 import GenreFilter from "@/components/GenreFilter";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useAppSelector } from "@/redux/hooks";
@@ -460,8 +459,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           </div>
         )}
       </div>
-
-      <TelegramPopup channelLink="https://t.me/telugudbmovies1" />
 
       <ContentDetailModal content={selectedContent} isOpen={!!selectedContent} onClose={handleCloseModal} />
 
