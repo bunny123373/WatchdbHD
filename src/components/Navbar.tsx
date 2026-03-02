@@ -100,8 +100,8 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Home", type: "all" },
-    { href: "/?type=series", label: "TV Shows", type: "series" },
-    { href: "/?type=movie", label: "Movies", type: "movie" },
+    { href: "/all-series", label: "TV Shows", type: "series" },
+    { href: "/movies", label: "Movies", type: "movie" },
     { href: "/request", label: "Request", type: "request" },
   ];
 
@@ -155,10 +155,9 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => handleTypeFilter(link.type)}
                   className={cn(
                     "text-xs sm:text-sm transition-colors hover:text-white",
-                    typeFilter === link.type || (pathname === "/" && link.type === "all")
+                    pathname === link.href || (pathname === "/" && link.type === "all")
                       ? "text-white font-medium"
                       : "text-gray-300"
                   )}
@@ -340,13 +339,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => {
-                  handleTypeFilter(link.type);
-                  setIsMobileMenuOpen(false);
-                }}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
                   "block text-sm sm:text-base py-2 transition-colors hover:text-white",
-                  typeFilter === link.type ? "text-white font-medium" : "text-gray-400"
+                  pathname === link.href ? "text-white font-medium" : "text-gray-400"
                 )}
               >
                 {link.label}

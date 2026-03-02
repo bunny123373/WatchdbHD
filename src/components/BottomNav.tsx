@@ -54,9 +54,9 @@ function BottomNavContent() {
         </Link>
 
         <Link
-          href="/?type=movie"
+          href="/movies"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/", "movie") ? "text-red-600" : "text-gray-400"
+            isActive("/movies") ? "text-red-600" : "text-gray-400"
           }`}
         >
           <Film className="w-6 h-6" />
@@ -64,9 +64,9 @@ function BottomNavContent() {
         </Link>
 
         <Link
-          href="/?type=series"
+          href="/all-series"
           className={`flex flex-col items-center justify-center w-full h-full ${
-            isActive("/", "series") ? "text-red-600" : "text-gray-400"
+            isActive("/all-series") ? "text-red-600" : "text-gray-400"
           }`}
         >
           <Tv className="w-6 h-6" />
