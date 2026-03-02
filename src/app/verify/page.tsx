@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Loader2, Play, ArrowLeft } from "lucide-react";
+import { Shield, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7b5de9ec7c78ffb0dc437430";
@@ -10,83 +10,79 @@ const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7
 export default function VerifyPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [status, setStatus] = useState<"loading" | "verified" | "redirecting">("loading");
+  const [status, setStatus] = useState<"ready" | "verifying" | "verified">("ready");
   const [countdown, setCountdown] = useState(5);
   const adOpenedRef = useRef(false);
   const contentId = searchParams.get("id");
   const contentType = searchParams.get("type") || "movie";
 
-  useEffect(() => {
-    if (!contentId) {
-      router.push("/");
-      return;
+  if (!contentId) {
+    router.push("/");
+    return null;
+  }
+
+  const handleVerify = () => {
+    setStatus("verifying");
+    
+    if (!adOpenedRef.current) {
+      adOpenedRef.current = true;
+      window.open(SMARTLINK_URL, "_blank");
     }
 
-    const openSmartLink = () => {
-      if (!adOpenedRef.current) {
-        adOpenedRef.current = true;
-        window.open(SMARTLINK_URL, "_blank");
-      }
-    };
-
-    const verifyAndRedirect = () => {
-      setStatus("verified");
-      
-      let seconds = 5;
-      const countdownInterval = setInterval(() => {
-        seconds--;
-        setCountdown(seconds);
-        if (seconds <= 0) {
-          clearInterval(countdownInterval);
-          setStatus("redirecting");
+    let seconds = 5;
+    const countdownInterval = setInterval(() => {
+      seconds--;
+      setCountdown(seconds);
+      if (seconds <= 0) {
+        clearInterval(countdownInterval);
+        setStatus("verified");
+        setTimeout(() => {
           const redirectPath = contentType === "series" 
             ? `/series/watch/${contentId}`
             : `/watch/${contentId}`;
           router.push(redirectPath);
-        }
-      }, 1000);
-    };
-
-    setTimeout(() => {
-      openSmartLink();
-      verifyAndRedirect();
-    }, 1500);
-
-  }, [contentId, contentType, router]);
+        }, 1000);
+      }
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen bg-[#141414] flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="bg-[#1f1f1f] rounded-2xl p-8 text-center">
-          {status === "loading" && (
+          {status === "ready" && (
+            <>
+              <div className="w-20 h-20 bg-[#e50914]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Shield className="w-10 h-10 text-[#e50914]" />
+              </div>
+              <h1 className="text-2xl font-bold text-white mb-2">Verification Required</h1>
+              <p className="text-gray-400 mb-6">Click verify to access the content</p>
+              <button
+                onClick={handleVerify}
+                className="w-full py-3 px-6 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <Shield className="w-5 h-5" />
+                Verify Now
+              </button>
+            </>
+          )}
+
+          {status === "verifying" && (
             <>
               <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
               <h1 className="text-2xl font-bold text-white mb-2">Verifying...</h1>
-              <p className="text-gray-400">Please wait while we verify your access</p>
+              <p className="text-gray-400 mb-4">Please complete the verification</p>
+              <p className="text-sm text-gray-500">Redirecting in {countdown} seconds...</p>
             </>
           )}
 
           {status === "verified" && (
             <>
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Play className="w-8 h-8 text-green-500 fill-current" />
+                <Shield className="w-8 h-8 text-green-500" />
               </div>
               <h1 className="text-2xl font-bold text-white mb-2">Verified!</h1>
-              <p className="text-gray-400 mb-4">Redirecting in {countdown} seconds...</p>
-              <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden">
-                <div 
-                  className="bg-green-500 h-full transition-all duration-1000"
-                  style={{ width: `${((5 - countdown) / 5) * 100}%` }}
-                />
-              </div>
-            </>
-          )}
-
-          {status === "redirecting" && (
-            <>
-              <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
-              <h1 className="text-2xl font-bold text-white mb-2">Opening Player...</h1>
-              <p className="text-gray-400">Taking you to the movie</p>
+              <p className="text-gray-400">Opening player...</p>
             </>
           )}
         </div>
