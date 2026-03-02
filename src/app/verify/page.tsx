@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { Suspense, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Shield, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7b5de9ec7c78ffb0dc437430";
 
-export default function VerifyPage() {
+function VerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<"ready" | "verifying" | "verified">("ready");
@@ -95,5 +95,26 @@ export default function VerifyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingState() {
+  return (
+    <div className="min-h-screen bg-[#141414] flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        <div className="bg-[#1f1f1f] rounded-2xl p-8 text-center">
+          <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
+          <h1 className="text-2xl font-bold text-white mb-2">Loading...</h1>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <VerifyContent />
+    </Suspense>
   );
 }
