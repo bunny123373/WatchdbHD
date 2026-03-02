@@ -15,6 +15,7 @@ function VerifyContent() {
   const verify = () => {
     setOpened(true);
     window.open(SMARTLINK_URL, "_blank");
+    localStorage.setItem("watchdb_verified", "true");
   };
 
   useEffect(() => {
@@ -22,19 +23,18 @@ function VerifyContent() {
     const contentType = searchParams.get("type") || "movie";
     const downloadUrl = searchParams.get("url");
 
-    if (!contentId) {
-      router.push("/");
-      return;
-    }
-
     const focusBack = () => {
       if (opened) {
-        if (contentType === "download" && downloadUrl) {
-          window.location.href = decodeURIComponent(downloadUrl);
-        } else if (contentType === "series") {
-          router.push(`/series/watch/${contentId}`);
+        if (contentId) {
+          if (contentType === "download" && downloadUrl) {
+            window.location.href = decodeURIComponent(downloadUrl);
+          } else if (contentType === "series") {
+            router.push(`/series/watch/${contentId}`);
+          } else {
+            router.push(`/watch/${contentId}`);
+          }
         } else {
-          router.push(`/watch/${contentId}`);
+          router.push("/");
         }
       }
     };
