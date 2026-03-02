@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -38,22 +38,6 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialContent }: HomeClientProps) {
-  const router = useRouter();
-  const [verified, setVerified] = useState(false);
-
-  useEffect(() => {
-    const isVerified = localStorage.getItem("watchdb_verified");
-    if (isVerified !== "true") {
-      router.push("/verify");
-    } else {
-      setVerified(true);
-    }
-  }, [router]);
-
-  if (!verified) {
-    return null;
-  }
-
   const [content, setContent] = useState<IContent[]>(initialContent);
   const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
   const [movieGenres, setMovieGenres] = useState<Genre[]>([]);
