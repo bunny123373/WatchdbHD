@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
 import { SITE_CONFIG } from "@/utils/constants";
 import BottomNav from "@/components/BottomNav";
@@ -87,9 +86,7 @@ export default function RootLayout({
         <ReduxProviderClient>
           <MobileNavbar />
           <main className="min-h-screen pb-20 pt-14 lg:pt-16">
-            <Suspense fallback={<div className="min-h-screen bg-[#141414]"></div>}>
-              {children}
-            </Suspense>
+            {children}
           </main>
         </ReduxProviderClient>
         <BottomNav />
