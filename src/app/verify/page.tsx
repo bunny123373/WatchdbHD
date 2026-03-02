@@ -91,48 +91,75 @@ function VerifyContent() {
 
 .container{
 height:100vh;
-background:#0b0b0b;
+width:100%;
+background:linear-gradient(180deg, #0b0b0b 0%, #1a1a1a 100%);
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:sans-serif;
+font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 color:white;
+padding:20px;
+box-sizing:border-box;
 }
 
 .card{
-background:#161616;
-padding:40px;
-border-radius:12px;
+background:linear-gradient(145deg, #1c1c1c, #141414);
+padding:clamp(24px, 5vw, 48px);
+border-radius:clamp(10px, 3vw, 16px);
 text-align:center;
-width:90%;
+width:100%;
 max-width:380px;
+box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+border:1px solid #2a2a2a;
 }
 
 h1{
 margin-bottom:12px;
+font-weight:700;
+font-size:clamp(20px, 5vw, 28px);
+line-height:1.3;
+}
+
+h2{
+margin-bottom:12px;
 font-weight:600;
+font-size:clamp(18px, 4vw, 24px);
 }
 
 p{
-opacity:.7;
-margin-bottom:25px;
+opacity:0.7;
+margin-bottom:clamp(20px, 4vw, 28px);
+font-size:clamp(13px, 3vw, 15px);
+line-height:1.5;
 }
 
 button{
-background:#e50914;
+background:linear-gradient(135deg, #e50914 0%, #b2070f 100%);
 border:none;
-padding:14px 28px;
-font-size:16px;
+padding:clamp(14px, 3vw, 18px) clamp(24px, 5vw, 36px);
+font-size:clamp(14px, 3vw, 17px);
+font-weight:600;
 color:white;
-border-radius:6px;
+border-radius:clamp(6px, 2vw, 10px);
 cursor:pointer;
+transition:all 0.2s ease;
+box-shadow:0 4px 15px rgba(229, 9, 20, 0.3);
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 20px rgba(229, 9, 20, 0.4);
+}
+
+button:active{
+transform:translateY(0);
 }
 
 .loader{
-width:40px;
-height:40px;
-border:4px solid #333;
-border-top:4px solid white;
+width:clamp(36px, 8vw, 48px);
+height:clamp(36px, 8vw, 48px);
+border:3px solid #333;
+border-top:3px solid #e50914;
 border-radius:50%;
 margin:0 auto 20px;
 animation:spin 1s linear infinite;
@@ -152,25 +179,47 @@ function Loading() {
   return (
     <div className="container">
       <div className="card">
+        <div className="loader"></div>
         <p>Loading...</p>
       </div>
       <style jsx>{`
         .container{
           height:100vh;
-          background:#0b0b0b;
+          width:100%;
+          background:linear-gradient(180deg, #0b0b0b 0%, #1a1a1a 100%);
           display:flex;
           justify-content:center;
           align-items:center;
-          font-family:sans-serif;
+          font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           color:white;
+          padding:20px;
+          box-sizing:border-box;
         }
         .card{
-          background:#161616;
-          padding:40px;
-          border-radius:12px;
+          background:linear-gradient(145deg, #1c1c1c, #141414);
+          padding:clamp(24px, 5vw, 48px);
+          border-radius:clamp(10px, 3vw, 16px);
           text-align:center;
-          width:90%;
+          width:100%;
           max-width:380px;
+          box-shadow:0 8px 32px rgba(0,0,0,0.4);
+          border:1px solid #2a2a2a;
+        }
+        .loader{
+          width:clamp(36px, 8vw, 48px);
+          height:clamp(36px, 8vw, 48px);
+          border:3px solid #333;
+          border-top:3px solid #e50914;
+          border-radius:50%;
+          margin:0 auto 20px;
+          animation:spin 1s linear infinite;
+        }
+        @keyframes spin{
+          100%{transform:rotate(360deg);}
+        }
+        p{
+          font-size:clamp(14px, 3vw, 16px);
+          opacity:0.7;
         }
       `}</style>
     </div>
