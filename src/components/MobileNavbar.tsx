@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, X, Film, Tv, Clock, TrendingUp } from "lucide-react";
+import LanguageSelector from "@/components/LanguageSelector";
 
 interface SearchResult {
   _id: string;
@@ -242,7 +243,11 @@ export default function MobileNavbar() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <LanguageSelector />
+            <Link href="/request" className="p-2 hover:bg-white/10 rounded-full transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </Link>
             <button
               onClick={() => setIsSearchActive(true)}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
