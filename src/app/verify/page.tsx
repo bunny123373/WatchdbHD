@@ -27,13 +27,13 @@ function VerifyContent() {
 
   useEffect(() => {
     let countdownInterval: NodeJS.Timeout;
-    let redirectTimeout: NodeJS.Timeout;
 
     const handleVerification = () => {
       if (step === "verifying") {
         setStep("done");
         
-        redirectTimeout = setTimeout(() => {
+        // Immediately redirect after showing done
+        setTimeout(() => {
           const contentId = searchParams.get("id");
           const contentType = searchParams.get("type") || "movie";
           const downloadUrl = searchParams.get("url");
@@ -42,14 +42,14 @@ function VerifyContent() {
             window.location.href = decodeURIComponent(downloadUrl);
           } else if (contentId) {
             if (contentType === "series") {
-              router.push(`/series/watch/${contentId}`);
+              window.location.href = `/series/watch/${contentId}`;
             } else {
-              router.push(`/watch/${contentId}`);
+              window.location.href = `/watch/${contentId}`;
             }
           } else {
-            router.push("/");
+            window.location.href = "/";
           }
-        }, 5000);
+        }, 1500);
       }
     };
 
@@ -81,7 +81,6 @@ function VerifyContent() {
       window.removeEventListener("focus", handleVerification);
       document.removeEventListener("visibilitychange", handleVisibility);
       if (countdownInterval) clearInterval(countdownInterval);
-      if (redirectTimeout) clearTimeout(redirectTimeout);
     };
   }, [step, searchParams, router]);
 
