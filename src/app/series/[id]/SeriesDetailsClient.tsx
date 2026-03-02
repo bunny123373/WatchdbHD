@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Plus, ThumbsUp, Share } from "lucide-react";
+import { Play, Plus, ThumbsUp } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
+import ShareButton from "@/components/ShareButton";
+import ReviewSection from "@/components/ReviewSection";
 
 interface SeriesDetailsClientProps {
   series: IContent;
@@ -19,24 +21,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
   const [series, setSeries] = useState<IContent>(initialSeries);
   const [similarSeries, setSimilarSeries] = useState<IContent[]>(initialSimilar);
   const [loading, setLoading] = useState(false);
-
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: series.title,
-          text: `Watch ${series.title}`,
-          url,
-        });
-      } catch (err) {
-        console.log("Error sharing:", err);
-      }
-    } else {
-      navigator.clipboard.writeText(url);
-      alert("Link copied to clipboard!");
-    }
-  };
 
   return (
     <main className="min-h-screen bg-[#141414]">
@@ -148,13 +132,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                     <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
                     <span className="text-sm sm:text-base">Watch Now</span>
                   </Link>
-                  <button
-                    onClick={handleShare}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-md transition-colors"
-                  >
-                    <Share className="w-5 h-5" />
-                    <span className="text-sm sm:text-base">Share</span>
-                  </button>
+                  <ShareButton title={series.title} />
                 </div>
               </div>
             </div>
@@ -194,6 +172,11 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
             <ContentGrid title="" items={similarSeries} isNetflixStyle />
           </div>
         )}
+      </div>
+
+      {/* Reviews */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        <ReviewSection contentId={series._id} />
       </div>
 
       <Footer />

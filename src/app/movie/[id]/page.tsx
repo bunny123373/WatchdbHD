@@ -9,6 +9,8 @@ import Content from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
+import ShareButton from "@/components/ShareButton";
+import ReviewSection from "@/components/ReviewSection";
 import { SITE_CONFIG } from "@/utils/constants";
 
 async function getMovie(id: string) {
@@ -270,6 +272,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                     <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span className="text-sm sm:text-base">Download</span>
                   </Link>
+                  <ShareButton title={movie.title} />
                 </div>
               </div>
             </div>
@@ -285,6 +288,11 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
             <ContentGrid title="" items={similarMovies} isNetflixStyle />
           </div>
         )}
+      </div>
+
+      {/* Reviews */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        <ReviewSection contentId={id} />
       </div>
 
       <Footer />
