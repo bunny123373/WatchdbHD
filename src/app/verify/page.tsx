@@ -16,7 +16,7 @@ function VerifyContent() {
 
   const startVerify = () => {
     setStep("verifying");
-    setCountdown(5);
+    setCountdown(15);
     window.open(SMARTLINK_URL, "_blank");
     localStorage.setItem("watchdb_verified", "true");
 
