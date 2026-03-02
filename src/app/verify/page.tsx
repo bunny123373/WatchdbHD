@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -9,18 +9,31 @@ const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7
 
 function VerifyContent() {
   const [step, setStep] = useState("idle");
+  const [countdown, setCountdown] = useState(5);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const startVerify = () => {
     setStep("verifying");
+    setCountdown(5);
     window.open(SMARTLINK_URL, "_blank");
     localStorage.setItem("watchdb_verified", "true");
+
+    timerRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   useEffect(() => {
     const backDetect = () => {
-      if (step === "verifying") {
+      if (step === "verifying" && countdown === 0) {
         setStep("done");
         
         setTimeout(() => {
@@ -45,7 +58,7 @@ function VerifyContent() {
 
     window.addEventListener("focus", backDetect);
     return () => window.removeEventListener("focus", backDetect);
-  }, [step, searchParams, router]);
+  }, [step, countdown, searchParams, router]);
 
   return (
     <div className="container">
@@ -67,8 +80,9 @@ function VerifyContent() {
 
         {step === "verifying" && (
           <>
-            <div className="loader"></div>
-            <h2>Verifying...</h2>
+            <div className="countdown">{countdown}</div>
+            <h2>Please wait...</h2>
+            <p>Opening in {countdown} seconds</p>
             <p>Switch to the ad tab and come back here</p>
           </>
         )}
@@ -196,6 +210,19 @@ animation:spin 1s linear infinite;
 
 @keyframes spin{
 100%{transform:rotate(360deg);}
+}
+
+.countdown{
+font-size:clamp(48px, 12vw, 72px);
+font-weight:700;
+color:#e50914;
+margin-bottom:10px;
+animation:pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse{
+0%, 100%{transform:scale(1);}
+50%{transform:scale(1.1);}
 }
 
 `}</style>
