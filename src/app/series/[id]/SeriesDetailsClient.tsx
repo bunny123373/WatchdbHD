@@ -142,7 +142,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                 {/* Actions */}
                 <div className="flex flex-wrap gap-3 sm:gap-4">
                   <Link
-                    href={`/series/watch/${series._id}`}
+                    href={`/verify?id=${series._id}&type=series`}
                     className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-md transition-colors"
                   >
                     <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
@@ -175,7 +175,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
           <div className="text-center py-8">
             <p className="text-gray-400 mb-4">No episodes available</p>
             <Link
-              href={`/series/watch/${series._id}`}
+              href={`/verify?id=${series._id}&type=series`}
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-md transition-colors"
             >
               <Play className="w-5 h-5 fill-current" />

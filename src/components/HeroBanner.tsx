@@ -14,7 +14,7 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
   if (!content) return null;
 
   const isMovie = content.type === "movie";
-  const watchLink = isMovie ? `/watch/${content._id}` : `/series/watch/${content._id}`;
+  const watchLink = isMovie ? `/verify?id=${content._id}&type=movie` : `/verify?id=${content._id}&type=series`;
   const detailLink = isMovie ? `/movie/${content._id}` : `/series/${content._id}`;
   
   const getBannerUrl = (url: string) => {

@@ -255,14 +255,14 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                 {/* Actions */}
                 <div className="flex flex-wrap gap-3 sm:gap-4">
                   <Link
-                    href={`/watch/${movie._id}`}
+                    href={`/verify?id=${movie._id}&type=movie`}
                     className="flex items-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-all transform hover:scale-105"
                   >
                     <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
                     <span className="text-sm sm:text-base">Watch Now</span>
                   </Link>
                   <Link
-                    href={`/watch/${movie._id}`}
+                    href={`/verify?id=${movie._id}&type=movie`}
                     className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-gray-700/80 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
                   >
                     <Play className="w-5 h-5 sm:w-6 sm:h-6" />
