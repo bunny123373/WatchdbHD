@@ -9,19 +9,27 @@ const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7
 
 function VerifyContent() {
   const [step, setStep] = useState("idle");
+  const [countdown, setCountdown] = useState(5);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const startVerify = () => {
     setStep("verifying");
-    window.open(SMARTLINK_URL, "_blank");
+    
+    // Try popup, fallback for mobile
+    const popup = window.open(SMARTLINK_URL, "_blank");
+    if (!popup || popup.closed || typeof popup.closed === "undefined") {
+      window.location.href = SMARTLINK_URL;
+    }
+    
     localStorage.setItem("watchdb_verified", "true");
   };
 
   useEffect(() => {
+    let countdownInterval: NodeJS.Timeout;
     let redirectTimeout: NodeJS.Timeout;
 
-    const backDetect = () => {
+    const handleVerification = () => {
       if (step === "verifying") {
         setStep("done");
         
@@ -45,9 +53,34 @@ function VerifyContent() {
       }
     };
 
-    window.addEventListener("focus", backDetect);
+    // Countdown timer
+    if (step === "verifying") {
+      countdownInterval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    // Detect when user returns to tab (works on mobile)
+    window.addEventListener("focus", handleVerification);
+    
+    // Also detect visibility change as backup
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && step === "verifying") {
+        handleVerification();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    
     return () => {
-      window.removeEventListener("focus", backDetect);
+      window.removeEventListener("focus", handleVerification);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      if (countdownInterval) clearInterval(countdownInterval);
       if (redirectTimeout) clearTimeout(redirectTimeout);
     };
   }, [step, searchParams, router]);
@@ -65,9 +98,9 @@ function VerifyContent() {
 
         {step === "verifying" && (
           <>
-            <div className="spinner"></div>
+            <div className="countdown">{countdown}</div>
             <h2>Verifying...</h2>
-            <p>Switch to the ad tab, watch the ad, then come back here</p>
+            <p>Please wait {countdown} seconds</p>
           </>
         )}
 
@@ -142,6 +175,12 @@ function VerifyContent() {
         }
         @keyframes spin{
           100%{transform:rotate(360deg);}
+        }
+        .countdown{
+          font-size:clamp(48px, 12vw, 72px);
+          font-weight:700;
+          color:#e50914;
+          margin-bottom:10px;
         }
       `}</style>
     </div>
