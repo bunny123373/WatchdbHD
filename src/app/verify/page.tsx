@@ -90,8 +90,9 @@ function VerifyContent() {
 <style jsx>{`
 
 .container{
-height:100vh;
+min-height:100vh;
 width:100%;
+min-height:100dvh;
 background:linear-gradient(180deg, #0b0b0b 0%, #1a1a1a 100%);
 display:flex;
 justify-content:center;
@@ -100,6 +101,39 @@ font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 color:white;
 padding:20px;
 box-sizing:border-box;
+overflow-y:auto;
+}
+
+.card{
+background:linear-gradient(145deg, #1c1c1c, #141414);
+padding:clamp(24px, 5vw, 48px);
+border-radius:clamp(10px, 3vw, 16px);
+text-align:center;
+width:100%;
+max-width:380px;
+box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+border:1px solid #2a2a2a;
+margin:auto;
+}
+
+h1{
+margin-bottom:12px;
+font-weight:700;
+font-size:clamp(20px, 5vw, 28px);
+line-height:1.3;
+}
+
+h2{
+margin-bottom:12px;
+font-weight:600;
+font-size:clamp(18px, 4vw, 24px);
+}
+
+p{
+opacity:.7;
+margin-bottom:clamp(20px, 4vw, 28px);
+font-size:clamp(13px, 3vw, 15px);
+line-height:1.5;
 }
 
 .card{
@@ -184,8 +218,9 @@ function Loading() {
       </div>
       <style jsx>{`
         .container{
-          height:100vh;
+          min-height:100vh;
           width:100%;
+          min-height:100dvh;
           background:linear-gradient(180deg, #0b0b0b 0%, #1a1a1a 100%);
           display:flex;
           justify-content:center;
@@ -194,6 +229,7 @@ function Loading() {
           color:white;
           padding:20px;
           box-sizing:border-box;
+          overflow-y:auto;
         }
         .card{
           background:linear-gradient(145deg, #1c1c1c, #141414);
@@ -203,6 +239,9 @@ function Loading() {
           width:100%;
           max-width:380px;
           box-shadow:0 8px 32px rgba(0,0,0,0.4);
+          border:1px solid #2a2a2a;
+          margin:auto;
+        }
           border:1px solid #2a2a2a;
         }
         .loader{
