@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,9 +14,6 @@ import TMDBContentGrid from "@/components/TMDBContentGrid";
 import GenreFilter from "@/components/GenreFilter";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useAppSelector } from "@/redux/hooks";
-import { Shield, Loader2 } from "lucide-react";
-
-const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7b5de9ec7c78ffb0dc437430";
 
 interface Genre {
   id: number;
@@ -41,95 +38,6 @@ interface HomeClientProps {
 }
 
 export default function HomeClient({ initialContent }: HomeClientProps) {
-  const router = useRouter();
-  const [isVerified, setIsVerified] = useState(false);
-  const [verifyStatus, setVerifyStatus] = useState<"ready" | "verifying" | "verified">("ready");
-  const [countdown, setCountdown] = useState(10);
-  const adOpenedRef = useRef(false);
-  const searchParams = useSearchParams();
-  const bypass = searchParams.get("bypass");
-
-  useEffect(() => {
-    if (bypass === "1") {
-      setIsVerified(true);
-      return;
-    }
-
-    const verified = localStorage.getItem("watchdb_verified");
-    if (verified === "true") {
-      setIsVerified(true);
-    }
-  }, [bypass]);
-
-  const handleVerify = () => {
-    setVerifyStatus("verifying");
-    
-    if (!adOpenedRef.current) {
-      adOpenedRef.current = true;
-      window.open(SMARTLINK_URL, "_blank");
-    }
-
-    let seconds = 10;
-    const countdownInterval = setInterval(() => {
-      seconds--;
-      setCountdown(seconds);
-      if (seconds <= 0) {
-        clearInterval(countdownInterval);
-        setVerifyStatus("verified");
-        localStorage.setItem("watchdb_verified", "true");
-        setTimeout(() => {
-          setIsVerified(true);
-        }, 1000);
-      }
-    }, 1000);
-  };
-
-  if (!isVerified) {
-    return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <div className="bg-[#1f1f1f] rounded-2xl p-8 text-center">
-            {verifyStatus === "ready" && (
-              <>
-                <div className="w-20 h-20 bg-[#e50914]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Shield className="w-10 h-10 text-[#e50914]" />
-                </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Verification Required</h1>
-                <p className="text-gray-400 mb-6">Click verify to access the website</p>
-                <button
-                  onClick={handleVerify}
-                  className="w-full py-3 px-6 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
-                  <Shield className="w-5 h-5" />
-                  Verify Now
-                </button>
-              </>
-            )}
-
-            {verifyStatus === "verifying" && (
-              <>
-                <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
-                <h1 className="text-2xl font-bold text-white mb-2">Verifying...</h1>
-                <p className="text-gray-400 mb-4">Please complete the verification</p>
-                <p className="text-sm text-gray-500">Redirecting in {countdown} seconds...</p>
-              </>
-            )}
-
-            {verifyStatus === "verified" && (
-              <>
-                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Shield className="w-8 h-8 text-green-500" />
-                </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Verified!</h1>
-                <p className="text-gray-400">Loading website...</p>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const [content, setContent] = useState<IContent[]>(initialContent);
   const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
   const [movieGenres, setMovieGenres] = useState<Genre[]>([]);
@@ -167,6 +75,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const [loadingTmdb, setLoadingTmdb] = useState(true);
   const [tmdbError, setTmdbError] = useState("");
   const { search, typeFilter } = useAppSelector((state) => state.ui);
+  const searchParams = useSearchParams();
+  const genreFilter = searchParams.get("genre");
 
   useEffect(() => {
     if (initialContent.length === 0) {
@@ -309,8 +219,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       console.error("Failed to fetch content:", error);
     }
   };
-
-  const genreFilter = searchParams.get("genre");
 
   const filteredContent = content.filter((item: IContent) => {
     const matchesSearch =
