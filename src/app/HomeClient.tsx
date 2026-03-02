@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -40,23 +40,7 @@ interface HomeClientProps {
   initialContent: IContent[];
 }
 
-function LoadingFallback() {
-  return (
-    <div className="min-h-screen bg-[#141414] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#e50914]"></div>
-    </div>
-  );
-}
-
 export default function HomeClient({ initialContent }: HomeClientProps) {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <HomeClientContent initialContent={initialContent} />
-    </Suspense>
-  );
-}
-
-function HomeClientContent({ initialContent }: HomeClientProps) {
   const router = useRouter();
   const [isVerified, setIsVerified] = useState(false);
   const [verifyStatus, setVerifyStatus] = useState<"ready" | "verifying" | "verified">("ready");
@@ -74,8 +58,6 @@ function HomeClientContent({ initialContent }: HomeClientProps) {
     const verified = localStorage.getItem("watchdb_verified");
     if (verified === "true") {
       setIsVerified(true);
-    } else {
-      handleVerify();
     }
   }, [bypass]);
 
@@ -109,8 +91,18 @@ function HomeClientContent({ initialContent }: HomeClientProps) {
           <div className="bg-[#1f1f1f] rounded-2xl p-8 text-center">
             {verifyStatus === "ready" && (
               <>
-                <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
-                <h1 className="text-2xl font-bold text-white mb-2">Loading...</h1>
+                <div className="w-20 h-20 bg-[#e50914]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-10 h-10 text-[#e50914]" />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-2">Verification Required</h1>
+                <p className="text-gray-400 mb-6">Click verify to access the website</p>
+                <button
+                  onClick={handleVerify}
+                  className="w-full py-3 px-6 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <Shield className="w-5 h-5" />
+                  Verify Now
+                </button>
               </>
             )}
 
@@ -119,14 +111,17 @@ function HomeClientContent({ initialContent }: HomeClientProps) {
                 <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
                 <h1 className="text-2xl font-bold text-white mb-2">Verifying...</h1>
                 <p className="text-gray-400 mb-4">Please complete the verification</p>
-                <p className="text-sm text-gray-500">Opening in {countdown} seconds...</p>
+                <p className="text-sm text-gray-500">Redirecting in {countdown} seconds...</p>
               </>
             )}
 
             {verifyStatus === "verified" && (
               <>
-                <Loader2 className="w-16 h-16 text-[#e50914] animate-spin mx-auto mb-6" />
-                <h1 className="text-2xl font-bold text-white mb-2">Loading Website...</h1>
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-8 h-8 text-green-500" />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-2">Verified!</h1>
+                <p className="text-gray-400">Loading website...</p>
               </>
             )}
           </div>
