@@ -15,6 +15,7 @@ function VerifyContent() {
   const adOpenedRef = useRef(false);
   const contentId = searchParams.get("id");
   const contentType = searchParams.get("type") || "movie";
+  const downloadUrl = searchParams.get("url");
 
   if (!contentId) {
     router.push("/");
@@ -37,10 +38,13 @@ function VerifyContent() {
         clearInterval(countdownInterval);
         setStatus("verified");
         setTimeout(() => {
-          const redirectPath = contentType === "series" 
-            ? `/series/watch/${contentId}`
-            : `/watch/${contentId}`;
-          router.push(redirectPath);
+          if (contentType === "download" && downloadUrl) {
+            window.location.href = decodeURIComponent(downloadUrl);
+          } else if (contentType === "series") {
+            router.push(`/series/watch/${contentId}`);
+          } else {
+            router.push(`/watch/${contentId}`);
+          }
         }, 1000);
       }
     }, 1000);

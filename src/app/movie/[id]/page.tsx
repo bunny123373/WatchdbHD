@@ -262,8 +262,10 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                     <span className="text-sm sm:text-base">Watch Now</span>
                   </Link>
                   <Link
-                    href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-gray-700/80 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+                    href={movie.downloadLink ? `/verify?id=${movie._id}&type=download&url=${encodeURIComponent(movie.downloadLink)}` : "#"}
+                    target={movie.downloadLink ? "_blank" : "_self"}
+                    rel="noopener noreferrer"
+                    className={`flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 font-medium rounded-lg transition-colors ${movie.downloadLink ? 'bg-gray-700/80 hover:bg-gray-600' : 'bg-gray-800 cursor-not-allowed opacity-50'}`}
                   >
                     <Play className="w-5 h-5 sm:w-6 sm:h-6" />
                     <span className="text-sm sm:text-base">Download</span>
