@@ -13,38 +13,33 @@ function VerifyContent() {
   const router = useRouter();
 
   const startVerify = () => {
-    setStep("ad");
+    setStep("verifying");
     window.open(SMARTLINK_URL, "_blank");
     localStorage.setItem("watchdb_verified", "true");
   };
 
   useEffect(() => {
     const backDetect = () => {
-      if (step === "ad") {
-        setStep("loading");
-
+      if (step === "verifying") {
+        setStep("done");
+        
         setTimeout(() => {
-          setStep("done");
+          const contentId = searchParams.get("id");
+          const contentType = searchParams.get("type") || "movie";
+          const downloadUrl = searchParams.get("url");
 
-          setTimeout(() => {
-            const contentId = searchParams.get("id");
-            const contentType = searchParams.get("type") || "movie";
-            const downloadUrl = searchParams.get("url");
-
-            if (contentType === "download" && downloadUrl) {
-              window.location.href = decodeURIComponent(downloadUrl);
-            } else if (contentId) {
-              if (contentType === "series") {
-                router.push(`/series/watch/${contentId}`);
-              } else {
-                router.push(`/watch/${contentId}`);
-              }
+          if (contentType === "download" && downloadUrl) {
+            window.location.href = decodeURIComponent(downloadUrl);
+          } else if (contentId) {
+            if (contentType === "series") {
+              router.push(`/series/watch/${contentId}`);
             } else {
-              router.push("/");
+              router.push(`/watch/${contentId}`);
             }
-          }, 2000);
-
-        }, 10000);
+          } else {
+            router.push("/");
+          }
+        }, 1500);
       }
     };
 
@@ -70,11 +65,11 @@ function VerifyContent() {
           </>
         )}
 
-        {step === "loading" && (
+        {step === "verifying" && (
           <>
             <div className="loader"></div>
             <h2>Verifying...</h2>
-            <p>Please wait a moment</p>
+            <p>Switch to the ad tab and come back here</p>
           </>
         )}
 
