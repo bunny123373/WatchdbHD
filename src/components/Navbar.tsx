@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home, Loader2, Download } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, X, Film, Tv, Home, Loader2, Download, MessageSquare } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSearch, setTypeFilter } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
 import { IContent } from "@/models/Content";
+import LanguageSelector from "@/components/LanguageSelector";
 
 interface SearchResult {
   _id: string;
@@ -101,9 +102,11 @@ export default function Navbar() {
     { href: "/", label: "Home", type: "all" },
     { href: "/?type=series", label: "TV Shows", type: "series" },
     { href: "/?type=movie", label: "Movies", type: "movie" },
+    { href: "/request", label: "Request", type: "request" },
   ];
 
   const handleTypeFilter = (type: string) => {
+    if (type === "request") return;
     dispatch(setTypeFilter(type as "all" | "movie" | "series"));
     router.push(type === "all" ? "/" : `/?type=${type}`);
   };
@@ -273,6 +276,9 @@ export default function Navbar() {
             <button className="hidden sm:block p-1.5 sm:p-2 hover:bg-white/10 rounded-full transition-colors">
               <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </button>
+
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Profile Dropdown - Desktop */}
             <div className="hidden sm:flex items-center gap-1.5 cursor-pointer group">

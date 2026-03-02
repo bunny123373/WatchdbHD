@@ -5,6 +5,7 @@ import { SITE_CONFIG } from "@/utils/constants";
 import BottomNav from "@/components/BottomNav";
 import MobileNavbar from "@/components/MobileNavbar";
 import ReduxProviderClient from "@/components/ReduxProviderClient";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -84,10 +85,12 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ReduxProviderClient>
-          <MobileNavbar />
-          <main className="min-h-screen pb-20 pt-14 lg:pt-16">
-            {children}
-          </main>
+          <LanguageProvider>
+            <MobileNavbar />
+            <main className="min-h-screen pb-20 pt-14 lg:pt-16">
+              {children}
+            </main>
+          </LanguageProvider>
         </ReduxProviderClient>
         <BottomNav />
       </body>
