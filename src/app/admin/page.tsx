@@ -9,6 +9,8 @@ import UploadSeriesForm from "@/components/admin/UploadSeriesForm";
 import AdminContentTable from "@/components/admin/AdminContentTable";
 import NotificationForm from "@/components/admin/NotificationForm";
 import AdminRequests from "@/components/admin/AdminRequests";
+import AdminCollections from "@/components/admin/AdminCollections";
+import AdminReports from "@/components/admin/AdminReports";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard" },
@@ -16,6 +18,8 @@ const tabs = [
   { id: "upload-series", label: "Upload Series" },
   { id: "manage", label: "Manage Content" },
   { id: "requests", label: "Requests" },
+  { id: "reports", label: "Reports" },
+  { id: "collections", label: "Collections" },
   { id: "notification", label: "Send Notification" },
 ];
 
@@ -113,6 +117,14 @@ function AdminPageContent() {
 
           {activeTab === "requests" && (
             <AdminRequests />
+          )}
+
+          {activeTab === "reports" && (
+            <AdminReports />
+          )}
+
+          {activeTab === "collections" && (
+            <AdminCollections />
           )}
 
           {activeTab === "notification" && (
