@@ -533,6 +533,43 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, data: results });
     }
 
+    if (action === "trailer") {
+      const tmdbId = searchParams.get("tmdbId");
+      const tmdbType = type === "series" ? "tv" : "movie";
+
+      if (!tmdbId) {
+        return NextResponse.json({ success: false, error: "tmdbId is required" }, { status: 400 });
+      }
+
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}/videos?api_key=${apiKey}&language=en-US`
+        );
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          const trailer = data.results.find(
+            (v: { type: string; site: string }) => v.type === "Trailer" && v.site === "YouTube"
+          );
+          const youtubeVideo = trailer || data.results.find(
+            (v: { site: string }) => v.site === "YouTube"
+          );
+
+          if (youtubeVideo) {
+            return NextResponse.json({
+              success: true,
+              trailerKey: youtubeVideo.key,
+            });
+          }
+        }
+
+        return NextResponse.json({ success: false, error: "No trailer found" });
+      } catch (error) {
+        console.error("TMDB trailer error:", error);
+        return NextResponse.json({ success: false, error: "Failed to fetch trailer" }, { status: 500 });
+      }
+    }
+
     return NextResponse.json({ success: true, data: [] });
   } catch (error) {
     console.error("TMDB search error:", error);

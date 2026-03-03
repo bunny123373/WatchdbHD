@@ -308,7 +308,37 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     } catch (error) {
       setMessage("Something went wrong");
     } finally {
-      setIsLoading(false);
+      setIsAutoFilling(false);
+    }
+  };
+
+  const handleAutoFillTrailer = async () => {
+    if (!tmdbData.tmdbId) {
+      setMessage("Please search and select a movie from TMDB first");
+      return;
+    }
+
+    setIsAutoFilling(true);
+    setMessage("");
+
+    try {
+      const response = await fetch(`/api/tmdb?action=trailer&tmdbId=${tmdbData.tmdbId}&type=movie`);
+      const data = await response.json();
+
+      if (data.success && data.trailerKey) {
+        const youtubeUrl = `https://www.youtube.com/watch?v=${data.trailerKey}`;
+        setFormData((prev) => ({
+          ...prev,
+          trailerUrl: youtubeUrl,
+        }));
+        setMessage("Trailer URL auto-filled successfully!");
+      } else {
+        setMessage(data.error || "No trailer found for this movie");
+      }
+    } catch (error) {
+      setMessage("Error auto-filling trailer URL");
+    } finally {
+      setIsAutoFilling(false);
     }
   };
 
@@ -629,7 +659,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
       )}
 
       {/* Trailer URL */}
-      <div>
+      <div className="relative">
         <Input
           label="Trailer URL (YouTube)"
           name="trailerUrl"
@@ -637,6 +667,15 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           onChange={handleChange}
           placeholder="https://youtube.com/watch?v=..."
         />
+        <button
+          type="button"
+          onClick={handleAutoFillTrailer}
+          disabled={isAutoFilling || !tmdbData.tmdbId}
+          className="absolute right-2 top-8 flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
+        >
+          <Link className="w-3 h-3" />
+          {isAutoFilling ? "Filling..." : "Auto"}
+        </button>
       </div>
 
         {/* Cast */}
