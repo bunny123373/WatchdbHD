@@ -223,6 +223,12 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
               onChange={handleChange}
             />
             <Input
+              label="HLS Stream URL"
+              name="hlsUrl"
+              value={formData.hlsUrl || ""}
+              onChange={handleChange}
+            />
+            <Input
               label="Download URL"
               name="downloadLink"
               value={formData.downloadLink || ""}

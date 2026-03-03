@@ -16,8 +16,9 @@ import Footer from "@/components/Footer";
 // Reusable UI components
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-// Video player component
+// Video player components
 import IframePlayer from "@/components/IframePlayer";
+import HlsPlayer from "@/components/HlsPlayer";
 // Grid display for related content
 import ContentGrid from "@/components/ContentGrid";
 
@@ -139,7 +140,11 @@ function WatchMovieContent() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <IframePlayer src={movie.embedIframeLink} title={movie.title} />
+            {movie.hlsUrl ? (
+              <HlsPlayer src={movie.hlsUrl} title={movie.title} />
+            ) : (
+              <IframePlayer src={movie.embedIframeLink} title={movie.title} />
+            )}
           </motion.div>
 
           {/* Movie Info - Displays movie metadata and details */}

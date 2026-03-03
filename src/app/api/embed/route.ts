@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { tmdbId, imdbId, type, season, episode } = await request.json();
+    const { tmdbId, imdbId, type, season, episode, language } = await request.json();
 
     if (!tmdbId && !imdbId) {
       return NextResponse.json(
@@ -12,29 +12,30 @@ export async function POST(request: NextRequest) {
     }
 
     let embedUrl = "";
+    const langParam = language && language !== "all" ? `&ds_lang=${language}` : "";
 
     if (type === "movie") {
       // Movie embed URL
       if (tmdbId) {
-        embedUrl = `https://vidsrc-embed.ru/embed/movie?tmdb=${tmdbId}`;
+        embedUrl = `https://vidsrc-embed.ru/embed/movie?tmdb=${tmdbId}${langParam}`;
       } else if (imdbId) {
-        embedUrl = `https://vidsrc-embed.ru/embed/movie?imdb=${imdbId}`;
+        embedUrl = `https://vidsrc-embed.ru/embed/movie?imdb=${imdbId}${langParam}`;
       }
     } else if (type === "series") {
       // TV Show embed URL
       if (season && episode) {
         // Episode embed URL
         if (tmdbId) {
-          embedUrl = `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
+          embedUrl = `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}${langParam}`;
         } else if (imdbId) {
-          embedUrl = `https://vidsrc-embed.ru/embed/tv?imdb=${imdbId}&season=${season}&episode=${episode}`;
+          embedUrl = `https://vidsrc-embed.ru/embed/tv?imdb=${imdbId}&season=${season}&episode=${episode}${langParam}`;
         }
       } else {
         // Series main embed URL
         if (tmdbId) {
-          embedUrl = `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdbId}`;
+          embedUrl = `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdbId}${langParam}`;
         } else if (imdbId) {
-          embedUrl = `https://vidsrc-embed.ru/embed/tv?imdb=${imdbId}`;
+          embedUrl = `https://vidsrc-embed.ru/embed/tv?imdb=${imdbId}${langParam}`;
         }
       }
     }
