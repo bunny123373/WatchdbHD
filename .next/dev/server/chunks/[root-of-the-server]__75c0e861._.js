@@ -107,8 +107,7 @@ const EpisodeSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mong
         type: String
     },
     downloadLink: {
-        type: String,
-        required: true
+        type: String
     },
     quality: {
         type: String
@@ -122,6 +121,30 @@ const SeasonSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongo
     episodes: [
         EpisodeSchema
     ]
+});
+const CastSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
+    name: {
+        type: String,
+        required: true
+    },
+    character: {
+        type: String
+    },
+    image: {
+        type: String
+    }
+});
+const CrewSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
+    name: {
+        type: String,
+        required: true
+    },
+    job: {
+        type: String
+    },
+    image: {
+        type: String
+    }
 });
 const ContentSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
     type: {
@@ -187,7 +210,20 @@ const ContentSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mong
         {
             type: String
         }
-    ]
+    ],
+    cast: [
+        CastSchema
+    ],
+    crew: [
+        CrewSchema
+    ],
+    trailerUrl: {
+        type: String
+    },
+    views: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true
 });

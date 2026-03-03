@@ -149,6 +149,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Seasons & Episodes</h2>
               <EpisodeList
                 seasons={series.seasons as unknown as { seasonNumber: number; episodes: IEpisode[] }[]}
+                seriesId={series._id}
               />
           </div>
         ) : (
