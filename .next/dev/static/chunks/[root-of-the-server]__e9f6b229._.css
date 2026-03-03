@@ -762,6 +762,14 @@ img, video {
   margin-top: 2rem;
 }
 
+.ml-0\.5 {
+  margin-left: .125rem;
+}
+
+.mt-3 {
+  margin-top: .75rem;
+}
+
 .block {
   display: block;
 }
@@ -1765,6 +1773,10 @@ img, video {
 .bg-\[\#0f0f0f\] {
   --tw-bg-opacity: 1;
   background-color: rgb(15 15 15 / var(--tw-bg-opacity, 1));
+}
+
+.bg-black\/50 {
+  background-color: #00000080;
 }
 
 .bg-gradient-to-b {

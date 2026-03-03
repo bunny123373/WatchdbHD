@@ -5085,3 +5085,5 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
 [00:08:46.024] Server  LOG     ✓ Finished filesystem cache database compaction in 106s
 [00:08:48.108] Server  LOG     ✓ Finished writing to filesystem cache in 46s
 [00:10:25.666] Server  LOG     ✓ Compiled in 14.1s
+[00:12:38.307] Server  LOG     ✓ Compiled in 1055ms
+[00:12:56.833] Server  LOG     ✓ Compiled in 754ms

@@ -2,20 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Play, Download, ChevronDown, Clock } from "lucide-react";
+import Image from "next/image";
+import { Play, Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ISeason, IEpisode } from "@/models/Content";
 import { cn } from "@/utils/cn";
 
 interface EpisodeListProps {
   seasons: ISeason[];
-  currentEpisodeId?: string;
+  seriesPoster?: string;
   seriesId?: string;
 }
 
 export default function EpisodeList({
   seasons,
-  currentEpisodeId,
+  seriesPoster,
   seriesId,
 }: EpisodeListProps) {
   const [expandedSeason, setExpandedSeason] = useState<number>(
@@ -67,7 +68,6 @@ export default function EpisodeList({
                 <div className="border-t border-[#1a1a1a]">
                   {season.episodes.map((episode, index) => {
                     const episodeId = `${season.seasonNumber}-${episode.episodeNumber}`;
-                    const isActive = currentEpisodeId === episodeId;
                     const watchLink = seriesId
                       ? `/verify?id=${seriesId}&type=series&season=${season.seasonNumber}&episode=${episode.episodeNumber}`
                       : "#";
@@ -78,53 +78,73 @@ export default function EpisodeList({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: index * 0.02 }}
-                        className={cn(
-                          "flex items-center gap-4 p-3 hover:bg-[#1a1a1a] transition-colors border-b border-[#1a1a1a] last:border-b-0",
-                          isActive && "bg-[#e50914]/10"
-                        )}
+                        className="flex gap-4 p-4 hover:bg-[#1a1a1a] transition-colors border-b border-[#1a1a1a] last:border-b-0"
                       >
-                        {/* Episode Number */}
-                        <div className="flex-shrink-0 w-8 flex items-center justify-center">
-                          <span className="text-gray-500 font-medium text-sm">
-                            {episode.episodeNumber}
-                          </span>
-                        </div>
-
-                        {/* Episode Info */}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-white text-sm font-medium truncate">
-                            {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                          </h4>
-                          <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                            {episode.quality && (
-                              <span className="text-gray-600">{episode.quality}</span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
+                        {/* Poster */}
+                        <div className="flex-shrink-0 w-32 aspect-video rounded-lg overflow-hidden bg-[#1a1a1a] relative">
+                          {seriesPoster ? (
+                            <Image
+                              src={seriesPoster}
+                              alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Play className="w-8 h-8 text-gray-600" />
+                            </div>
+                          )}
                           <Link
                             href={watchLink}
-                            className={cn(
-                              "p-2 rounded transition-colors",
-                              isActive
-                                ? "bg-[#e50914] text-white"
-                                : "text-gray-400 hover:text-white hover:bg-[#333]"
-                            )}
+                            className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity"
                           >
-                            <Play className="w-4 h-4 fill-current" />
+                            <div className="w-10 h-10 rounded-full bg-[#e50914] flex items-center justify-center">
+                              <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                            </div>
                           </Link>
-                          {episode.downloadLink && (
-                            <a
-                              href={episode.downloadLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 rounded text-gray-400 hover:text-white hover:bg-[#333] transition-colors"
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-gray-500 text-sm">
+                              Episode {episode.episodeNumber}
+                            </span>
+                            {episode.quality && (
+                              <span className="text-xs bg-[#e50914] text-white px-1.5 py-0.5 rounded">
+                                {episode.quality}
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-white font-medium mb-1">
+                            {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                          </h4>
+                          <p className="text-gray-500 text-sm line-clamp-2">
+                            Watch {episode.episodeTitle || `Episode ${episode.episodeNumber}`} of this series online. 
+                            Click play to start streaming now.
+                          </p>
+                          
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 mt-3">
+                            <Link
+                              href={watchLink}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-[#e50914] hover:bg-[#f40612] text-white text-sm rounded transition-colors"
                             >
-                              <Download className="w-4 h-4" />
-                            </a>
-                          )}
+                              <Play className="w-4 h-4 fill-current" />
+                              Play
+                            </Link>
+                            {episode.downloadLink && (
+                              <a
+                                href={episode.downloadLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-sm rounded transition-colors"
+                              >
+                                <Download className="w-4 h-4" />
+                                Download
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     );

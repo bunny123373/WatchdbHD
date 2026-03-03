@@ -150,6 +150,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
               <EpisodeList
                 seasons={series.seasons as unknown as { seasonNumber: number; episodes: IEpisode[] }[]}
                 seriesId={series._id}
+                seriesPoster={series.poster}
               />
           </div>
         ) : (
