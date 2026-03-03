@@ -1242,6 +1242,11 @@ img, video {
   border-color: rgb(39 39 42 / var(--tw-border-opacity, 1));
 }
 
+.border-\[\#1a1a1a\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(26 26 26 / var(--tw-border-opacity, 1));
+}
+
 .border-l-\[\#e50914\] {
   --tw-border-opacity: 1;
   border-left-color: rgb(229 9 20 / var(--tw-border-opacity, 1));
@@ -1518,6 +1523,11 @@ img, video {
 
 .bg-zinc-900\/50 {
   background-color: #18181b80;
+}
+
+.bg-\[\#0f0f0f\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 15 15 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-b {
@@ -2578,6 +2588,11 @@ a:focus-visible, div[role="link"]:focus-visible {
 .hover\:bg-yellow-400:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(250 204 21 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-\[\#1a1a1a\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(26 26 26 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-\[\#e50914\]:hover {

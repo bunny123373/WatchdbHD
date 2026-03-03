@@ -1,4 +1,7 @@
 {
   "/api/content/route": "app/api/content/route.js",
-  "/page": "app/page.js"
+  "/api/reviews/route": "app/api/reviews/route.js",
+  "/api/tmdb/route": "app/api/tmdb/route.js",
+  "/page": "app/page.js",
+  "/series/[id]/page": "app/series/[id]/page.js"
 }

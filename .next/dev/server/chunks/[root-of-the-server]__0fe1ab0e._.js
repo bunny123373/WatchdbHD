@@ -107,8 +107,7 @@ const EpisodeSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mong
         type: String
     },
     downloadLink: {
-        type: String,
-        required: true
+        type: String
     },
     quality: {
         type: String
@@ -122,6 +121,30 @@ const SeasonSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongo
     episodes: [
         EpisodeSchema
     ]
+});
+const CastSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
+    name: {
+        type: String,
+        required: true
+    },
+    character: {
+        type: String
+    },
+    image: {
+        type: String
+    }
+});
+const CrewSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
+    name: {
+        type: String,
+        required: true
+    },
+    job: {
+        type: String
+    },
+    image: {
+        type: String
+    }
 });
 const ContentSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$2c$__$5b$project$5d2f$node_modules$2f$mongoose$29$__["Schema"]({
     type: {
@@ -187,7 +210,20 @@ const ContentSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mong
         {
             type: String
         }
-    ]
+    ],
+    cast: [
+        CastSchema
+    ],
+    crew: [
+        CrewSchema
+    ],
+    trailerUrl: {
+        type: String
+    },
+    views: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true
 });
@@ -288,7 +324,6 @@ async function GET(request) {
     const action = searchParams.get("action");
     const filterExisting = searchParams.get("filterExisting") !== "false";
     const apiKey = process.env.TMDB_API_KEY;
-    console.log("TMDB API Key present:", !!apiKey, apiKey ? "yes" : "no");
     if (!apiKey || apiKey === "YOUR_TMDB_API_KEY") {
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: false,
@@ -296,6 +331,34 @@ async function GET(request) {
         }, {
             status: 500
         });
+    }
+    if (action === "details") {
+        const id = searchParams.get("id");
+        if (!id) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
+                error: "ID is required"
+            }, {
+                status: 400
+            });
+        }
+        const tmdbType = type === "series" ? "tv" : "movie";
+        try {
+            const response = await fetch(`https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${apiKey}&language=en-US`);
+            const data = await response.json();
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: true,
+                data
+            });
+        } catch (error) {
+            console.error("TMDB details error:", error);
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                success: false,
+                error: "Failed to fetch details"
+            }, {
+                status: 500
+            });
+        }
     }
     if (action === "genres") {
         try {
