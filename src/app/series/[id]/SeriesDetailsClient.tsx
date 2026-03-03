@@ -125,13 +125,13 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                 )}
 
                 {/* Actions */}
-                <div className="flex flex-wrap gap-3 sm:gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   <Link
                     href={`/verify?id=${series._id}&type=series`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-md transition-colors"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-md transition-colors text-sm sm:text-base"
                   >
-                    <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
-                    <span className="text-sm sm:text-base">Watch Now</span>
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                    <span>Watch Now</span>
                   </Link>
                   <ShareButton title={series.title} />
                   <ReportButton contentId={series._id} contentTitle={series.title} type="series" />
@@ -143,7 +143,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
       </div>
 
       {/* Seasons & Episodes */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
         {series.seasons && series.seasons.length > 0 ? (
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Seasons & Episodes</h2>
@@ -166,7 +166,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
       </div>
 
       {/* Content Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
         {/* Similar Series */}
         {similarSeries.length > 0 && (
           <div>
@@ -177,7 +177,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
       </div>
 
       {/* Reviews */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
         <ReviewSection contentId={series._id} />
       </div>
 

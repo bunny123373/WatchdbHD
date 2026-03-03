@@ -260,22 +260,22 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                 )}
 
                 {/* Actions */}
-                <div className="flex flex-wrap gap-3 sm:gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-8 sm:px-10 py-3 sm:py-3.5 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-all transform hover:scale-105"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
                   >
-                    <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
-                    <span className="text-sm sm:text-base">Watch Now</span>
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                    <span>Watch Now</span>
                   </Link>
                   <Link
                     href={movie.downloadLink ? `/verify?id=${movie._id}&type=download&url=${encodeURIComponent(movie.downloadLink)}` : "#"}
                     target={movie.downloadLink ? "_blank" : "_self"}
                     rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 font-medium rounded-lg transition-colors ${movie.downloadLink ? 'bg-gray-700/80 hover:bg-gray-600' : 'bg-gray-800 cursor-not-allowed opacity-50'}`}
+                    className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 font-medium rounded-lg transition-colors text-sm sm:text-base ${movie.downloadLink ? 'bg-gray-700/80 hover:bg-gray-600' : 'bg-gray-800 cursor-not-allowed opacity-50'}`}
                   >
-                    <Play className="w-5 h-5 sm:w-6 sm:h-6" />
-                    <span className="text-sm sm:text-base">Download</span>
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span>Download</span>
                   </Link>
                   <ShareButton title={movie.title} />
                   <ReportButton contentId={movie._id} contentTitle={movie.title} type="movie" />
@@ -287,7 +287,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
       </div>
 
       {/* Similar Movies */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
         {similarMovies.length > 0 && (
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
@@ -298,9 +298,9 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
 
       {/* Trailer */}
       {movie.trailerUrl && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-            <Youtube className="w-6 h-6 text-red-500" />
+            <Youtube className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
             Trailer
           </h2>
           <div className="aspect-video rounded-lg overflow-hidden bg-black">
@@ -316,25 +316,25 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
 
       {/* Cast */}
       {movie.cast && movie.cast.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-            <Users className="w-6 h-6 text-yellow-500" />
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
             Cast
           </h2>
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-3 px-3 sm:-mx-4 sm:px-4">
             {movie.cast.map((cast: { name: string; character?: string; image?: string }, idx: number) => (
-              <div key={idx} className="flex-shrink-0 w-24 text-center">
-                <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
+              <div key={idx} className="flex-shrink-0 w-20 sm:w-24 text-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
                   {cast.image ? (
                     <img src={cast.image} alt={cast.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Users className="w-8 h-8 text-gray-600" />
+                      <Users className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
                     </div>
                   )}
                 </div>
-                <p className="text-white text-sm font-medium truncate">{cast.name}</p>
-                {cast.character && <p className="text-gray-400 text-xs truncate">{cast.character}</p>}
+                <p className="text-white text-xs sm:text-sm font-medium truncate px-1">{cast.name}</p>
+                {cast.character && <p className="text-gray-400 text-xs truncate px-1">{cast.character}</p>}
               </div>
             ))}
           </div>
@@ -343,20 +343,20 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
 
       {/* Crew */}
       {movie.crew && movie.crew.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-            <Clapperboard className="w-6 h-6 text-yellow-500" />
+            <Clapperboard className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
             Crew
           </h2>
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-3 px-3 sm:-mx-4 sm:px-4">
             {movie.crew.map((crew: { name: string; job?: string; image?: string }, idx: number) => (
-              <div key={idx} className="flex-shrink-0 w-24 text-center">
-                <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
+              <div key={idx} className="flex-shrink-0 w-20 sm:w-24 text-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
                   {crew.image ? (
                     <img src={crew.image} alt={crew.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Clapperboard className="w-8 h-8 text-gray-600" />
+                      <Clapperboard className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
                     </div>
                   )}
                 </div>
@@ -369,7 +369,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
       )}
 
       {/* Reviews */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
         <ReviewSection contentId={id} />
       </div>
 
