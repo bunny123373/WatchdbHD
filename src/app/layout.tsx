@@ -87,7 +87,7 @@ export default function RootLayout({
         <ReduxProviderClient>
           <LanguageProvider>
             <MobileNavbar />
-            <main className="min-h-screen pb-20 pt-14 lg:pt-16">
+            <main className="min-h-screen pb-20 pt-14 lg:pt-16 overflow-x-hidden">
               {children}
             </main>
           </LanguageProvider>

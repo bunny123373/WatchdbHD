@@ -350,13 +350,14 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         <div className="pt-20 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" />
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
     <PullToRefresh onRefresh={fetchContent}>
-      <main className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen bg-[#141414]">
       <Navbar />
 
       {/* Hero Banner - Show uploaded content */}
@@ -462,7 +463,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       <ContentDetailModal content={selectedContent} isOpen={!!selectedContent} onClose={handleCloseModal} />
 
       <Footer />
-    </main>
+      </div>
     </PullToRefresh>
   );
 }

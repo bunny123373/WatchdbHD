@@ -287,14 +287,12 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
       </div>
 
       {/* Similar Movies */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-        {similarMovies.length > 0 && (
-          <div>
+      {similarMovies.length > 0 && (
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
             <ContentGrid title="" items={similarMovies} isNetflixStyle />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Trailer */}
       {movie.trailerUrl && (
