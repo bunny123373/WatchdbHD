@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { Play, Share, Star } from "lucide-react";
+import { Play, Share, Star, Users, Clapperboard, Youtube } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
 import ReviewSection from "@/components/ReviewSection";
+import ReportButton from "@/components/ReportButton";
 import { SITE_CONFIG } from "@/utils/constants";
 
 async function getMovie(id: string) {
@@ -37,6 +38,10 @@ async function getMovie(id: string) {
       tmdbId: movie.tmdbId != undefined ? Number(movie.tmdbId) : undefined,
       tmdbGenreIds: Array.isArray(movie.tmdbGenreIds) ? movie.tmdbGenreIds.map(Number) : undefined,
       tmdbGenres: Array.isArray(movie.tmdbGenres) ? movie.tmdbGenres.map(String) : undefined,
+      cast: Array.isArray(movie.cast) ? movie.cast : [],
+      crew: Array.isArray(movie.crew) ? movie.crew : [],
+      trailerUrl: movie.trailerUrl ? String(movie.trailerUrl) : undefined,
+      views: movie.views != undefined ? Number(movie.views) : 0,
       createdAt: movie.createdAt ? new Date(movie.createdAt as string) : new Date(),
       updatedAt: movie.updatedAt ? new Date(movie.updatedAt as string) : new Date(),
     } as unknown as IContent;
@@ -273,6 +278,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                     <span className="text-sm sm:text-base">Download</span>
                   </Link>
                   <ShareButton title={movie.title} />
+                  <ReportButton contentId={movie._id} contentTitle={movie.title} type="movie" />
                 </div>
               </div>
             </div>
@@ -289,6 +295,78 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
           </div>
         )}
       </div>
+
+      {/* Trailer */}
+      {movie.trailerUrl && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+            <Youtube className="w-6 h-6 text-red-500" />
+            Trailer
+          </h2>
+          <div className="aspect-video rounded-lg overflow-hidden bg-black">
+            <iframe
+              src={movie.trailerUrl.replace("watch?v=", "embed/")}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Cast */}
+      {movie.cast && movie.cast.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+            <Users className="w-6 h-6 text-yellow-500" />
+            Cast
+          </h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+            {movie.cast.map((cast: { name: string; character?: string; image?: string }, idx: number) => (
+              <div key={idx} className="flex-shrink-0 w-24 text-center">
+                <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
+                  {cast.image ? (
+                    <img src={cast.image} alt={cast.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Users className="w-8 h-8 text-gray-600" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-white text-sm font-medium truncate">{cast.name}</p>
+                {cast.character && <p className="text-gray-400 text-xs truncate">{cast.character}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Crew */}
+      {movie.crew && movie.crew.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+            <Clapperboard className="w-6 h-6 text-yellow-500" />
+            Crew
+          </h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+            {movie.crew.map((crew: { name: string; job?: string; image?: string }, idx: number) => (
+              <div key={idx} className="flex-shrink-0 w-24 text-center">
+                <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
+                  {crew.image ? (
+                    <img src={crew.image} alt={crew.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Clapperboard className="w-8 h-8 text-gray-600" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-white text-sm font-medium truncate">{crew.name}</p>
+                {crew.job && <p className="text-gray-400 text-xs truncate">{crew.job}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Reviews */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8">

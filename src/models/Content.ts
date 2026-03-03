@@ -1,5 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export interface ICast {
+  name: string;
+  character?: string;
+  image?: string;
+}
+
+export interface ICrew {
+  name: string;
+  job?: string;
+  image?: string;
+}
+
 export interface IEpisode {
   episodeNumber: number;
   episodeTitle: string;
@@ -11,6 +23,24 @@ export interface IEpisode {
 export interface ISeason {
   seasonNumber: number;
   episodes: IEpisode[];
+}
+
+export interface ICollection {
+  _id: string;
+  name: string;
+  description?: string;
+  contentIds: string[];
+  isPublic: boolean;
+  createdAt: Date | string;
+}
+
+export interface ICollectionDocument extends Document {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  contentIds: mongoose.Types.ObjectId[];
+  isPublic: boolean;
+  createdAt: Date;
 }
 
 export interface IContent {
@@ -32,6 +62,10 @@ export interface IContent {
   tmdbId?: number;
   tmdbGenreIds?: number[];
   tmdbGenres?: string[];
+  cast?: ICast[];
+  crew?: ICrew[];
+  trailerUrl?: string;
+  views?: number;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -55,6 +89,10 @@ export interface IContentDocument extends Document {
   tmdbId?: number;
   tmdbGenreIds?: number[];
   tmdbGenres?: string[];
+  cast?: ICast[];
+  crew?: ICrew[];
+  trailerUrl?: string;
+  views?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -70,6 +108,18 @@ const EpisodeSchema = new Schema<IEpisode>({
 const SeasonSchema = new Schema<ISeason>({
   seasonNumber: { type: Number, required: true },
   episodes: [EpisodeSchema],
+});
+
+const CastSchema = new Schema<ICast>({
+  name: { type: String, required: true },
+  character: { type: String },
+  image: { type: String },
+});
+
+const CrewSchema = new Schema<ICrew>({
+  name: { type: String, required: true },
+  job: { type: String },
+  image: { type: String },
 });
 
 const ContentSchema = new Schema<IContent>(
@@ -91,6 +141,10 @@ const ContentSchema = new Schema<IContent>(
     tmdbId: { type: Number },
     tmdbGenreIds: [{ type: Number }],
     tmdbGenres: [{ type: String }],
+    cast: [CastSchema],
+    crew: [CrewSchema],
+    trailerUrl: { type: String },
+    views: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

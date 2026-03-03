@@ -102,6 +102,7 @@ export default function Navbar() {
     { href: "/", label: "Home", type: "all" },
     { href: "/all-series", label: "TV Shows", type: "series" },
     { href: "/movies", label: "Movies", type: "movie" },
+    { href: "/collections", label: "Collections", type: "collections" },
     { href: "/request", label: "Request", type: "request" },
   ];
 
