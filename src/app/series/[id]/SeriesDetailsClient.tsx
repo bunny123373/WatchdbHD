@@ -24,7 +24,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
   const [loading, setLoading] = useState(false);
 
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
       
       {/* Banner */}
@@ -182,6 +182,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
       </div>
 
       <Footer />
-    </main>
+    </div>
   );
 }

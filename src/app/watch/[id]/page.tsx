@@ -107,12 +107,13 @@ function WatchMovieContent() {
             Go back home
           </Link>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
 
       <div className="pt-20 pb-12">
@@ -223,7 +224,7 @@ function WatchMovieContent() {
       </div>
 
       <Footer />
-    </main>
+    </div>
   );
 }
 

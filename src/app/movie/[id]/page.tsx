@@ -157,7 +157,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
   const similarMovies = await getSimilarMovies(movie.language || "Telugu", movie._id);
 
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
       
       {/* Banner */}
@@ -372,6 +372,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
       </div>
 
       <Footer />
-    </main>
+    </div>
   );
 }

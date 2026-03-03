@@ -174,7 +174,7 @@ function SeriesWatchContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
 
       <div className="pt-20 pb-12">
@@ -322,7 +322,7 @@ function SeriesWatchContent() {
       </div>
 
       <Footer />
-    </main>
+    </div>
   );
 }
 

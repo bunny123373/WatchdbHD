@@ -85,8 +85,8 @@ function VerifyContent() {
   }, [step, searchParams, router]);
 
   return (
-    <div className="container">
-      <div className="card">
+    <div className="verify-container">
+      <div className="verify-card">
         {step === "idle" && (
           <>
             <h1>Verification Required</h1>
@@ -112,7 +112,7 @@ function VerifyContent() {
       </div>
 
       <style jsx>{`
-        .container{
+        .verify-container{
           min-height:100vh;
           width:100%;
           min-height:100dvh;
@@ -124,9 +124,9 @@ function VerifyContent() {
           color:white;
           padding:20px;
           box-sizing:border-box;
-          overflow-y:auto;
+          overflow-x:hidden;
         }
-        .card{
+        .verify-card{
           background:linear-gradient(145deg, #1c1c1c, #141414);
           padding:clamp(24px, 5vw, 48px);
           border-radius:clamp(10px, 3vw, 16px);
@@ -162,6 +162,7 @@ function VerifyContent() {
           color:white;
           border-radius:clamp(6px, 2vw, 10px);
           cursor:pointer;
+          width:100%;
         }
         .spinner{
           width:clamp(36px, 8vw, 48px);
@@ -188,13 +189,13 @@ function VerifyContent() {
 
 function Loading() {
   return (
-    <div className="container">
-      <div className="card">
+    <div className="verify-container">
+      <div className="verify-card">
         <div className="spinner"></div>
         <p>Loading...</p>
       </div>
       <style jsx>{`
-        .container{
+        .verify-container{
           min-height:100vh;
           width:100%;
           min-height:100dvh;
@@ -206,8 +207,9 @@ function Loading() {
           color:white;
           padding:20px;
           box-sizing:border-box;
+          overflow-x:hidden;
         }
-        .card{
+        .verify-card{
           background:linear-gradient(145deg, #1c1c1c, #141414);
           padding:clamp(24px, 5vw, 48px);
           border-radius:clamp(10px, 3vw, 16px);

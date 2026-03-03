@@ -49,7 +49,7 @@ export default function RequestPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
       
       <div className="pt-24 pb-12 px-4">
@@ -182,6 +182,6 @@ export default function RequestPage() {
       </div>
 
       <Footer />
-    </main>
+    </div>
   );
 }
