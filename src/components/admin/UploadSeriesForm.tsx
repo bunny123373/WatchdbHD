@@ -81,8 +81,6 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       const response = await fetch(`/api/tmdb?action=details&type=series&id=${tmdbData.tmdbId}`);
       const data = await response.json();
       
-      console.log("Series details response:", data);
-      
       if (!data.success) {
         setMessage("Could not fetch series details from TMDB");
         setIsAutoFilling(false);
@@ -91,7 +89,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       
       // Get seasons from the series data
       const seasonsData = data.data?.seasons || [];
-      const validSeasons = seasonsData.filter((s: any) => s.season_number > 0); // Exclude special seasons
+      const validSeasons = seasonsData.filter((s: any) => s.season_number > 0);
       
       if (validSeasons.length === 0) {
         setMessage("No seasons found for this series");
@@ -101,13 +99,27 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       
       setMessage(`Auto-filling episodes for ${validSeasons.length} seasons...`);
       
-      for (const season of validSeasons.slice(0, 5)) { // Limit to 5 seasons
+      for (const season of validSeasons.slice(0, 5)) {
         const s = season.season_number;
         const epCount = season.episode_count || 6;
         
+        // Fetch season details to get episode titles
+        let seasonDetails: any = null;
+        try {
+          const seasonRes = await fetch(`/api/tmdb?action=season&seriesId=${tmdbData.tmdbId}&seasonNumber=${s}`);
+          const seasonData = await seasonRes.json();
+          if (seasonData.success) {
+            seasonDetails = seasonData.data;
+          }
+        } catch (e) {
+          console.log("Could not fetch season details");
+        }
+        
         const episodes = [];
         
-        for (let e = 1; e <= Math.min(epCount, 10); e++) {
+        for (let e = 1; e <= Math.min(epCount, 12); e++) {
+          const episodeInfo = seasonDetails?.episodes?.find((ep: any) => ep.episode_number === e);
+          
           const embedResponse = await fetch("/api/embed", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -122,7 +134,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
           
           episodes.push({
             episodeNumber: e,
-            episodeTitle: `Episode ${e}`,
+            episodeTitle: episodeInfo?.name || `Episode ${e}`,
             embedIframeLink: embedData.success ? embedData.embedUrl : "",
             downloadLink: "",
             quality: "720p",
@@ -136,7 +148,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       }
       
       setSeasons(newSeasons);
-      setMessage(`Auto-filled ${newSeasons.length} seasons with embed links!`);
+      setMessage(`Auto-filled ${newSeasons.length} seasons with episode titles and embed links!`);
     } catch (error) {
       console.error("Auto-fill error:", error);
       setMessage("Error auto-filling episodes");

@@ -119,6 +119,24 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  if (action === "season") {
+    const seriesId = searchParams.get("seriesId");
+    const seasonNumber = searchParams.get("seasonNumber");
+    if (!seriesId || !seasonNumber) {
+      return NextResponse.json({ success: false, error: "seriesId and seasonNumber are required" }, { status: 400 });
+    }
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/tv/${seriesId}/season/${seasonNumber}?api_key=${apiKey}&language=en-US`
+      );
+      const data = await response.json();
+      return NextResponse.json({ success: true, data });
+    } catch (error) {
+      console.error("TMDB season error:", error);
+      return NextResponse.json({ success: false, error: "Failed to fetch season details" }, { status: 500 });
+    }
+  }
+
   if (action === "genres") {
     try {
       const movieGenres = await fetchWithCache(
