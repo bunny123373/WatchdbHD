@@ -13,6 +13,7 @@ import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import GenreFilter from "@/components/GenreFilter";
 import PullToRefresh from "@/components/PullToRefresh";
+import HomeSkeleton from "@/components/HomeSkeleton";
 import { useAppSelector } from "@/redux/hooks";
 
 interface Genre {
@@ -43,6 +44,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const [movieGenres, setMovieGenres] = useState<Genre[]>([]);
   const [tvGenres, setTvGenres] = useState<Genre[]>([]);
   const [loadingGenres, setLoadingGenres] = useState(true);
+  const [loading, setLoading] = useState(!initialContent.length);
   const [tmdbData, setTmdbData] = useState<{
     popular: { movies: TMDBContent[]; series: TMDBContent[] };
     trending: TMDBContent[];
@@ -217,6 +219,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       }
     } catch (error) {
       console.error("Failed to fetch content:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -342,6 +346,16 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const handleCloseModal = () => {
     setSelectedContent(null);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#141414]">
+        <Navbar />
+        <HomeSkeleton />
+        <Footer />
+      </div>
+    );
+  }
 
   if (content.length === 0) {
     return (
