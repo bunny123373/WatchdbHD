@@ -8,12 +8,14 @@ import UploadMovieForm from "@/components/admin/UploadMovieForm";
 import UploadSeriesForm from "@/components/admin/UploadSeriesForm";
 import AdminContentTable from "@/components/admin/AdminContentTable";
 import NotificationForm from "@/components/admin/NotificationForm";
+import AdminRequests from "@/components/admin/AdminRequests";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard" },
   { id: "upload-movie", label: "Upload Movie" },
   { id: "upload-series", label: "Upload Series" },
   { id: "manage", label: "Manage Content" },
+  { id: "requests", label: "Requests" },
   { id: "notification", label: "Send Notification" },
 ];
 
@@ -107,6 +109,10 @@ function AdminPageContent() {
 
           {activeTab === "manage" && (
             <AdminContentTable refreshTrigger={refreshTrigger} />
+          )}
+
+          {activeTab === "requests" && (
+            <AdminRequests />
           )}
 
           {activeTab === "notification" && (
