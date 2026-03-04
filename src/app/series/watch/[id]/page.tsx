@@ -1,68 +1,39 @@
 "use client";
 
-// React hooks for state management and side effects
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-// Next.js navigation hooks
 import { useParams, useSearchParams } from "next/navigation";
-// UI icons from Lucide
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, Play } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-// Content model types (IContent, IEpisode, ISeason)
 import { IContent, IEpisode, ISeason } from "@/models/Content";
-// Layout components
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-// Video player component
 import IframePlayer from "@/components/IframePlayer";
-// Badge UI component
-import Badge from "@/components/ui/Badge";
-// Utility for conditional class names
-import { cn } from "@/utils/cn";
 
-/**
- * SeriesWatchContent - Main component for TV series playback page
- * Handles video player, season/episode selection, and auto-play
- */
 function SeriesWatchContent() {
-  // Get series ID from URL parameters
   const params = useParams();
-  // Get season/episode from URL query parameters
   const searchParams = useSearchParams();
-  // Store series data from API
   const [series, setSeries] = useState<IContent | null>(null);
-  // Currently selected season number
   const [currentSeason, setCurrentSeason] = useState<number>(1);
-  // Currently playing episode data
   const [currentEpisode, setCurrentEpisode] = useState<IEpisode | null>(null);
-  // Loading state while fetching data
   const [loading, setLoading] = useState(true);
-  // Toggle episode list dropdown visibility
   const [showEpisodeList, setShowEpisodeList] = useState(false);
-  // Auto-play next episode feature toggle
   const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const [showDownloadMenu, setShowDownloadMenu] = useState<string | null>(null);
 
-  // Extract season and episode from URL query params
   const seasonParam = searchParams.get("season");
   const episodeParam = searchParams.get("episode");
 
-  // Fetch series data when component mounts or ID changes
   useEffect(() => {
     if (params.id) {
       fetchSeries();
     }
   }, [params.id]);
 
-  /**
-   * Handle URL parameter changes for season/episode selection
-   * Updates current episode when URL changes
-   */
   useEffect(() => {
     if (series && seasonParam && episodeParam) {
-      // Parse URL parameters to numbers
       const seasonNum = parseInt(seasonParam);
       const episodeNum = parseInt(episodeParam);
-      // Find matching season and episode
       const season = series.seasons?.find((s) => s.seasonNumber === seasonNum);
       const episode = season?.episodes.find((e) => e.episodeNumber === episodeNum);
       if (episode) {
@@ -70,7 +41,6 @@ function SeriesWatchContent() {
         setCurrentEpisode(episode);
       }
     } else if (series && !currentEpisode) {
-      // Default to first episode of first season if no params
       const firstSeason = series.seasons?.[0];
       const firstEpisode = firstSeason?.episodes[0];
       if (firstEpisode) {
@@ -80,10 +50,6 @@ function SeriesWatchContent() {
     }
   }, [series, seasonParam, episodeParam]);
 
-  /**
-   * fetchSeries - Fetches series details from API
-   * Loads all seasons and episodes for the series
-   */
   const fetchSeries = async () => {
     try {
       const response = await fetch(`/api/content/${params.id}`);
@@ -98,41 +64,28 @@ function SeriesWatchContent() {
     }
   };
 
-  /**
-   * handleEpisodeSelect - Updates URL and state when user selects episode
-   * @param episode - The episode object to play
-   * @param seasonNumber - The season number containing the episode
-   */
   const handleEpisodeSelect = (episode: IEpisode, seasonNumber: number) => {
     setCurrentSeason(seasonNumber);
     setCurrentEpisode(episode);
     setShowEpisodeList(false);
-    // Update URL without full page navigation (SPA behavior)
     const url = new URL(window.location.href);
     url.searchParams.set("season", seasonNumber.toString());
     url.searchParams.set("episode", episode.episodeNumber.toString());
     window.history.replaceState({}, "", url);
   };
 
-  /**
-   * playNextEpisode - Automatically plays the next episode
-   * Handles transitions within same season and to next season
-   */
   const playNextEpisode = () => {
     if (!series || !currentEpisode) return;
     
-    // Find current season and episode index
     const currentSeasonData = series.seasons?.find((s) => s.seasonNumber === currentSeason);
     const currentEpisodeIndex = currentSeasonData?.episodes.findIndex((e) => e.episodeNumber === currentEpisode?.episodeNumber);
     
-    // Check if there are more episodes in current season
     if (currentEpisodeIndex !== undefined && currentEpisodeIndex < (currentSeasonData?.episodes.length || 0) - 1) {
       const nextEpisode = currentSeasonData?.episodes[currentEpisodeIndex + 1];
       if (nextEpisode) {
         handleEpisodeSelect(nextEpisode, currentSeason);
       }
     } else {
-      // Move to first episode of next season
       const nextSeason = series.seasons?.find((s) => s.seasonNumber === currentSeason + 1);
       if (nextSeason && nextSeason.episodes.length > 0) {
         handleEpisodeSelect(nextSeason.episodes[0], nextSeason.seasonNumber);
@@ -140,32 +93,28 @@ function SeriesWatchContent() {
     }
   };
 
-  // Get current season data for episode list display
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
 
-  // Show loading skeleton while data is being fetched
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#141414]">
         <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
-            {/* Placeholder for video player */}
-            <div className="aspect-video bg-card rounded-2xl animate-pulse" />
+            <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
           </div>
         </div>
       </div>
     );
   }
 
-  // Show error message if series not found
   if (!series) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#141414]">
         <Navbar />
         <div className="pt-32 text-center">
-          <h1 className="text-2xl font-bold text-text-primary">Series not found</h1>
-          <Link href="/" className="text-primary-gold mt-4 inline-block">
+          <h1 className="text-2xl font-bold text-white">Series not found</h1>
+          <Link href="/" className="text-yellow-500 mt-4 inline-block">
             Go back home
           </Link>
         </div>
@@ -179,7 +128,6 @@ function SeriesWatchContent() {
 
       <div className="pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back Link - Navigation to series details page */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -187,14 +135,13 @@ function SeriesWatchContent() {
           >
             <Link
               href={`/series/${String(series._id)}`}
-              className="inline-flex items-center gap-2 text-text-muted hover:text-primary-gold transition-colors"
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Series Details
             </Link>
           </motion.div>
 
-          {/* Video Player - Embeds streaming video for current episode */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -206,21 +153,18 @@ function SeriesWatchContent() {
             />
           </motion.div>
 
-          {/* Episode Info - Shows current episode details and auto-play toggle */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="mb-8"
           >
-            {/* Badges - Season, Episode number, Quality, Auto-play toggle */}
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <Badge variant="purple">S{currentSeason}</Badge>
-              <Badge variant="gold">E{currentEpisode?.episodeNumber}</Badge>
+              <span className="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded">S{currentSeason}</span>
+              <span className="px-3 py-1 bg-yellow-500 text-black text-xs font-bold rounded">E{currentEpisode?.episodeNumber}</span>
               {currentEpisode?.quality && (
-                <Badge variant="outline">{currentEpisode.quality}</Badge>
+                <span className="px-3 py-1 bg-gray-700 text-white text-xs font-bold rounded">{currentEpisode.quality}</span>
               )}
-              {/* Auto-play toggle button */}
               <button
                 onClick={() => setAutoPlayNext(!autoPlayNext)}
                 className={`ml-auto px-3 py-1 rounded-full text-xs font-medium transition-colors ${
@@ -232,85 +176,114 @@ function SeriesWatchContent() {
                 {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
               </button>
             </div>
-            {/* Episode Title */}
-            <h1 className="text-2xl font-bold text-text-primary mb-2">
-              {currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-            </h1>
-            {/* Series Title */}
-            <p className="text-text-muted text-lg">{series.title}</p>
+            
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-white mb-2">
+                  {currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
+                </h1>
+                <p className="text-gray-400 text-lg">{series.title}</p>
+              </div>
+              
+              <div className="relative">
+                {currentEpisode?.downloadLink && (
+                  <button
+                    onClick={() => setShowDownloadMenu(showDownloadMenu === String(currentEpisode.episodeNumber) ? null : String(currentEpisode.episodeNumber))}
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </button>
+                )}
+                
+                {showDownloadMenu === String(currentEpisode?.episodeNumber) && currentEpisode?.downloadLink && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] rounded-lg shadow-xl z-50 border border-gray-800 overflow-hidden">
+                    <div className="p-3 border-b border-gray-800">
+                      <p className="text-white font-medium">Download Episode</p>
+                    </div>
+                    <a
+                      href={currentEpisode.downloadLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
+                      onClick={() => setShowDownloadMenu(null)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Download className="w-4 h-4 text-yellow-500" />
+                        <div>
+                          <p className="text-white font-medium">{currentEpisode.quality || "HD"}</p>
+                          <p className="text-gray-400 text-xs">Direct Download</p>
+                        </div>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-gray-400" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
           </motion.div>
 
-          {/* Episode Selector - Season tabs and episode list */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-card rounded-2xl border border-border overflow-hidden"
+            className="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden"
           >
-            {/* Season Selector - Horizontal scrollable tabs */}
-            <div className="flex border-b border-border overflow-x-auto">
+            <div className="flex border-b border-gray-800 overflow-x-auto">
               {series.seasons?.map((season) => (
                 <button
                   key={season.seasonNumber}
                   onClick={() => {
                     setCurrentSeason(season.seasonNumber);
-                    // Select first episode of this season
                     if (season.episodes.length > 0) {
                       handleEpisodeSelect(season.episodes[0], season.seasonNumber);
                     }
                   }}
-                  className={cn(
-                    "px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors",
+                  className={`px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
                     currentSeason === season.seasonNumber
-                      ? "text-primary-gold border-b-2 border-primary-gold"
-                      : "text-text-muted hover:text-text-primary"
-                  )}
+                      ? "text-yellow-500 border-b-2 border-yellow-500"
+                      : "text-gray-400 hover:text-white"
+                  }`}
                 >
                   Season {season.seasonNumber}
                 </button>
               ))}
             </div>
 
-            {/* Episode List - Scrollable list of episodes in current season */}
             <div className="max-h-96 overflow-y-auto">
               {currentSeasonData?.episodes.map((episode) => {
-                // Check if this is the currently playing episode
                 const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
 
                 return (
                   <button
                     key={episode.episodeNumber}
                     onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                    className={cn(
-                      "w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-border/30",
-                      isActive && "bg-primary-gold/10 border-l-4 border-l-primary-gold"
-                    )}
+                    className={`w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-gray-800/50 ${
+                      isActive ? "bg-yellow-500/10 border-l-4 border-l-yellow-500" : ""
+                    }`}
                   >
-                    {/* Episode Number Badge */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-border flex items-center justify-center">
-                      <span className="text-sm font-semibold text-text-muted">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center">
+                      <span className="text-sm font-semibold text-gray-300">
                         {episode.episodeNumber}
                       </span>
                     </div>
-                    {/* Episode Title and Quality */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-text-primary truncate">
+                      <h4 className="font-medium text-white truncate">
                         {episode.episodeTitle}
                       </h4>
                       {episode.quality && (
-                        <span className="text-xs text-text-muted">{episode.quality}</span>
+                        <span className="text-xs text-gray-400">{episode.quality}</span>
                       )}
                     </div>
-                    {/* Download Button - If download link available */}
                     {episode.downloadLink && (
                       <a
                         href={episode.downloadLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-3 py-1.5 rounded-lg bg-border text-xs text-text-muted hover:text-secondary-purple hover:bg-secondary-purple/10 transition-colors"
+                        className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
                       >
-                        Download
+                        <Download className="w-4 h-4" />
                       </a>
                     )}
                   </button>
@@ -326,19 +299,14 @@ function SeriesWatchContent() {
   );
 }
 
-/**
- * SeriesWatchPage - Default export wrapper with Suspense
- * Provides loading fallback while component loads
- */
 export default function SeriesWatchPage() {
   return (
     <Suspense fallback={
-      // Loading spinner while page loads
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#141414]">
         <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="aspect-video bg-card rounded-2xl animate-pulse" />
+            <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
           </div>
         </div>
       </div>
