@@ -39,6 +39,7 @@ export default function SeasonEpisodeBuilder({ seasons, onChange }: SeasonEpisod
           episodeNumber: season.episodes.length + 1,
           episodeTitle: `Episode ${season.episodes.length + 1}`,
           embedIframeLink: "",
+          embedIframeLink2: "",
           downloadLink: "",
           quality: "720p",
         };
@@ -180,18 +181,35 @@ export default function SeasonEpisodeBuilder({ seasons, onChange }: SeasonEpisod
                           }
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
                           <div className="relative">
                             <Play className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                             <input
                               type="text"
-                              placeholder="Embed URL"
+                              placeholder="Embed URL 1"
                               value={episode.embedIframeLink}
                               onChange={(e) =>
                                 updateEpisode(
                                   season.seasonNumber,
                                   episode.episodeNumber,
                                   "embedIframeLink",
+                                  e.target.value
+                                )
+                              }
+                              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card border border-border text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary-gold text-sm"
+                            />
+                          </div>
+                          <div className="relative">
+                            <Play className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                            <input
+                              type="text"
+                              placeholder="Embed URL 2 (Backup)"
+                              value={episode.embedIframeLink2 || ""}
+                              onChange={(e) =>
+                                updateEpisode(
+                                  season.seasonNumber,
+                                  episode.episodeNumber,
+                                  "embedIframeLink2",
                                   e.target.value
                                 )
                               }

@@ -94,6 +94,7 @@ function SeriesWatchContent() {
   };
 
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
+  const currentEpisodeEmbedLink = currentEpisode?.embedIframeLink || currentEpisode?.embedIframeLink2;
 
   if (loading) {
     return (
@@ -148,7 +149,7 @@ function SeriesWatchContent() {
             className="mb-6"
           >
             <IframePlayer
-              src={currentEpisode?.embedIframeLink}
+              src={currentEpisodeEmbedLink}
               title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
             />
           </motion.div>

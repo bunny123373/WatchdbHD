@@ -136,6 +136,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
             episodeNumber: e,
             episodeTitle: episodeInfo?.name || `Episode ${e}`,
             embedIframeLink: embedData.success ? embedData.embedUrl : "",
+            embedIframeLink2: "",
             downloadLink: "",
             quality: "720p",
           });

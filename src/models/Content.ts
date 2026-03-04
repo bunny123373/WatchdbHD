@@ -16,6 +16,7 @@ export interface IEpisode {
   episodeNumber: number;
   episodeTitle: string;
   embedIframeLink?: string;
+  embedIframeLink2?: string;
   hlsUrl?: string;
   downloadLink?: string;
   quality?: string;
@@ -58,6 +59,7 @@ export interface IContent {
   rating?: number;
   tags?: string[];
   embedIframeLink?: string;
+  embedIframeLink2?: string;
   downloadLink?: string;
   seasons?: ISeason[];
   tmdbId?: number;
@@ -86,6 +88,7 @@ export interface IContentDocument extends Document {
   rating?: number;
   tags?: string[];
   embedIframeLink?: string;
+  embedIframeLink2?: string;
   downloadLink?: string;
   seasons?: ISeason[];
   tmdbId?: number;
@@ -103,6 +106,7 @@ const EpisodeSchema = new Schema<IEpisode>({
   episodeNumber: { type: Number, required: true },
   episodeTitle: { type: String, required: true },
   embedIframeLink: { type: String },
+  embedIframeLink2: { type: String },
   hlsUrl: { type: String },
   downloadLink: { type: String },
   quality: { type: String },
@@ -139,6 +143,7 @@ const ContentSchema = new Schema<IContent>(
     rating: { type: Number },
     tags: [{ type: String }],
     embedIframeLink: { type: String },
+    embedIframeLink2: { type: String },
     hlsUrl: { type: String },
     downloadLink: { type: String },
     seasons: [SeasonSchema],

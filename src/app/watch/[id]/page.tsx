@@ -19,6 +19,7 @@ function WatchMovieContent() {
   const [relatedMovies, setRelatedMovies] = useState<IContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
+  const primaryEmbedLink = movie?.embedIframeLink || movie?.embedIframeLink2;
 
   useEffect(() => {
     if (params.id) {
@@ -109,7 +110,7 @@ function WatchMovieContent() {
             {movie.hlsUrl ? (
               <HlsPlayer src={movie.hlsUrl} title={movie.title} />
             ) : (
-              <IframePlayer src={movie.embedIframeLink} title={movie.title} />
+              <IframePlayer src={primaryEmbedLink} title={movie.title} />
             )}
           </motion.div>
 
@@ -192,9 +193,9 @@ function WatchMovieContent() {
                         </div>
                         <ExternalLink className="w-4 h-4 text-gray-400" />
                       </a>
-                      {movie.embedIframeLink && (
+                      {primaryEmbedLink && (
                         <a
-                          href={movie.embedIframeLink}
+                          href={primaryEmbedLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
@@ -205,6 +206,24 @@ function WatchMovieContent() {
                             <div>
                               <p className="text-white font-medium">Watch Online</p>
                               <p className="text-gray-400 text-xs">Streaming Player</p>
+                            </div>
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-gray-400" />
+                        </a>
+                      )}
+                      {movie.embedIframeLink && movie.embedIframeLink2 && (
+                        <a
+                          href={movie.embedIframeLink2}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
+                          onClick={() => setShowDownloadMenu(false)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Play className="w-4 h-4 text-purple-500" />
+                            <div>
+                              <p className="text-white font-medium">Watch Online (Backup)</p>
+                              <p className="text-gray-400 text-xs">Alternate Streaming Player</p>
                             </div>
                           </div>
                           <ExternalLink className="w-4 h-4 text-gray-400" />

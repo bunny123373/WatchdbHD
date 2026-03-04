@@ -85,11 +85,10 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     rating: "",
     tags: [] as string[],
     embedIframeLink: "",
-    hlsUrl: "",
+    embedIframeLink2: "",
     downloadLink: "",
     trailerUrl: "",
   });
-  const [streamType, setStreamType] = useState<"iframe" | "hls">("iframe");
   const [castInput, setCastInput] = useState("");
   const [cast, setCast] = useState<{ name: string; character: string }[]>([]);
   const [crewInput, setCrewInput] = useState("");
@@ -182,42 +181,6 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     }
   };
 
-  const handleAutoFillHls = async () => {
-    if (!tmdbData.tmdbId) {
-      setMessage("Please search and select a movie from TMDB first");
-      return;
-    }
-
-    setIsAutoFilling(true);
-    setMessage("");
-
-    try {
-      const response = await fetch("/api/hls", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tmdbId: tmdbData.tmdbId,
-          type: "movie",
-        }),
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setFormData((prev) => ({
-          ...prev,
-          hlsUrl: data.hlsUrl,
-        }));
-        setMessage("HLS URL auto-filled successfully!");
-      } else {
-        setMessage(data.error || "Failed to auto-fill HLS URL");
-      }
-    } catch (error) {
-      setMessage("Error auto-filling HLS URL");
-    } finally {
-      setIsAutoFilling(false);
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -278,7 +241,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           rating: "",
           tags: [],
           embedIframeLink: "",
-          hlsUrl: "",
+          embedIframeLink2: "",
           downloadLink: "",
           trailerUrl: "",
         });
@@ -553,110 +516,57 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
       </div>
 
       {/* Links */}
-      {/* Stream Type Toggle */}
-      <div className="flex items-center gap-4 mb-4">
-        <label className="text-sm font-medium text-[#808080]">Stream Type:</label>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setStreamType("iframe")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              streamType === "iframe"
-                ? "bg-[#e50914] text-white"
-                : "bg-[#141414] text-[#808080] border border-[#333]"
-            }`}
-          >
-            Iframe Embed
-          </button>
-          <button
-            type="button"
-            onClick={() => setStreamType("hls")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              streamType === "hls"
-                ? "bg-[#e50914] text-white"
-                : "bg-[#141414] text-[#808080] border border-[#333]"
-            }`}
-          >
-            HLS Stream
-          </button>
-        </div>
-      </div>
-
-      {/* Stream URL */}
-      {streamType === "iframe" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-          <div className="relative">
-            <Input
-              label="Embed Iframe URL (Watch Link)"
-              name="embedIframeLink"
-              value={formData.embedIframeLink}
-              onChange={handleChange}
-              placeholder="https://example.com/embed/..."
-            />
-            <div className="flex items-center gap-2 mt-2">
-              <select
-                value={selectedEmbedLang}
-                onChange={(e) => setSelectedEmbedLang(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-[#141414] border border-[#333] text-white text-xs focus:outline-none focus:border-[#e50914]"
-              >
-                {EMBED_LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={handleAutoFillEmbed}
-                disabled={isAutoFilling || !tmdbData.tmdbId}
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
-              >
-                <Link className="w-3 h-3" />
-                {isAutoFilling ? "Filling..." : "Auto Fill"}
-              </button>
-            </div>
-          </div>
-          <div>
-            <Input
-              label="Download URL"
-              name="downloadLink"
-              value={formData.downloadLink}
-              onChange={handleChange}
-              placeholder="https://drive.google.com/..."
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-          <div className="relative">
-            <Input
-              label="HLS Stream URL"
-              name="hlsUrl"
-              value={formData.hlsUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/stream.m3u8"
-            />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+        <div className="relative">
+          <Input
+            label="Embed Iframe URL (Watch Link)"
+            name="embedIframeLink"
+            value={formData.embedIframeLink}
+            onChange={handleChange}
+            placeholder="https://example.com/embed/..."
+          />
+          <div className="flex items-center gap-2 mt-2">
+            <select
+              value={selectedEmbedLang}
+              onChange={(e) => setSelectedEmbedLang(e.target.value)}
+              className="px-2 py-1.5 rounded-lg bg-[#141414] border border-[#333] text-white text-xs focus:outline-none focus:border-[#e50914]"
+            >
+              {EMBED_LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
             <button
               type="button"
-              onClick={handleAutoFillHls}
+              onClick={handleAutoFillEmbed}
               disabled={isAutoFilling || !tmdbData.tmdbId}
-              className="absolute right-2 top-8 flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-400 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
             >
               <Link className="w-3 h-3" />
-              {isAutoFilling ? "Filling..." : "Auto"}
+              {isAutoFilling ? "Filling..." : "Auto Fill"}
             </button>
           </div>
-          <div>
-            <Input
-              label="Download URL"
-              name="downloadLink"
-              value={formData.downloadLink}
-              onChange={handleChange}
-              placeholder="https://drive.google.com/..."
-            />
-          </div>
         </div>
-      )}
+        <div>
+          <Input
+            label="Embed Iframe URL 2 (Backup)"
+            name="embedIframeLink2"
+            value={formData.embedIframeLink2}
+            onChange={handleChange}
+            placeholder="https://example.com/embed/backup..."
+          />
+        </div>
+        <div>
+          <Input
+            label="Download URL"
+            name="downloadLink"
+            value={formData.downloadLink}
+            onChange={handleChange}
+            placeholder="https://drive.google.com/..."
+          />
+        </div>
+      </div>
 
       {/* Trailer URL */}
       <div className="relative">

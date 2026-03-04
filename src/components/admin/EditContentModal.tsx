@@ -223,6 +223,12 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
               onChange={handleChange}
             />
             <Input
+              label="Embed Iframe URL 2 (Backup)"
+              name="embedIframeLink2"
+              value={formData.embedIframeLink2 || ""}
+              onChange={handleChange}
+            />
+            <Input
               label="HLS Stream URL"
               name="hlsUrl"
               value={formData.hlsUrl || ""}
