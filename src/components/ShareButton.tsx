@@ -1,7 +1,7 @@
 "use client";
 
 import { Share2, Facebook, Twitter, Linkedin, Link2, Check, Mail } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface ShareButtonProps {
   title: string;
@@ -13,6 +13,7 @@ export default function ShareButton({ title, url, description }: ShareButtonProp
   const [copied, setCopied] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [nativeShare, setNativeShare] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const currentUrl = url || (typeof window !== "undefined" ? window.location.href : "");
   const shareText = `Watch ${title}`;
@@ -21,6 +22,16 @@ export default function ShareButton({ title, url, description }: ShareButtonProp
     if (typeof window !== "undefined" && "canShare" in navigator) {
       setNativeShare(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowShareMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleNativeShare = async () => {
@@ -55,10 +66,14 @@ export default function ShareButton({ title, url, description }: ShareButtonProp
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
-        onClick={() => setShowShareMenu(!showShareMenu)}
-        className="flex items-center gap-2 px-4 py-2 bg-gray-700/80 hover:bg-gray-600 text-white rounded-lg transition-colors"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowShareMenu(!showShareMenu);
+        }}
+        type="button"
+        className="flex items-center gap-2 px-4 py-2 bg-gray-700/80 hover:bg-gray-600 text-white rounded-lg transition-colors cursor-pointer"
       >
         <Share2 className="w-4 h-4" />
         <span>Share</span>
