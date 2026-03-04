@@ -6,6 +6,7 @@ export interface ICollection {
   description?: string;
   contentIds: mongoose.Types.ObjectId[];
   isPublic: boolean;
+  isTopTen: boolean;
   createdAt: Date | string;
 }
 
@@ -15,6 +16,7 @@ export interface ICollectionDocument extends Document {
   description?: string;
   contentIds: mongoose.Types.ObjectId[];
   isPublic: boolean;
+  isTopTen: boolean;
   createdAt: Date;
 }
 
@@ -24,6 +26,7 @@ const CollectionSchema = new Schema<ICollection>(
     description: { type: String },
     contentIds: [{ type: Schema.Types.ObjectId, ref: "Content" }],
     isPublic: { type: Boolean, default: true },
+    isTopTen: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

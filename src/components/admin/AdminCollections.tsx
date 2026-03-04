@@ -17,7 +17,7 @@ export default function AdminCollections() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [newCollection, setNewCollection] = useState({ name: "", description: "", contentIds: [] as string[] });
+  const [newCollection, setNewCollection] = useState({ name: "", description: "", contentIds: [] as string[], isTopTen: false });
 
   useEffect(() => {
     fetchData();
@@ -48,7 +48,7 @@ export default function AdminCollections() {
         body: JSON.stringify(newCollection),
       });
       if (res.ok) {
-        setNewCollection({ name: "", description: "", contentIds: [] });
+        setNewCollection({ name: "", description: "", contentIds: [], isTopTen: false });
         fetchData();
       }
     } catch (err) {
@@ -100,6 +100,20 @@ export default function AdminCollections() {
               placeholder="Short description..."
               className="w-full px-4 py-2 bg-[#2a2f3d] border border-[#3a3f4d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
             />
+          </div>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={newCollection.isTopTen}
+                onChange={(e) => setNewCollection((prev) => ({ ...prev, isTopTen: e.target.checked }))}
+                className="w-4 h-4 rounded border-gray-600 bg-[#2a2f3d] text-yellow-500 focus:ring-yellow-500 focus:ring-offset-0"
+              />
+              <span className="text-white text-sm">Top 10 Collection</span>
+            </label>
+            {newCollection.isTopTen && (
+              <span className="text-yellow-500 text-xs">(Shows numbers 1-10 on items)</span>
+            )}
           </div>
           <div>
             <label className="text-gray-400 text-sm mb-2 block">Select Content ({newCollection.contentIds.length} selected)</label>

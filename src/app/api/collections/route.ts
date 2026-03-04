@@ -8,7 +8,7 @@ export async function GET() {
     const collections = await Collection.find({ isPublic: true })
       .sort({ createdAt: -1 })
       .limit(20)
-      .populate("contentIds", "title poster type");
+      .populate("contentIds", "title poster type year rating");
     return NextResponse.json({ collections });
   } catch (error) {
     console.error("Error fetching collections:", error);
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { name, description, contentIds, isPublic } = body;
+    const { name, description, contentIds, isPublic, isTopTen } = body;
 
     if (!name || !contentIds || !Array.isArray(contentIds)) {
       return NextResponse.json({ error: "Name and contentIds required" }, { status: 400 });
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       description,
       contentIds,
       isPublic: isPublic ?? true,
+      isTopTen: isTopTen ?? false,
     });
 
     return NextResponse.json({ collection }, { status: 201 });
