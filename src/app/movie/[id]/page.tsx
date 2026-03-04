@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { Play, Share, Star, Users, Clapperboard, Youtube } from "lucide-react";
+import { Play, Share, Users, Clapperboard, Youtube } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
@@ -10,7 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
-import ReviewSection from "@/components/ReviewSection";
 import ReportButton from "@/components/ReportButton";
 import { SITE_CONFIG } from "@/utils/constants";
 
@@ -220,12 +219,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                       {movie.year}
                     </span>
                   )}
-                  {movie.rating && (
-                    <span className="flex items-center gap-1 text-yellow-500 font-semibold">
-                      <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                      {movie.rating}
-                    </span>
-                  )}
                   {movie.quality && (
                     <span className="px-2.5 py-1 text-xs font-bold bg-red-600 text-white rounded">
                       {movie.quality}
@@ -365,11 +358,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
           </div>
         </div>
       )}
-
-      {/* Reviews */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-        <ReviewSection contentId={id} />
-      </div>
 
       <Footer />
     </div>

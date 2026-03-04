@@ -10,7 +10,6 @@ import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
-import ReviewSection from "@/components/ReviewSection";
 import ReportButton from "@/components/ReportButton";
 
 interface SeriesDetailsClientProps {
@@ -84,14 +83,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                   {series.year && (
                     <span className="flex items-center gap-1">
                       {series.year}
-                    </span>
-                  )}
-                  {series.rating && (
-                    <span className="flex items-center gap-1 text-yellow-500">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                      {series.rating}
                     </span>
                   )}
                   {series.quality && (
@@ -176,11 +167,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
             <ContentGrid title="" items={similarSeries} isNetflixStyle />
           </div>
         )}
-      </div>
-
-      {/* Reviews */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-        <ReviewSection contentId={series._id} />
       </div>
 
       <Footer />

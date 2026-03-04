@@ -40,3 +40,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create collection" }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    await dbConnect();
+    const body = await request.json();
+    const { id, name, description, contentIds, isPublic, isTopTen } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "Collection ID required" }, { status: 400 });
+    }
+
+    const collection = await Collection.findByIdAndUpdate(
+      id,
+      { name, description, contentIds, isPublic, isTopTen },
+      { new: true }
+    );
+
+    if (!collection) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ collection });
+  } catch (error) {
+    console.error("Error updating collection:", error);
+    return NextResponse.json({ error: "Failed to update collection" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    await dbConnect();
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Collection ID required" }, { status: 400 });
+    }
+
+    const collection = await Collection.findByIdAndDelete(id);
+
+    if (!collection) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+    return NextResponse.json({ error: "Failed to delete collection" }, { status: 500 });
+  }
+}

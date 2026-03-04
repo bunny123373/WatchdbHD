@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Save, X, Film, Tv, RefreshCw } from "lucide-react";
-import Content from "@/models/Content";
+import { Plus, Trash2, Save, X, Film, Tv, RefreshCw, Pencil, Check } from "lucide-react";
 
 interface ContentItem {
   _id: string;
@@ -11,8 +10,16 @@ interface ContentItem {
   type: string;
 }
 
+interface CollectionData {
+  _id: string;
+  name: string;
+  description?: string;
+  contentIds: string[];
+  isTopTen?: boolean;
+}
+
 export default function AdminCollections() {
-  const [collections, setCollections] = useState<{ _id: string; name: string; description?: string; contentIds: string[] }[]>([]);
+  const [collections, setCollections] = useState<CollectionData[]>([]);
   const [allContent, setAllContent] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -56,6 +63,54 @@ export default function AdminCollections() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const updateCollection = async (id: string) => {
+    if (!newCollection.name.trim()) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/collections", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...newCollection }),
+      });
+      if (res.ok) {
+        setEditingId(null);
+        setNewCollection({ name: "", description: "", contentIds: [], isTopTen: false });
+        fetchData();
+      }
+    } catch (err) {
+      console.error("Failed to update:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteCollection = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this collection?")) return;
+    try {
+      const res = await fetch(`/api/collections?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchData();
+      }
+    } catch (err) {
+      console.error("Failed to delete:", err);
+    }
+  };
+
+  const startEdit = (coll: CollectionData) => {
+    setEditingId(coll._id);
+    setNewCollection({
+      name: coll.name,
+      description: coll.description || "",
+      contentIds: coll.contentIds || [],
+      isTopTen: coll.isTopTen || false,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setNewCollection({ name: "", description: "", contentIds: [], isTopTen: false });
   };
 
   const toggleContent = (id: string) => {
@@ -143,13 +198,22 @@ export default function AdminCollections() {
             </div>
           </div>
           <button
-            onClick={saveCollection}
+            onClick={() => (editingId ? updateCollection(editingId) : saveCollection())}
             disabled={saving || !newCollection.name.trim()}
             className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-medium rounded-lg transition-colors disabled:opacity-50"
           >
-            <Save className="w-4 h-4" />
-            {saving ? "Saving..." : "Create Collection"}
+            {editingId ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+            {saving ? "Saving..." : editingId ? "Update Collection" : "Create Collection"}
           </button>
+          {editingId && (
+            <button
+              onClick={cancelEdit}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white font-medium rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4" />
+              Cancel
+            </button>
+          )}
         </div>
       </div>
 
@@ -168,9 +232,30 @@ export default function AdminCollections() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {collections.map((coll) => (
               <div key={coll._id} className="bg-[#141414] rounded-lg p-4 border border-[#2a2f3d]">
-                <h3 className="text-white font-medium">{coll.name}</h3>
-                {coll.description && <p className="text-gray-400 text-sm mt-1">{coll.description}</p>}
-                <p className="text-gray-500 text-xs mt-2">{coll.contentIds?.length || 0} items</p>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-white font-medium">{coll.name}</h3>
+                    {coll.description && <p className="text-gray-400 text-sm mt-1">{coll.description}</p>}
+                    <p className="text-gray-500 text-xs mt-2">{coll.contentIds?.length || 0} items</p>
+                    {coll.isTopTen && <span className="inline-block mt-2 px-2 py-0.5 bg-yellow-500 text-black text-xs rounded">Top 10</span>}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => startEdit(coll)}
+                      className="p-2 bg-[#2a2f3d] hover:bg-[#353b4a] text-white rounded-lg transition-colors"
+                      title="Edit"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => deleteCollection(coll._id)}
+                      className="p-2 bg-red-600/20 hover:bg-red-600/40 text-red-500 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
