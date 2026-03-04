@@ -252,23 +252,25 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                 )}
 
                 {/* Actions */}
-                <div className="flex flex-wrap gap-2 sm:gap-3">
+                <div className="flex flex-wrap gap-3">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
+                    className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[#e50914] hover:bg-[#f40612] text-white font-bold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
                   >
-                    <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                    <Play className="w-5 h-5 fill-current" />
                     <span>Watch Now</span>
                   </Link>
-                  <Link
-                    href={movie.downloadLink ? `/verify?id=${movie._id}&type=download&url=${encodeURIComponent(movie.downloadLink)}` : "#"}
-                    target={movie.downloadLink ? "_blank" : "_self"}
-                    rel="noopener noreferrer"
-                    className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 font-medium rounded-lg transition-colors text-sm sm:text-base ${movie.downloadLink ? 'bg-gray-700/80 hover:bg-gray-600' : 'bg-gray-800 cursor-not-allowed opacity-50'}`}
-                  >
-                    <Play className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span>Download</span>
-                  </Link>
+                  {movie.downloadLink && (
+                    <Link
+                      href={movie.downloadLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
+                    >
+                      <Download className="w-5 h-5" />
+                      <span>Download</span>
+                    </Link>
+                  )}
                   <ShareButton title={movie.title} />
                 </div>
               </div>
