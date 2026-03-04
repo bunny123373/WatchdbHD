@@ -10,7 +10,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
-import ReportButton from "@/components/ReportButton";
 import { SITE_CONFIG } from "@/utils/constants";
 
 async function getMovie(id: string) {
@@ -271,7 +270,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                     <span>Download</span>
                   </Link>
                   <ShareButton title={movie.title} />
-                  <ReportButton contentId={movie._id} contentTitle={movie.title} type="movie" />
                 </div>
               </div>
             </div>

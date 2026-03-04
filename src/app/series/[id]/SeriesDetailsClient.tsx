@@ -10,7 +10,6 @@ import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
-import ReportButton from "@/components/ReportButton";
 
 interface SeriesDetailsClientProps {
   series: IContent;
@@ -125,7 +124,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                     <span>Watch Now</span>
                   </Link>
                   <ShareButton title={series.title} />
-                  <ReportButton contentId={series._id} contentTitle={series.title} type="series" />
                 </div>
               </div>
             </div>
