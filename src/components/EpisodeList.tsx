@@ -7,6 +7,7 @@ import { Play, Download, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ISeason, IEpisode } from "@/models/Content";
 import { cn } from "@/utils/cn";
+import { normalizeExternalUrl } from "@/utils/url";
 
 interface EpisodeListProps {
   seasons: ISeason[];
@@ -71,6 +72,7 @@ export default function EpisodeList({
                     const watchLink = seriesId
                       ? `/verify?id=${seriesId}&type=series&season=${season.seasonNumber}&episode=${episode.episodeNumber}`
                       : "#";
+                    const episodeDownloadUrl = normalizeExternalUrl(episode.downloadLink);
 
                     return (
                       <motion.div
@@ -133,9 +135,9 @@ export default function EpisodeList({
                               <Play className="w-4 h-4 fill-current" />
                               Play
                             </Link>
-                            {episode.downloadLink && (
+                            {episodeDownloadUrl && (
                               <a
-                                href={episode.downloadLink}
+                                href={episodeDownloadUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-sm rounded transition-colors"

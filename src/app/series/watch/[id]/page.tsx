@@ -9,6 +9,7 @@ import { IContent, IEpisode, ISeason } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
+import { normalizeExternalUrl } from "@/utils/url";
 
 function SeriesWatchContent() {
   const params = useParams();
@@ -95,6 +96,8 @@ function SeriesWatchContent() {
 
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
   const currentEpisodeEmbedLink = currentEpisode?.embedIframeLink || currentEpisode?.embedIframeLink2;
+  const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
+  const currentEpisodeNumber = currentEpisode?.episodeNumber;
 
   if (loading) {
     return (
@@ -187,9 +190,13 @@ function SeriesWatchContent() {
               </div>
               
               <div className="relative">
-                {currentEpisode?.downloadLink && (
+                {currentEpisodeDownloadUrl && (
                   <button
-                    onClick={() => setShowDownloadMenu(showDownloadMenu === String(currentEpisode.episodeNumber) ? null : String(currentEpisode.episodeNumber))}
+                    onClick={() =>
+                      setShowDownloadMenu(
+                        showDownloadMenu === String(currentEpisodeNumber) ? null : String(currentEpisodeNumber)
+                      )
+                    }
                     className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
@@ -197,13 +204,13 @@ function SeriesWatchContent() {
                   </button>
                 )}
                 
-                {showDownloadMenu === String(currentEpisode?.episodeNumber) && currentEpisode?.downloadLink && (
+                {showDownloadMenu === String(currentEpisodeNumber) && currentEpisodeDownloadUrl && (
                   <div className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] rounded-lg shadow-xl z-50 border border-gray-800 overflow-hidden">
                     <div className="p-3 border-b border-gray-800">
                       <p className="text-white font-medium">Download Episode</p>
                     </div>
                     <a
-                      href={currentEpisode.downloadLink}
+                      href={currentEpisodeDownloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
@@ -212,7 +219,7 @@ function SeriesWatchContent() {
                       <div className="flex items-center gap-3">
                         <Download className="w-4 h-4 text-yellow-500" />
                         <div>
-                          <p className="text-white font-medium">{currentEpisode.quality || "HD"}</p>
+                          <p className="text-white font-medium">{currentEpisode?.quality || "HD"}</p>
                           <p className="text-gray-400 text-xs">Direct Download</p>
                         </div>
                       </div>
@@ -276,9 +283,9 @@ function SeriesWatchContent() {
                         <span className="text-xs text-gray-400">{episode.quality}</span>
                       )}
                     </div>
-                    {episode.downloadLink && (
+                    {normalizeExternalUrl(episode.downloadLink) && (
                       <a
-                        href={episode.downloadLink}
+                        href={normalizeExternalUrl(episode.downloadLink)}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}

@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import ContentGrid from "@/components/ContentGrid";
+import { normalizeExternalUrl } from "@/utils/url";
 
 function WatchMovieContent() {
   const params = useParams();
@@ -20,6 +21,7 @@ function WatchMovieContent() {
   const [loading, setLoading] = useState(true);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const primaryEmbedLink = movie?.embedIframeLink || movie?.embedIframeLink2;
+  const movieDownloadUrl = normalizeExternalUrl(movie?.downloadLink);
 
   useEffect(() => {
     if (params.id) {
@@ -160,7 +162,7 @@ function WatchMovieContent() {
                 <p className="text-gray-400">{movie.description}</p>
               )}
 
-              {movie.downloadLink && (
+              {movieDownloadUrl && (
                 <div className="relative">
                   <button
                     onClick={() => setShowDownloadMenu(!showDownloadMenu)}
@@ -178,7 +180,7 @@ function WatchMovieContent() {
                         <p className="text-gray-400 text-sm">Select quality to download</p>
                       </div>
                       <a
-                        href={movie.downloadLink}
+                        href={movieDownloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
