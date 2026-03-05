@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const AD_UNIT_ID = "ca-app-pub-8628683007968578/1234567890";
+const AD_UNIT_ID = "ca-app-pub-8628683007968578/3635711104";
 
 export default function AdMobBanner({ 
   size = "ADAPTIVE_BANNER",

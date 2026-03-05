@@ -9,7 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
-import AdMobBanner from "@/components/AdMobBanner";
+import AdBanner from "@/components/AdBanner";
 import { SITE_CONFIG } from "@/utils/constants";
 import { normalizeExternalUrl } from "@/utils/url";
 
@@ -295,7 +295,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
 
       {/* Ad Banner */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4">
-        <AdMobBanner size="LARGE_BANNER" />
+        <AdBanner />
       </div>
 
       {/* Similar Movies */}

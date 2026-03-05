@@ -10,7 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import { normalizeExternalUrl } from "@/utils/url";
-import AdMobBanner from "@/components/AdMobBanner";
+import AdBanner from "@/components/AdBanner";
 
 function SeriesWatchContent() {
   const params = useParams();
@@ -164,7 +164,7 @@ function SeriesWatchContent() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <AdMobBanner size="LARGE_BANNER" />
+            <AdBanner />
           </motion.div>
 
           <motion.div

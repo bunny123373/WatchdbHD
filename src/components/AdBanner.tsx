@@ -2,15 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const ADSENSE_PUB_ID = "ca-pub-8628683007968578";
+
 interface AdBannerProps {
-  slot: string;
+  slot?: string;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export default function AdBanner({ slot, className = "", style }: AdBannerProps) {
+const DEFAULT_SLOT = "3635711104";
+
+export default function AdBanner({ slot = DEFAULT_SLOT, className = "", style }: AdBannerProps) {
   const adRef = useRef<HTMLModElement | null>(null);
-  const [adsReady, setAdsReady] = useState(false);
+  const [adLoaded, setAdLoaded] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -22,24 +26,26 @@ export default function AdBanner({ slot, className = "", style }: AdBannerProps)
       
       try {
         (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle.push({});
-        setAdsReady(true);
+        setAdLoaded(true);
       } catch (error) {
-        console.error("AdSense error:", error);
+        console.log("AdSense: Ad blocked or error");
       }
     };
 
+    if ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle) {
+      initAds();
+      return;
+    }
+
     const script = document.createElement("script");
-    script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8628683007968578";
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`;
     script.async = true;
     script.crossOrigin = "anonymous";
     script.onload = initAds;
     document.head.appendChild(script);
 
     return () => {
-      const existingScript = document.querySelector('script[src*="googlesyndication"]');
-      if (existingScript) {
-        existingScript.remove();
-      }
+      // Don't remove script, keep it for subsequent ads
     };
   }, [slot]);
 
@@ -48,8 +54,8 @@ export default function AdBanner({ slot, className = "", style }: AdBannerProps)
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={{ display: "block", ...style }}
-        data-ad-client="ca-pub-8628683007968578"
+        style={{ display: "block", width: "100%", height: "100%", minHeight: "90px", ...style }}
+        data-ad-client={ADSENSE_PUB_ID}
         data-ad-slot={slot}
         data-ad-format="auto"
         data-full-width-responsive="true"

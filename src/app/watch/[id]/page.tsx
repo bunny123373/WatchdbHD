@@ -13,7 +13,7 @@ import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import ContentGrid from "@/components/ContentGrid";
 import { normalizeExternalUrl } from "@/utils/url";
-import AdMobBanner from "@/components/AdMobBanner";
+import AdBanner from "@/components/AdBanner";
 
 function WatchMovieContent() {
   const params = useParams();
@@ -123,7 +123,7 @@ function WatchMovieContent() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <AdMobBanner size="LARGE_BANNER" />
+            <AdBanner />
           </motion.div>
 
           <motion.div
