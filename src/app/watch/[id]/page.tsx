@@ -19,12 +19,14 @@ function WatchMovieContent() {
   const [movie, setMovie] = useState<IContent | null>(null);
   const [relatedMovies, setRelatedMovies] = useState<IContent[]>([]);
   const [loading, setLoading] = useState(true);
-  const primaryEmbedLink = movie?.embedIframeLink || movie?.embedIframeLink2;
+  const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const movieDownloadUrl = normalizeExternalUrl(movie?.downloadLink);
+  const primaryEmbedLink = activeServer === 2 ? movie?.embedIframeLink2 : movie?.embedIframeLink;
 
   useEffect(() => {
     if (params.id) {
       fetchMovie();
+      setActiveServer(1);
     }
   }, [params.id]);
 
@@ -174,26 +176,30 @@ function WatchMovieContent() {
                   </a>
                 )}
                 {movie.embedIframeLink && (
-                  <a
-                    href={movie.embedIframeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-colors"
+                  <button
+                    onClick={() => setActiveServer(1)}
+                    className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
+                      activeServer === 1 
+                        ? 'bg-purple-600 hover:bg-purple-500 text-white' 
+                        : 'bg-gray-700 hover:bg-gray-600 text-white'
+                    }`}
                   >
                     <Play className="w-5 h-5" />
-                    Watch Online
-                  </a>
+                    Server 1
+                  </button>
                 )}
                 {movie.embedIframeLink2 && (
-                  <a
-                    href={movie.embedIframeLink2}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                  <button
+                    onClick={() => setActiveServer(activeServer === 2 ? 1 : 2)}
+                    className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
+                      activeServer === 2 
+                        ? 'bg-green-600 hover:bg-green-500 text-white' 
+                        : 'bg-gray-700 hover:bg-gray-600 text-white'
+                    }`}
                   >
                     <ExternalLink className="w-5 h-5" />
                     Server 2
-                  </a>
+                  </button>
                 )}
               </div>
             </div>

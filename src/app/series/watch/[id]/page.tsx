@@ -20,6 +20,7 @@ function SeriesWatchContent() {
   const [loading, setLoading] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(false);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const [activeServer, setActiveServer] = useState<1 | 2>(1);
 
   const seasonParam = searchParams.get("season");
   const episodeParam = searchParams.get("episode");
@@ -27,6 +28,7 @@ function SeriesWatchContent() {
   useEffect(() => {
     if (params.id) {
       fetchSeries();
+      setActiveServer(1);
     }
   }, [params.id]);
 
@@ -94,7 +96,7 @@ function SeriesWatchContent() {
   };
 
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
-  const currentEpisodeEmbedLink = currentEpisode?.embedIframeLink || currentEpisode?.embedIframeLink2;
+  const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
   const currentEpisodeNumber = currentEpisode?.episodeNumber;
 
@@ -200,16 +202,31 @@ function SeriesWatchContent() {
                     Download
                   </a>
                 )}
+                {currentEpisode?.embedIframeLink && (
+                  <button
+                    onClick={() => setActiveServer(1)}
+                    className={`flex items-center gap-2 px-4 py-2 font-bold rounded-lg transition-colors ${
+                      activeServer === 1 
+                        ? 'bg-purple-600 hover:bg-purple-500 text-white' 
+                        : 'bg-gray-700 hover:bg-gray-600 text-white'
+                    }`}
+                  >
+                    <Play className="w-4 h-4" />
+                    Server 1
+                  </button>
+                )}
                 {currentEpisode?.embedIframeLink2 && (
-                  <a
-                    href={currentEpisode.embedIframeLink2}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                  <button
+                    onClick={() => setActiveServer(2)}
+                    className={`flex items-center gap-2 px-4 py-2 font-bold rounded-lg transition-colors ${
+                      activeServer === 2 
+                        ? 'bg-green-600 hover:bg-green-500 text-white' 
+                        : 'bg-gray-700 hover:bg-gray-600 text-white'
+                    }`}
                   >
                     <ExternalLink className="w-4 h-4" />
                     Server 2
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
