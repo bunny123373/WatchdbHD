@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { Play, Download, ArrowLeft, Calendar, Globe, Check, ChevronDown, ExternalLink } from "lucide-react";
+import { Play, Download, ArrowLeft, Calendar, Globe, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -19,7 +19,6 @@ function WatchMovieContent() {
   const [movie, setMovie] = useState<IContent | null>(null);
   const [relatedMovies, setRelatedMovies] = useState<IContent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const primaryEmbedLink = movie?.embedIframeLink || movie?.embedIframeLink2;
   const movieDownloadUrl = normalizeExternalUrl(movie?.downloadLink);
 
@@ -58,7 +57,7 @@ function WatchMovieContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen bg-[#141814]">
         <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
@@ -71,7 +70,7 @@ function WatchMovieContent() {
 
   if (!movie) {
     return (
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen bg-[#141814]">
         <Navbar />
         <div className="pt-32 text-center">
           <h1 className="text-2xl font-bold text-white">Movie not found</h1>
@@ -85,7 +84,7 @@ function WatchMovieContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen bg-[#141814]">
       <Navbar />
 
       <div className="pt-20 pb-12">
@@ -162,79 +161,41 @@ function WatchMovieContent() {
                 <p className="text-gray-400">{movie.description}</p>
               )}
 
-              {movieDownloadUrl && (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDownloadMenu(!showDownloadMenu)}
+              <div className="flex flex-wrap gap-3">
+                {movieDownloadUrl && (
+                  <a
+                    href={movieDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
                   >
                     <Download className="w-5 h-5" />
                     Download
-                    <ChevronDown className={`w-4 h-4 transition-transform ${showDownloadMenu ? 'rotate-180' : ''}`} />
-                  </button>
-                  
-                  {showDownloadMenu && (
-                    <div className="absolute top-full left-0 mt-2 w-64 bg-[#1a1a1a] rounded-lg shadow-xl z-50 border border-gray-800 overflow-hidden">
-                      <div className="p-3 border-b border-gray-800">
-                        <p className="text-white font-medium">Download Options</p>
-                        <p className="text-gray-400 text-sm">Select quality to download</p>
-                      </div>
-                      <a
-                        href={movieDownloadUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
-                        onClick={() => setShowDownloadMenu(false)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Download className="w-4 h-4 text-yellow-500" />
-                          <div>
-                            <p className="text-white font-medium">{movie.quality || "HD"}</p>
-                            <p className="text-gray-400 text-xs">Direct Download</p>
-                          </div>
-                        </div>
-                        <ExternalLink className="w-4 h-4 text-gray-400" />
-                      </a>
-                      {primaryEmbedLink && (
-                        <a
-                          href={primaryEmbedLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
-                          onClick={() => setShowDownloadMenu(false)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Play className="w-4 h-4 text-purple-500" />
-                            <div>
-                              <p className="text-white font-medium">Watch Online</p>
-                              <p className="text-gray-400 text-xs">Streaming Player</p>
-                            </div>
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-gray-400" />
-                        </a>
-                      )}
-                      {movie.embedIframeLink && movie.embedIframeLink2 && (
-                        <a
-                          href={movie.embedIframeLink2}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
-                          onClick={() => setShowDownloadMenu(false)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Play className="w-4 h-4 text-purple-500" />
-                            <div>
-                              <p className="text-white font-medium">Watch Online (Backup)</p>
-                              <p className="text-gray-400 text-xs">Alternate Streaming Player</p>
-                            </div>
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-gray-400" />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+                  </a>
+                )}
+                {movie.embedIframeLink && (
+                  <a
+                    href={movie.embedIframeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-colors"
+                  >
+                    <Play className="w-5 h-5" />
+                    Watch Online
+                  </a>
+                )}
+                {movie.embedIframeLink2 && (
+                  <a
+                    href={movie.embedIframeLink2}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    Server 2
+                  </a>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>
@@ -252,7 +213,7 @@ function WatchMovieContent() {
 export default function WatchMoviePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center">
+      <div className="min-h-screen bg-[#141814] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
       </div>
     }>

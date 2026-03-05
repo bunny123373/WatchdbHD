@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
 import { SITE_CONFIG } from "@/utils/constants";
+import dbConnect from "@/lib/dbconnect";
+import Content from "@/models/Content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.url;
@@ -20,26 +22,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const response = await fetch(`${baseUrl}/api/content`, { 
-      cache: "no-store" 
+    await dbConnect();
+    const items = await Content.find({}, { _id: 1, type: 1, updatedAt: 1 }).lean() as Array<{
+      _id: unknown;
+      type?: string;
+      updatedAt?: Date | string;
+    }>;
+
+    const contentRoutes: MetadataRoute.Sitemap = items.map((item) => {
+      const path = item.type === "movie" ? "movie" : "series";
+      const id = String(item._id || "");
+      const updated = item.updatedAt ? new Date(item.updatedAt) : new Date();
+
+      return {
+        url: `${baseUrl}/${path}/${id}`,
+        lastModified: updated,
+        changeFrequency: "weekly",
+        priority: 0.8,
+      };
     });
-    const data = await response.json();
 
-    if (data.success && data.data) {
-      const contentRoutes = data.data.map((item: { _id: string; type: string; updatedAt: string }) => {
-        const path = item.type === "movie" ? "movie" : "series";
-        return {
-          url: `${baseUrl}/${path}/${item._id}`,
-          lastModified: new Date(item.updatedAt || Date.now()),
-          changeFrequency: "weekly",
-          priority: 0.8,
-        };
-      });
-
-      return [...staticRoutes, ...contentRoutes];
-    }
+    return [...staticRoutes, ...contentRoutes];
   } catch (error) {
-    console.log("Sitemap: Could not fetch dynamic content, using static routes only");
+    console.log("Sitemap: Could not load dynamic content from DB, using static routes only");
   }
 
   return staticRoutes;

@@ -20,7 +20,6 @@ function SeriesWatchContent() {
   const [loading, setLoading] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(false);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
-  const [showDownloadMenu, setShowDownloadMenu] = useState<string | null>(null);
 
   const seasonParam = searchParams.get("season");
   const episodeParam = searchParams.get("episode");
@@ -189,43 +188,28 @@ function SeriesWatchContent() {
                 <p className="text-gray-400 text-lg">{series.title}</p>
               </div>
               
-              <div className="relative">
+              <div className="flex items-center gap-3">
                 {currentEpisodeDownloadUrl && (
-                  <button
-                    onClick={() =>
-                      setShowDownloadMenu(
-                        showDownloadMenu === String(currentEpisodeNumber) ? null : String(currentEpisodeNumber)
-                      )
-                    }
+                  <a
+                    href={currentEpisodeDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     Download
-                  </button>
+                  </a>
                 )}
-                
-                {showDownloadMenu === String(currentEpisodeNumber) && currentEpisodeDownloadUrl && (
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1a1a1a] rounded-lg shadow-xl z-50 border border-gray-800 overflow-hidden">
-                    <div className="p-3 border-b border-gray-800">
-                      <p className="text-white font-medium">Download Episode</p>
-                    </div>
-                    <a
-                      href={currentEpisodeDownloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 hover:bg-gray-800 transition-colors"
-                      onClick={() => setShowDownloadMenu(null)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Download className="w-4 h-4 text-yellow-500" />
-                        <div>
-                          <p className="text-white font-medium">{currentEpisode?.quality || "HD"}</p>
-                          <p className="text-gray-400 text-xs">Direct Download</p>
-                        </div>
-                      </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400" />
-                    </a>
-                  </div>
+                {currentEpisode?.embedIframeLink2 && (
+                  <a
+                    href={currentEpisode.embedIframeLink2}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Server 2
+                  </a>
                 )}
               </div>
             </div>
