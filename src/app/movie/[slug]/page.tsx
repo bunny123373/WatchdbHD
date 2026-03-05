@@ -293,11 +293,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
         </div>
       </div>
 
-      {/* Ad Banner */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4">
-        <AdBanner />
-      </div>
-
       {/* Similar Movies */}
       {similarMovies.length > 0 && (
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">

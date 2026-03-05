@@ -13,7 +13,6 @@ import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import ContentGrid from "@/components/ContentGrid";
 import { normalizeExternalUrl } from "@/utils/url";
-import AdBanner from "@/components/AdBanner";
 
 function WatchMovieContent() {
   const params = useParams();
@@ -116,14 +115,6 @@ function WatchMovieContent() {
             ) : (
               <IframePlayer src={primaryEmbedLink} title={movie.title} />
             )}
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-          >
-            <AdBanner />
           </motion.div>
 
           <motion.div

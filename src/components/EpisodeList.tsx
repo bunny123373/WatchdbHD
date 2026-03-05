@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ISeason, IEpisode } from "@/models/Content";
 import { cn } from "@/utils/cn";
 import { normalizeExternalUrl } from "@/utils/url";
-import AdBanner from "./AdBanner";
 
 interface EpisodeListProps {
   seasons: ISeason[];
@@ -158,10 +157,6 @@ export default function EpisodeList({
           </AnimatePresence>
         </div>
       ))}
-
-      <div className="mt-6">
-        <AdBanner />
-      </div>
     </div>
   );
 }
