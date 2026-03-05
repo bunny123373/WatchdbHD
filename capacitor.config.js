@@ -7,4 +7,9 @@ module.exports = {
     androidScheme: 'https',
     url: 'https://watchdbhd.vercel.app',
   },
+  plugins: {
+    AdMob: {
+      initializeForTesting: false,
+    },
+  },
 };

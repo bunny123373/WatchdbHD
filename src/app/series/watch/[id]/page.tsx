@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import { normalizeExternalUrl } from "@/utils/url";
+import AdMobBanner from "@/components/AdMobBanner";
 
 function SeriesWatchContent() {
   const params = useParams();
@@ -156,6 +157,14 @@ function SeriesWatchContent() {
               src={currentEpisodeEmbedLink}
               title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
             />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <AdMobBanner size="LARGE_BANNER" />
           </motion.div>
 
           <motion.div
