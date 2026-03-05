@@ -177,9 +177,11 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
     description: "",
     year: "",
     language: "Telugu",
+    audioLanguages: [] as string[],
     rating: "",
     tags: [] as string[],
   });
+  const [selectedAudioLanguages, setSelectedAudioLanguages] = useState<string[]>([]);
   const [seasons, setSeasons] = useState<ISeason[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -223,6 +225,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         body: JSON.stringify({
           type: "series",
           ...formData,
+          audioLanguages: selectedAudioLanguages.length > 0 ? selectedAudioLanguages : undefined,
           category: "Web Series",
           rating: formData.rating ? parseFloat(formData.rating) : undefined,
           seasons,
@@ -246,11 +249,13 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
           description: "",
           year: "",
           language: "Telugu",
+          audioLanguages: [],
           rating: "",
           tags: [],
         });
         setSeasons([]);
         setSelectedGenres([]);
+        setSelectedAudioLanguages([]);
         setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
         
         const notification = {
@@ -375,6 +380,39 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Audio Languages */}
+        <div>
+          <label className="block text-sm font-medium text-[#808080] mb-1.5">Audio Languages</label>
+          <div className="flex flex-wrap gap-2 p-2 rounded-lg bg-[#141414] border border-[#333] min-h-[42px]">
+            {AUDIO_LANGUAGES.map((lang) => {
+              const isSelected = selectedAudioLanguages.includes(lang);
+              return (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => {
+                    setSelectedAudioLanguages(prev => 
+                      isSelected 
+                        ? prev.filter(l => l !== lang)
+                        : [...prev, lang]
+                    );
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    isSelected 
+                      ? "bg-[#e50914] text-white" 
+                      : "bg-[#333] text-gray-400 hover:bg-[#444]"
+                  }`}
+                >
+                  {lang}
+                </button>
+              );
+            })}
+          </div>
+          {selectedAudioLanguages.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">Selected: {selectedAudioLanguages.join(", ")}</p>
+          )}
         </div>
 
         {/* Rating */}
