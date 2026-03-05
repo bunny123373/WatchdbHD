@@ -5,7 +5,7 @@ import { Upload, X, Plus, Sparkles, ChevronDown, Check, Link } from "lucide-reac
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { LANGUAGES, QUALITIES, TMDB_GENRES } from "@/utils/constants";
+import { LANGUAGES, QUALITIES, TMDB_GENRES, AUDIO_LANGUAGES } from "@/utils/constants";
 import { ISeason } from "@/models/Content";
 import SeasonEpisodeBuilder from "./SeasonEpisodeBuilder";
 import TMDBSearch from "./TMDBSearch";

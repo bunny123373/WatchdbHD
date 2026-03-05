@@ -12,6 +12,15 @@ export const LANGUAGES = [
   "Dubbed",
 ] as const;
 
+export const AUDIO_LANGUAGES = [
+  "Telugu",
+  "Hindi",
+  "English",
+  "Tamil",
+  "Malayalam",
+  "Kannada",
+] as const;
+
 export const CATEGORIES = [
   "Trending",
   "Latest",

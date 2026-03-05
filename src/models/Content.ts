@@ -54,6 +54,7 @@ export interface IContent {
   description?: string;
   year?: string;
   language?: string;
+  audioLanguages?: string[];
   category?: string;
   quality?: string;
   rating?: number;
@@ -83,6 +84,7 @@ export interface IContentDocument extends Document {
   description?: string;
   year?: string;
   language?: string;
+  audioLanguages?: string[];
   category?: string;
   quality?: string;
   rating?: number;
@@ -138,6 +140,7 @@ const ContentSchema = new Schema<IContent>(
     description: { type: String },
     year: { type: String },
     language: { type: String },
+    audioLanguages: [{ type: String }],
     category: { type: String },
     quality: { type: String },
     rating: { type: Number },

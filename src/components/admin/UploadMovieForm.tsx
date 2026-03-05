@@ -5,7 +5,7 @@ import { Upload, X, Plus, Sparkles, ChevronDown, Check, Link } from "lucide-reac
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { LANGUAGES, CATEGORIES, QUALITIES, TMDB_GENRES } from "@/utils/constants";
+import { LANGUAGES, CATEGORIES, QUALITIES, TMDB_GENRES, AUDIO_LANGUAGES } from "@/utils/constants";
 import TMDBSearch from "./TMDBSearch";
 
 interface UploadMovieFormProps {
@@ -80,6 +80,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     description: "",
     year: "",
     language: "Telugu",
+    audioLanguages: [] as string[],
     category: "Latest",
     quality: "720p",
     rating: "",
@@ -89,6 +90,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     downloadLink: "",
     trailerUrl: "",
   });
+  const [selectedAudioLanguages, setSelectedAudioLanguages] = useState<string[]>([]);
   const [castInput, setCastInput] = useState("");
   const [cast, setCast] = useState<{ name: string; character: string }[]>([]);
   const [crewInput, setCrewInput] = useState("");
@@ -213,6 +215,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         body: JSON.stringify({
           type: "movie",
           ...formData,
+          audioLanguages: selectedAudioLanguages.length > 0 ? selectedAudioLanguages : undefined,
           rating: formData.rating ? parseFloat(formData.rating) : undefined,
           tmdbId: tmdbData.tmdbId || undefined,
           tmdbGenreIds: selectedGenres.length > 0 ? selectedGenres.map(g => g.id) : (tmdbData.genreIds.length > 0 ? tmdbData.genreIds : undefined),
@@ -236,6 +239,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           description: "",
           year: "",
           language: "Telugu",
+          audioLanguages: [],
           category: "Latest",
           quality: "720p",
           rating: "",
@@ -246,6 +250,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           trailerUrl: "",
         });
         setSelectedGenres([]);
+        setSelectedAudioLanguages([]);
         setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
         setCast([]);
         setCrew([]);
@@ -392,6 +397,39 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Audio Languages */}
+        <div>
+          <label className="block text-sm font-medium text-[#808080] mb-1.5">Audio Languages</label>
+          <div className="flex flex-wrap gap-2 p-2 rounded-lg bg-[#141414] border border-[#333] min-h-[42px]">
+            {AUDIO_LANGUAGES.map((lang) => {
+              const isSelected = selectedAudioLanguages.includes(lang);
+              return (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => {
+                    setSelectedAudioLanguages(prev => 
+                      isSelected 
+                        ? prev.filter(l => l !== lang)
+                        : [...prev, lang]
+                    );
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    isSelected 
+                      ? "bg-[#e50914] text-white" 
+                      : "bg-[#333] text-gray-400 hover:bg-[#444]"
+                  }`}
+                >
+                  {lang}
+                </button>
+              );
+            })}
+          </div>
+          {selectedAudioLanguages.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">Selected: {selectedAudioLanguages.join(", ")}</p>
+          )}
         </div>
 
         {/* Category */}
