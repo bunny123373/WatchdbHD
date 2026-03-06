@@ -254,9 +254,35 @@ export default function Navbar() {
                         </div>
                       )}
                     </>
+                  ) : searchInput.length > 0 ? (
+                    <div className="p-3">
+                      <p className="text-xs text-gray-400">Type at least 2 characters to search</p>
+                    </div>
                   ) : (
                     <div className="p-3">
-                      <p className="text-xs text-gray-400 mb-2">Type at least 2 characters to search</p>
+                      <p className="text-xs text-gray-400 mb-2">Quick Links</p>
+                      <div className="space-y-1">
+                        {[
+                          { label: "Latest Movies", query: "", type: "movie" },
+                          { label: "Telugu Movies", query: "Telugu", type: "movie" },
+                          { label: "Hindi Movies", query: "Hindi", type: "movie" },
+                          { label: "TV Series", query: "", type: "series" },
+                          { label: "Web Series", query: "Web Series", type: "series" },
+                        ].map((shortcut) => (
+                          <Link
+                            key={shortcut.label}
+                            href={shortcut.type === "movie" ? "/movies" : "/all-series"}
+                            onClick={() => {
+                              setIsSearchActive(false);
+                              setSearchInput("");
+                            }}
+                            className="flex items-center justify-between px-2 py-1.5 hover:bg-[#333] rounded text-sm text-gray-300"
+                          >
+                            <span>{shortcut.label}</span>
+                            <ChevronDown className="w-3 h-3 rotate-[-90deg]" />
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
