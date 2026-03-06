@@ -5,7 +5,7 @@ import { Upload, X, Plus, Sparkles, ChevronDown, Check, Link } from "lucide-reac
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { LANGUAGES, CATEGORIES, QUALITIES, TMDB_GENRES, AUDIO_LANGUAGES } from "@/utils/constants";
+import { LANGUAGES, CATEGORIES, TMDB_GENRES, AUDIO_LANGUAGES } from "@/utils/constants";
 import TMDBSearch from "./TMDBSearch";
 
 interface UploadMovieFormProps {
@@ -475,23 +475,6 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Quality */}
-        <div>
-          <label className="block text-sm font-medium text-[#808080] mb-1.5">Quality</label>
-          <select
-            name="quality"
-            value={formData.quality}
-            onChange={handleChange}
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm"
-          >
-            {QUALITIES.map((q) => (
-              <option key={q} value={q}>
-                {q}
               </option>
             ))}
           </select>

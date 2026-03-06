@@ -7,7 +7,7 @@ import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { LANGUAGES, CATEGORIES, QUALITIES } from "@/utils/constants";
+import { LANGUAGES, CATEGORIES } from "@/utils/constants";
 import SeasonEpisodeBuilder from "./SeasonEpisodeBuilder";
 
 interface EditContentModalProps {
@@ -141,23 +141,6 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          {isMovie && (
-            <div>
-              <label className="block text-sm font-medium text-[#808080] mb-1.5">Quality</label>
-              <select
-                name="quality"
-                value={formData.quality || "720p"}
-                onChange={handleChange}
-                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm"
-              >
-                {QUALITIES.map((q) => (
-                  <option key={q} value={q}>
-                    {q}
                   </option>
                 ))}
               </select>
