@@ -79,16 +79,14 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
                 onClick={() => handleClick(item)}
                 className="block"
               >
-                <div className="relative">
+                <div className="relative flex items-center">
                   {/* Rank Number */}
-                  <div className="absolute -left-1 sm:-left-2 top-1/2 -translate-y-1/2 z-20">
-                    <span className="text-4xl sm:text-5xl md:text-6xl font-black text-black/80 drop-shadow-lg leading-none">
-                      {index + 1}
-                    </span>
-                  </div>
+                  <span className="text-3xl sm:text-4xl md:text-5xl font-black text-black/80 drop-shadow-lg leading-none mr-1 sm:mr-2">
+                    {index + 1}
+                  </span>
                   
                   {/* Card */}
-                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-transform duration-300 group-hover/item:scale-105 group-hover/item:z-10 ml-2 sm:ml-4">
+                  <div className="w-24 sm:w-32 md:w-40 lg:w-48 aspect-[2/3] relative rounded-md overflow-hidden transition-transform duration-300 group-hover/item:scale-105 group-hover/item:z-10">
                     {item.poster ? (
                       <Image
                         src={item.poster}
