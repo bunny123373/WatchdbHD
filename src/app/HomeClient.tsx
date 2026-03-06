@@ -384,10 +384,13 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       {!showContent && (
         <>
           {(() => {
-            const trendingMovies = filteredContent
+            // Sort by views - Most watched first
+            const byViews = [...filteredContent].sort((a: IContent, b: IContent) => (b.views || 0) - (a.views || 0));
+            
+            const trendingMovies = byViews
               .filter((item: IContent) => item.type === "movie")
               .slice(0, 10);
-            const trendingSeries = filteredContent
+            const trendingSeries = byViews
               .filter((item: IContent) => item.type === "series")
               .slice(0, 10);
             
@@ -395,7 +398,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               <>
                 {trendingMovies.length > 0 && (
                   <Top10Grid 
-                    title="Top 10 Movies" 
+                    title="Most Watched Today" 
                     items={trendingMovies} 
                     onContentClick={handleContentClick}
                   />
