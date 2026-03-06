@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import ContentGrid from "@/components/ContentGrid";
+import Top10Grid from "@/components/Top10Grid";
 import ContentDetailModal from "@/components/ContentDetailModal";
 import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
@@ -371,12 +372,45 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   return (
     <PullToRefresh onRefresh={fetchContent}>
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen bg-[#141814]">
       <Navbar />
 
       {/* Hero Banner - Show uploaded content */}
       {featuredContent && !showContent && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
+      )}
+
+      {/* Top 10 Trending - Netflix Style */}
+      {!showContent && (
+        <>
+          {(() => {
+            const trendingMovies = filteredContent
+              .filter((item: IContent) => item.type === "movie")
+              .slice(0, 10);
+            const trendingSeries = filteredContent
+              .filter((item: IContent) => item.type === "series")
+              .slice(0, 10);
+            
+            return (
+              <>
+                {trendingMovies.length > 0 && (
+                  <Top10Grid 
+                    title="Top 10 Movies" 
+                    items={trendingMovies} 
+                    onContentClick={handleContentClick}
+                  />
+                )}
+                {trendingSeries.length > 0 && (
+                  <Top10Grid 
+                    title="Top 10 TV Shows" 
+                    items={trendingSeries} 
+                    onContentClick={handleContentClick}
+                  />
+                )}
+              </>
+            );
+          })()}
+        </>
       )}
 
       {/* Genre Filter - Mobile */}
