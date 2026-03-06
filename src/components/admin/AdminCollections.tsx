@@ -143,7 +143,7 @@ export default function AdminCollections() {
               value={newCollection.name}
               onChange={(e) => setNewCollection((prev) => ({ ...prev, name: e.target.value }))}
               placeholder="e.g., Top 10 Action Movies"
-              className="w-full px-4 py-2 bg-[#2a2f3d] border border-[#3a3f4d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
             />
           </div>
           <div>
@@ -153,7 +153,7 @@ export default function AdminCollections() {
               value={newCollection.description}
               onChange={(e) => setNewCollection((prev) => ({ ...prev, description: e.target.value }))}
               placeholder="Short description..."
-              className="w-full px-4 py-2 bg-[#2a2f3d] border border-[#3a3f4d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
             />
           </div>
           <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ export default function AdminCollections() {
                 type="checkbox"
                 checked={newCollection.isTopTen}
                 onChange={(e) => setNewCollection((prev) => ({ ...prev, isTopTen: e.target.checked }))}
-                className="w-4 h-4 rounded border-gray-600 bg-[#2a2f3d] text-yellow-500 focus:ring-yellow-500 focus:ring-offset-0"
+                className="w-4 h-4 rounded border-gray-600 bg-white/5 text-yellow-500 focus:ring-yellow-500 focus:ring-offset-0"
               />
               <span className="text-white text-sm">Top 10 Collection</span>
             </label>
@@ -221,7 +221,7 @@ export default function AdminCollections() {
       <div className="bg-[#1a1a1a] rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white">Existing Collections</h2>
-          <button onClick={fetchData} className="flex items-center gap-2 px-3 py-1.5 bg-[#2a2f3d] hover:bg-[#353b4a] text-white rounded-lg text-sm">
+          <button onClick={fetchData} className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-[#353b4a] text-white rounded-lg text-sm">
             <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
@@ -242,7 +242,7 @@ export default function AdminCollections() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => startEdit(coll)}
-                      className="p-2 bg-[#2a2f3d] hover:bg-[#353b4a] text-white rounded-lg transition-colors"
+                      className="p-2 bg-white/5 hover:bg-[#353b4a] text-white rounded-lg transition-colors"
                       title="Edit"
                     >
                       <Pencil className="w-4 h-4" />

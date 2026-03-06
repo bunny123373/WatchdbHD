@@ -53,7 +53,7 @@ export default function NotificationForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter notification title"
-          className="w-full bg-[#2a2a2a] border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-600"
+          className="w-full bg-white/5 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-600"
         />
       </div>
 
@@ -64,7 +64,7 @@ export default function NotificationForm() {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Enter notification message"
           rows={3}
-          className="w-full bg-[#2a2a2a] border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-600 resize-none"
+          className="w-full bg-white/5 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-red-600 resize-none"
         />
       </div>
 
@@ -78,7 +78,7 @@ export default function NotificationForm() {
                 setTitle(preset.title);
                 setBody(preset.body);
               }}
-              className="px-3 py-1.5 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-full text-sm text-gray-300 transition-colors"
+              className="px-3 py-1.5 bg-white/5 hover:bg-[#3a3a3a] rounded-full text-sm text-gray-300 transition-colors"
             >
               {preset.title}
             </button>

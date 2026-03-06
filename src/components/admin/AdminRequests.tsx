@@ -89,20 +89,20 @@ export default function AdminRequests() {
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[#1F232D] p-4 rounded-lg">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
           <p className="text-gray-400 text-sm">Total</p>
           <p className="text-2xl font-bold text-white">{data?.stats.total || 0}</p>
         </div>
-        <div className="bg-[#1F232D] p-4 rounded-lg">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
           <p className="text-gray-400 text-sm">Pending</p>
           <p className="text-2xl font-bold text-yellow-500">{data?.stats.pending || 0}</p>
         </div>
-        <div className="bg-[#1F232D] p-4 rounded-lg">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
           <p className="text-gray-400 text-sm">Completed</p>
           <p className="text-2xl font-bold text-green-500">{data?.stats.completed || 0}</p>
         </div>
-        <div className="bg-[#1F232D] p-4 rounded-lg">
+        <div className="bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
           <p className="text-gray-400 text-sm">Rejected</p>
           <p className="text-2xl font-bold text-red-500">{data?.stats.rejected || 0}</p>
         </div>
@@ -111,24 +111,24 @@ export default function AdminRequests() {
       {/* Refresh Button */}
       <button
         onClick={fetchRequests}
-        className="flex items-center gap-2 px-4 py-2 bg-[#1F232D] hover:bg-[#2a2f3d] text-white rounded-lg transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors"
       >
         <RefreshCw className="w-4 h-4" />
         Refresh
       </button>
 
       {/* Requests List */}
-      <div className="bg-[#0E1015] rounded-lg border border-[#1F232D] overflow-hidden">
+      <div className="bg-[#1a1a1a] rounded-xl border border-white/5 overflow-hidden">
         {data?.requests.length === 0 ? (
           <div className="p-8 text-center text-gray-400">
             No requests yet
           </div>
         ) : (
-          <div className="divide-y divide-[#1F232D]">
+          <div className="divide-y divide-white/5">
             {data?.requests.map((request) => (
-              <div key={request._id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div key={request._id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {request.type === "movie" ? (
                       <Film className="w-4 h-4 text-blue-400" />
                     ) : (
@@ -143,11 +143,11 @@ export default function AdminRequests() {
                       {request.status}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-400 mt-1">
+                  <div className="text-sm text-gray-500 mt-1">
                     {request.year && <span>{request.year}</span>}
                     {request.year && request.language && <span> • </span>}
                     {request.language && <span>{request.language}</span>}
-                    {request.year && !request.language && <span> • </span>}
+                    {(request.year || request.language) && <span> • </span>}
                     <span>{new Date(request.createdAt).toLocaleDateString()}</span>
                   </div>
                   {request.description && (
@@ -178,7 +178,7 @@ export default function AdminRequests() {
                   <button
                     onClick={() => deleteRequest(request._id)}
                     disabled={updating === request._id}
-                    className="p-1.5 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors disabled:opacity-50"
+                    className="p-1.5 bg-white/5 hover:bg-white/10 text-gray-400 rounded transition-colors disabled:opacity-50"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
