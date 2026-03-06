@@ -149,11 +149,11 @@ function SeriesWatchContent() {
           </Link>
           
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-xs font-bold bg-purple-600 text-white rounded-sm">
+            <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white rounded-sm">
               S{currentSeason} E{currentEpisode?.episodeNumber}
             </span>
             {currentEpisode?.quality && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-red-600 text-white rounded-sm">
+              <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white/50 rounded-sm">
                 {currentEpisode.quality}
               </span>
             )}

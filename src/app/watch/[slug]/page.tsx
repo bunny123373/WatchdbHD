@@ -109,11 +109,11 @@ function WatchMovieContent() {
           
           <div className="flex items-center gap-3">
             {movie.quality && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-red-600 text-white rounded-sm">
+              <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white/50 rounded-sm">
                 {movie.quality}
               </span>
             )}
-            <span className="px-2 py-0.5 text-xs font-bold bg-yellow-500 text-black rounded-sm">
+            <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white rounded-sm">
               MOVIE
             </span>
           </div>
