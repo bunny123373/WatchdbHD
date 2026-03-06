@@ -60,7 +60,7 @@ export default function RequestPage() {
           </p>
 
           {submitted ? (
-            <div className="p-6 bg-[#0E1015] rounded-xl border border-green-500/30">
+            <div className="p-6 bg-[#1a1a1a] rounded-xl border border-green-500/30">
               <div className="flex items-center gap-3 mb-4">
                 <CheckCircle className="w-8 h-8 text-green-500" />
                 <h2 className="text-xl font-semibold text-white">Request Submitted!</h2>
@@ -70,24 +70,24 @@ export default function RequestPage() {
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="text-yellow-500 hover:text-yellow-400 font-medium"
+                className="text-[#e50914] hover:text-[#f40612] font-medium"
               >
                 Submit another request
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="p-6 bg-[#0E1015] rounded-xl border border-[#1F232D]">
+            <form onSubmit={handleSubmit} className="p-6 bg-[#1a1a1a] rounded-xl border border-white/5">
               {/* Type Selection */}
               <div className="mb-6">
                 <label className="text-gray-400 text-sm mb-2 block">Content Type</label>
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setType("movie")}
                     className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
                       type === "movie"
-                        ? "bg-yellow-500 text-black"
-                        : "bg-[#1F232D] text-gray-300 hover:bg-[#2a2f3d]"
+                        ? "bg-white text-black"
+                        : "bg-white/5 text-gray-300 hover:bg-white/10"
                     }`}
                   >
                     <Film className="w-5 h-5" />
@@ -98,8 +98,8 @@ export default function RequestPage() {
                     onClick={() => setType("series")}
                     className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-colors ${
                       type === "series"
-                        ? "bg-yellow-500 text-black"
-                        : "bg-[#1F232D] text-gray-300 hover:bg-[#2a2f3d]"
+                        ? "bg-white text-black"
+                        : "bg-white/5 text-gray-300 hover:bg-white/10"
                     }`}
                   >
                     <Tv className="w-5 h-5" />
@@ -117,7 +117,7 @@ export default function RequestPage() {
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={`Enter ${type} title`}
                   maxLength={200}
-                  className="w-full px-4 py-3 bg-[#1F232D] border border-[#2a2f3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914]"
                 />
               </div>
 
@@ -131,7 +131,7 @@ export default function RequestPage() {
                     onChange={(e) => setYear(e.target.value)}
                     placeholder="e.g., 2024"
                     maxLength={10}
-                    className="w-full px-4 py-3 bg-[#1F232D] border border-[#2a2f3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914]"
                   />
                 </div>
                 <div>
@@ -142,7 +142,7 @@ export default function RequestPage() {
                     onChange={(e) => setLanguage(e.target.value)}
                     placeholder="e.g., Telugu, Hindi"
                     maxLength={50}
-                    className="w-full px-4 py-3 bg-[#1F232D] border border-[#2a2f3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914]"
                   />
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function RequestPage() {
                   placeholder="Any additional information..."
                   maxLength={500}
                   rows={3}
-                  className="w-full px-4 py-3 bg-[#1F232D] border border-[#2a2f3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 resize-none"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914] resize-none"
                 />
                 <span className="text-gray-500 text-xs">{description.length}/500</span>
               </div>
@@ -171,7 +171,7 @@ export default function RequestPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center justify-center gap-2 w-full py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
                 {submitting ? "Submitting..." : "Submit Request"}

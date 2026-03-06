@@ -66,10 +66,10 @@ export default function MoviesClient() {
                 <button
                   key={option.value}
                   onClick={() => setSortBy(option.value)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors ${
                     sortBy === option.value
-                      ? "bg-yellow-500 text-black"
-                      : "bg-[#1F232D] text-gray-300 hover:bg-[#2a2f3d]"
+                      ? "bg-white text-black"
+                      : "bg-white/5 text-gray-300 hover:bg-white/10"
                   }`}
                 >
                   {option.icon}
