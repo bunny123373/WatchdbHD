@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Film, Tv, Loader2, ChevronDown } from "lucide-react";
+import { Search, Film, Tv, Loader2 } from "lucide-react";
 
 interface TMDBSearchResult {
   tmdbId: number;
@@ -59,8 +59,6 @@ export default function TMDBSearch({ type, onSelect }: TMDBSearchProps) {
   const [error, setError] = useState("");
   const [hasApiKey, setHasApiKey] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
 
   const searchTMDB = async (searchQuery: string, language: string, genre: string) => {
     if (searchQuery.length < 2 && !language && !genre) {
@@ -106,22 +104,20 @@ export default function TMDBSearch({ type, onSelect }: TMDBSearchProps) {
 
   useEffect(() => {
     const debounce = setTimeout(() => {
-      searchTMDB(query, selectedLanguage, selectedGenre);
+      searchTMDB(query, selectedLanguage, "");
     }, 500);
     return () => clearTimeout(debounce);
-  }, [query, selectedLanguage, selectedGenre]);
-
-  const handleApplyFilters = () => {
-    setShowFilters(false);
-    searchTMDB(query, selectedLanguage, selectedGenre);
-  };
+  }, [query, selectedLanguage]);
 
   const handleReset = () => {
     setQuery("");
     setSelectedLanguage("");
-    setSelectedGenre("");
     setResults([]);
   };
+
+  useEffect(() => {
+    searchTMDB("", "", "");
+  }, []);
 
   if (!hasApiKey) {
     return (
@@ -137,95 +133,78 @@ export default function TMDBSearch({ type, onSelect }: TMDBSearchProps) {
     <div className="space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${type === "movie" ? "movies" : "series"} on TMDB...`}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-background border border-border text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary-gold"
+            className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#141414] border border-[#333] text-white placeholder-gray-500 focus:outline-none focus:border-red-500"
           />
           {loading && (
-            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted animate-spin" />
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 animate-spin" />
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => setShowFilters(!showFilters)}
-          className={`px-4 py-2 rounded-xl border transition-all flex items-center gap-2 ${
-            showFilters || selectedLanguage || selectedGenre
-              ? "bg-primary-gold text-black border-primary-gold"
-              : "bg-background border-border text-text-primary hover:border-primary-gold"
-          }`}
-        >
-          <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
-          Filters
-        </button>
-        {(selectedLanguage || selectedGenre) && (
-          <button
-            type="button"
-            onClick={handleReset}
-            className="px-4 py-2 rounded-xl border border-border text-text-primary hover:border-red-500 hover:text-red-500 transition-all"
-          >
-            Clear
-          </button>
-        )}
       </div>
 
-      {showFilters && (
-        <div className="p-4 bg-card border border-border rounded-xl space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Language</label>
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-text-primary focus:outline-none focus:border-primary-gold"
-              >
-                {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>{lang.label}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Genre</label>
-              <select
-                value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-text-primary focus:outline-none focus:border-primary-gold"
-              >
-                {GENRES.map((genre) => (
-                  <option key={genre.id} value={genre.id}>{genre.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleApplyFilters}
-              className="px-4 py-2 bg-primary-gold text-black rounded-lg font-medium hover:bg-primary-gold/80 transition-all"
-            >
-              Apply Filters
-            </button>
-          </div>
-        </div>
-      )}
-
-      {(selectedLanguage || selectedGenre) && !showFilters && (
-        <div className="flex flex-wrap gap-2">
-          {selectedLanguage && (
-            <span className="px-2 py-1 bg-primary-gold/20 text-primary-gold text-xs rounded-full">
-              Language: {LANGUAGES.find(l => l.code === selectedLanguage)?.label}
-            </span>
-          )}
-          {selectedGenre && (
-            <span className="px-2 py-1 bg-primary-gold/20 text-primary-gold text-xs rounded-full">
-              Genre: {GENRES.find(g => g.id === selectedGenre)?.name}
-            </span>
-          )}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Popular
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "te", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Telugu
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "hi", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Hindi
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "ta", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Tamil
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "ml", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Malayalam
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "kn", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Kannada
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "en", ""); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          English
+        </button>
+        <button
+          type="button"
+          onClick={() => { setQuery(""); searchTMDB("", "", "10770"); }}
+          className="px-3 py-1.5 bg-[#333] hover:bg-[#444] text-white text-xs rounded-full transition-colors"
+        >
+          Trending
+        </button>
+      </div>
 
       {error && (
         <p className="text-red-500 text-sm">{error}</p>
@@ -267,8 +246,8 @@ export default function TMDBSearch({ type, onSelect }: TMDBSearchProps) {
         </div>
       )}
 
-      {results.length === 0 && !loading && !error && (query || selectedLanguage || selectedGenre) && (
-        <p className="text-text-muted text-sm text-center py-4">No results found. Try different filters.</p>
+      {results.length === 0 && !loading && !error && (query || selectedLanguage) && (
+        <p className="text-gray-500 text-sm text-center py-4">No results found. Try different filters.</p>
       )}
     </div>
   );
