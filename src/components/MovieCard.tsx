@@ -47,14 +47,6 @@ export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
             </div>
           )}
           
-          <div className="absolute top-2 right-2 flex flex-col gap-1">
-            {movie.quality && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-600 text-white rounded-sm">
-                {movie.quality}
-              </span>
-            )}
-          </div>
-          
           {movie.rating && (
             <div className="absolute bottom-2 left-2">
               <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/70 rounded-sm">

@@ -54,11 +54,6 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
               <Tv className="w-3 h-3" />
               SERIES
             </span>
-            {series.quality && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-600 text-white rounded-sm">
-                {series.quality}
-              </span>
-            )}
           </div>
           
           {series.rating && (
