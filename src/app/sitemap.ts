@@ -14,17 +14,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/admin`,
+      url: `${baseUrl}/movies`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/all-series`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/collections`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/download`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/request`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.6,
     },
   ];
 
   try {
     await dbConnect();
-    const items = await Content.find({}, { _id: 1, type: 1, updatedAt: 1 }).lean() as Array<{
+    const items = await Content.find({}, { _id: 1, slug: 1, type: 1, updatedAt: 1 }).lean() as Array<{
       _id: unknown;
+      slug?: string;
       type?: string;
       updatedAt?: Date | string;
     }>;
@@ -32,12 +57,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const contentRoutes: MetadataRoute.Sitemap = items.map((item) => {
       const path = item.type === "movie" ? "movie" : "series";
       const id = String(item._id || "");
+      const slug = item.slug;
       const updated = item.updatedAt ? new Date(item.updatedAt) : new Date();
 
+      const url = slug 
+        ? `${baseUrl}/${path}/${slug}-${id}` 
+        : `${baseUrl}/${path}/${id}`;
+
       return {
-        url: `${baseUrl}/${path}/${id}`,
+        url,
         lastModified: updated,
-        changeFrequency: "weekly",
+        changeFrequency: "weekly" as const,
         priority: 0.8,
       };
     });
