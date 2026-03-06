@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Clock, TrendingUp } from "lucide-react";
+import { Search, X, Film, Tv, Clock, TrendingUp, Menu, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import LanguageSelector from "@/components/LanguageSelector";
 
 interface SearchResult {
@@ -14,14 +15,24 @@ interface SearchResult {
   year: string;
 }
 
+const MENU_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Movies", href: "/movies" },
+  { label: "TV Shows", href: "/series" },
+  { label: "New & Popular", href: "/all-series?sort=newest" },
+  { label: "My List", href: "/my-list" },
+];
+
 export default function MobileNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,12 +49,15 @@ export default function MobileNavbar() {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchActive(false);
       }
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
     };
-    if (isSearchActive) {
+    if (isSearchActive || isMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isSearchActive]);
+  }, [isSearchActive, isMenuOpen]);
 
   useEffect(() => {
     const saved = localStorage.getItem("recentSearches");
@@ -237,11 +251,85 @@ export default function MobileNavbar() {
     >
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-[#e50914]">
-              WATCH<span className="text-white">TMDB</span>
-            </span>
-          </Link>
+          <div className="flex items-center gap-4">
+            <div ref={menuRef} className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="flex items-center gap-1 text-white font-medium hover:text-gray-200 transition-colors"
+              >
+                <Menu className="w-6 h-6" />
+                <span className="text-sm hidden">Browse</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-0 mt-2 w-56 bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-xl overflow-hidden"
+                  >
+                    <div className="py-2">
+                      {MENU_ITEMS.map((item) => {
+                        const isActive = item.href === "/" 
+                          ? pathname === "/" 
+                          : pathname.startsWith(item.href.split('?')[0]);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsMenuOpen(false)}
+                            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                              isActive 
+                                ? "bg-white/10 text-white" 
+                                : "text-gray-300 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            {item.label === "Movies" && <Film className="w-4 h-4" />}
+                            {item.label === "TV Shows" && <Tv className="w-4 h-4" />}
+                            {item.label === "Home" && (
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                              </svg>
+                            )}
+                            {item.label === "New & Popular" && <TrendingUp className="w-4 h-4" />}
+                            {item.label === "My List" && (
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 5v14M5 12h14"/>
+                              </svg>
+                            )}
+                            <span>{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                    <div className="border-t border-gray-800 py-2">
+                      <Link
+                        href="/collections"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="7" height="7"/>
+                          <rect x="14" y="3" width="7" height="7"/>
+                          <rect x="14" y="14" width="7" height="7"/>
+                          <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        <span>Collections</span>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            <Link href="/" className="flex items-center">
+              <span className="text-xl font-bold text-[#e50914]">
+                WATCH<span className="text-white">TMDB</span>
+              </span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-1">
             <LanguageSelector />
