@@ -201,7 +201,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
         {/* Content */}
         <div className="relative pt-[30vh] sm:pt-[40vh] md:pt-[50vh] lg:pt-[55vh] px-4 sm:px-6 md:px-8 pb-8">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-6 md:gap-12">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-10 rounded-3xl border border-white/10 bg-black/45 backdrop-blur-sm p-4 sm:p-6 md:p-8 shadow-2xl">
               {/* Poster */}
               <div className="flex-shrink-0">
                 <div className="relative w-40 sm:w-48 md:w-52 lg:w-60 aspect-[2/3] rounded-xl overflow-hidden shadow-2xl border border-white/10">
@@ -227,28 +227,28 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                   {movie.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-200 mb-4 sm:mb-6">
                   {movie.year && (
                     <span className="flex items-center gap-1">
                       {movie.year}
                     </span>
                   )}
                   {movie.quality && (
-                    <span className="px-2.5 py-1 text-xs font-bold bg-red-600 text-white rounded">
+                    <span className="px-2.5 py-1 text-xs font-bold bg-red-600 text-white rounded-md">
                       {movie.quality}
                     </span>
                   )}
                   {movie.language && (
-                    <span className="px-2.5 py-1 text-xs font-medium bg-gray-700/80 text-white rounded">
+                    <span className="px-2.5 py-1 text-xs font-medium bg-gray-700/80 text-white rounded-md">
                       {movie.language}
                     </span>
                   )}
                   {movie.audioLanguages && movie.audioLanguages.length > 0 && (
-                    <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-white rounded">
+                    <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-white rounded-md">
                       <span className="text-red-500">Audio:</span> {movie.audioLanguages.join(" | ")}
                     </span>
                   )}
-                  <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded">
+                  <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-gray-200 rounded-md">
                     Movie
                   </span>
                 </div>
@@ -275,7 +275,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[#e50914] hover:bg-[#f40612] text-white font-bold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
+                    className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[#e50914] hover:bg-[#f40612] text-white font-bold rounded-lg transition-colors text-sm sm:text-base"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span>Watch Now</span>
@@ -285,7 +285,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                       href={downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-all transform hover:scale-105 text-sm sm:text-base"
+                      className="flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors text-sm sm:text-base"
                     >
                       <Download className="w-5 h-5" />
                       <span>Download</span>

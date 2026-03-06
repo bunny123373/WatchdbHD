@@ -86,7 +86,7 @@ function WatchMovieContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141814]">
+    <div className="min-h-screen bg-[#141414]">
       <Navbar />
 
       <div className="pt-20 pb-12">
@@ -136,9 +136,9 @@ function WatchMovieContent() {
 
             <div className="md:col-span-2 space-y-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 bg-yellow-500 text-black text-xs font-bold rounded">MOVIE</span>
+                <span className="px-3 py-1 bg-yellow-500 text-black text-xs font-bold rounded-md">MOVIE</span>
                 {movie.quality && (
-                  <span className="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded">{movie.quality}</span>
+                  <span className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-md">{movie.quality}</span>
                 )}
               </div>
 
@@ -160,47 +160,50 @@ function WatchMovieContent() {
               </div>
 
               {movie.description && (
-                <p className="text-gray-400">{movie.description}</p>
+                <p className="text-gray-300 leading-relaxed">{movie.description}</p>
               )}
 
-              <div className="flex flex-wrap gap-3">
-                {movieDownloadUrl && (
-                  <a
-                    href={movieDownloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
-                  >
-                    <Download className="w-5 h-5" />
-                    Download
-                  </a>
-                )}
-                {movie.embedIframeLink && (
-                  <button
-                    onClick={() => setActiveServer(1)}
-                    className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
-                      activeServer === 1 
-                        ? 'bg-purple-600 hover:bg-purple-500 text-white' 
-                        : 'bg-gray-700 hover:bg-gray-600 text-white'
-                    }`}
-                  >
-                    <Play className="w-5 h-5" />
-                    Server 1
-                  </button>
-                )}
-                {movie.embedIframeLink2 && (
-                  <button
-                    onClick={() => setActiveServer(activeServer === 2 ? 1 : 2)}
-                    className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
-                      activeServer === 2 
-                        ? 'bg-green-600 hover:bg-green-500 text-white' 
-                        : 'bg-gray-700 hover:bg-gray-600 text-white'
-                    }`}
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                    Server 2
-                  </button>
-                )}
+              <div className="rounded-2xl border border-white/10 bg-black/40 p-4 sm:p-5">
+                <p className="text-xs sm:text-sm text-gray-400 mb-3">Switch servers if playback is slow.</p>
+                <div className="flex flex-wrap gap-3">
+                  {movieDownloadUrl && (
+                    <a
+                      href={movieDownloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
+                    >
+                      <Download className="w-5 h-5" />
+                      Download
+                    </a>
+                  )}
+                  {movie.embedIframeLink && (
+                    <button
+                      onClick={() => setActiveServer(1)}
+                      className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
+                        activeServer === 1
+                          ? "bg-[#e50914] hover:bg-[#f40612] text-white"
+                          : "bg-gray-700 hover:bg-gray-600 text-white"
+                      }`}
+                    >
+                      <Play className="w-5 h-5" />
+                      Server 1
+                    </button>
+                  )}
+                  {movie.embedIframeLink2 && (
+                    <button
+                      onClick={() => setActiveServer(activeServer === 2 ? 1 : 2)}
+                      className={`inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg transition-colors ${
+                        activeServer === 2
+                          ? "bg-yellow-500 hover:bg-yellow-400 text-black"
+                          : "bg-gray-700 hover:bg-gray-600 text-white"
+                      }`}
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                      Server 2
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
