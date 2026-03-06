@@ -12,7 +12,6 @@ import ContentDetailModal from "@/components/ContentDetailModal";
 import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
-import GenreFilter from "@/components/GenreFilter";
 import PullToRefresh from "@/components/PullToRefresh";
 import HomeSkeleton from "@/components/HomeSkeleton";
 import { useAppSelector } from "@/redux/hooks";
@@ -415,9 +414,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
           })()}
         </>
       )}
-
-      {/* Genre Filter - Mobile */}
-      <GenreFilter />
 
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">
         {/* Search Results */}
