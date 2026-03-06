@@ -85,8 +85,8 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
                     {index + 1}
                   </span>
                   
-                  {/* Card */}
-                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-transform duration-300 group-hover/item:scale-105 group-hover/item:z-20 border-2 border-transparent group-hover/item:border-white">
+                  {/* Card - Netflix Hover Style */}
+                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-all duration-300 ease-out group-hover/item:scale-110 group-hover/item:z-20 group-hover/item:shadow-2xl group-hover/item:shadow-black/50">
                     {item.poster ? (
                       <Image
                         src={item.poster}
@@ -101,8 +101,14 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
                       </div>
                     )}
                     
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover/item:bg-black/40 transition-colors" />
+                    {/* Netflix Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Hover Info */}
+                    <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover/item:opacity-100 transition-all duration-300 translate-y-2 group-hover/item:translate-y-0">
+                      <p className="text-white text-xs font-medium truncate">{item.title}</p>
+                      {item.year && <p className="text-gray-400 text-xs">{item.year}</p>}
+                    </div>
                   </div>
                 </div>
               </Link>
