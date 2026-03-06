@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Film, Tv, PlayCircle, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Stats {
   totalMovies: number;
@@ -42,19 +43,19 @@ export default function AdminStats() {
 
   const statCards = [
     {
-      label: "Total Movies",
+      label: "Movies",
       value: stats.totalMovies,
       icon: Film,
-      color: "bg-red-600",
+      color: "bg-[#e50914]",
     },
     {
-      label: "Total Series",
+      label: "Series",
       value: stats.totalSeries,
       icon: Tv,
       color: "bg-purple-600",
     },
     {
-      label: "Total Episodes",
+      label: "Episodes",
       value: stats.totalEpisodes,
       icon: PlayCircle,
       color: "bg-green-600",
@@ -68,26 +69,29 @@ export default function AdminStats() {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {statCards.map((stat) => {
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {statCards.map((stat, index) => {
         const Icon = stat.icon;
         return (
-          <div
+          <motion.div
             key={stat.label}
-            className="bg-[#1f1f1f] rounded-lg p-4 md:p-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-[#1a1a1a] rounded-xl border border-white/5 p-4 sm:p-5 hover:border-white/10 transition-colors"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                <h3 className="text-2xl md:text-3xl font-bold text-white">
-                  {loading ? "-" : stat.value}
+                <p className="text-gray-400 text-xs sm:text-sm">{stat.label}</p>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                  {loading ? "-" : stat.value.toLocaleString()}
                 </h3>
               </div>
-              <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
-                <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              <div className={`w-10 h-10 sm:w-11 sm:h-11 ${stat.color} rounded-lg flex items-center justify-center`}>
+                <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>

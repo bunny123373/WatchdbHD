@@ -58,15 +58,15 @@ function AdminPageContent() {
         </div>
 
         {/* Tabs - Netflix Style */}
-        <div className="flex flex-wrap gap-2 border-b border-gray-800 pb-4">
+        <div className="flex flex-wrap gap-2 pb-4 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`px-4 py-2 rounded text-sm font-medium transition-all ${
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? "bg-red-600 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  ? "bg-white text-black"
+                  : "bg-white/10 text-white hover:bg-white/20"
               }`}
             >
               {tab.label}
@@ -79,22 +79,22 @@ function AdminPageContent() {
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               <AdminStats />
-              <div className="bg-[#1f1f1f] rounded-lg p-6">
+              <div className="bg-[#1a1a1a] rounded-xl border border-white/5 p-6">
                 <h2 className="text-xl font-bold text-white mb-4">Welcome to Admin Panel</h2>
                 <p className="text-gray-400 mb-6">
                   Use the navigation tabs above to manage your content. You can upload movies and web series,
                   edit existing content, and view statistics about your platform.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
                     <h3 className="font-semibold text-white mb-2">Upload Movie</h3>
                     <p className="text-sm text-gray-400">Add new movies with streaming and download links</p>
                   </div>
-                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
                     <h3 className="font-semibold text-white mb-2">Upload Series</h3>
                     <p className="text-sm text-gray-400">Add web series with seasons and episodes</p>
                   </div>
-                  <div className="p-4 bg-[#2a2a2a] rounded-lg">
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
                     <h3 className="font-semibold text-white mb-2">Manage Content</h3>
                     <p className="text-sm text-gray-400">Edit or delete existing movies and series</p>
                   </div>
@@ -129,7 +129,7 @@ function AdminPageContent() {
 
           {activeTab === "notification" && (
             <div className="max-w-2xl">
-              <div className="bg-[#1a1a1a] rounded-lg p-6">
+              <div className="bg-[#1a1a1a] rounded-xl border border-white/5 p-6">
                 <h2 className="text-xl font-bold text-white mb-4">Send Notification</h2>
                 <NotificationForm />
               </div>

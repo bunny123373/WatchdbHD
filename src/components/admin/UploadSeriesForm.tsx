@@ -314,7 +314,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
       </div>
 
       {showTMDBSearch && (
-        <div className="p-3 sm:p-4 bg-[#141414] rounded-lg border border-[#333]">
+        <div className="p-3 sm:p-4 bg-white/5 rounded-lg border border-white/10">
           <TMDBSearch type="series" onSelect={handleTMDBFill} />
         </div>
       )}
@@ -366,12 +366,12 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
 
         {/* Language */}
         <div>
-          <label className="block text-sm font-medium text-[#808080] mb-1.5">Language</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1.5">Language</label>
           <select
             name="language"
             value={formData.language}
             onChange={handleChange}
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm"
+            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#e50914] text-sm"
           >
             {LANGUAGES.map((lang) => (
               <option key={lang} value={lang}>
@@ -383,8 +383,8 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
 
         {/* Audio Languages */}
         <div>
-          <label className="block text-sm font-medium text-[#808080] mb-1.5">Audio Languages</label>
-          <div className="flex flex-wrap gap-2 p-2 rounded-lg bg-[#141414] border border-[#333] min-h-[42px]">
+          <label className="block text-sm font-medium text-gray-400 mb-1.5">Audio Languages</label>
+          <div className="flex flex-wrap gap-2 p-2 rounded-lg bg-white/5 border border-white/10 min-h-[42px]">
             {AUDIO_LANGUAGES.map((lang) => {
               const isSelected = selectedAudioLanguages.includes(lang);
               return (
@@ -429,19 +429,19 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
 
         {/* TMDB Genre Selection */}
         <div className="relative">
-          <label className="block text-sm font-medium text-[#808080] mb-1.5">TMDB Genres</label>
+          <label className="block text-sm font-medium text-gray-400 mb-1.5">TMDB Genres</label>
           <button
             type="button"
             onClick={() => setShowGenreDropdown(!showGenreDropdown)}
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm flex items-center justify-between"
+            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#e50914] text-sm flex items-center justify-between"
           >
-            <span className={selectedGenres.length > 0 ? "text-white" : "text-[#808080]"}>
+            <span className={selectedGenres.length > 0 ? "text-white" : "text-gray-400"}>
               {selectedGenres.length > 0 ? selectedGenres.map(g => g.name).join(", ") : "Select genres..."}
             </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${showGenreDropdown ? "rotate-180" : ""}`} />
           </button>
           {showGenreDropdown && (
-            <div className="absolute z-10 w-full mt-1 bg-[#1f1f1f] border border-[#333] rounded-lg shadow-xl max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-[#1f1f1f] border border-white/10 rounded-lg shadow-xl max-h-60 overflow-y-auto">
               {TMDB_GENRES.map((genre) => (
                 <button
                   key={genre.id}
@@ -462,20 +462,20 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-[#808080] mb-1.5">Description</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1.5">Description</label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           rows={3}
-          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white placeholder:text-[#808080]/50 focus:outline-none focus:border-[#e50914] resize-none text-sm"
+          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-400/50 focus:outline-none focus:border-[#e50914] resize-none text-sm"
           placeholder="Enter series description..."
         />
       </div>
 
       {/* Tags */}
       <div>
-        <label className="block text-sm font-medium text-[#808080] mb-1.5">Tags</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1.5">Tags</label>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
@@ -483,7 +483,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
             onChange={(e) => setTagInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
             placeholder="Add a tag"
-            className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white placeholder:text-[#808080]/50 focus:outline-none focus:border-[#e50914] text-sm"
+            className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-400/50 focus:outline-none focus:border-[#e50914] text-sm"
           />
           <Button type="button" onClick={addTag} variant="outline" className="px-3">
             <Plus className="w-4 h-4" />
@@ -491,7 +491,7 @@ export default function UploadSeriesForm({ onSuccess }: UploadSeriesFormProps) {
         </div>
         <div className="flex flex-wrap gap-2">
           {formData.tags.map((tag) => (
-            <Badge key={tag} variant="outline" className="flex items-center gap-1 text-white border-[#333]">
+            <Badge key={tag} variant="outline" className="flex items-center gap-1 text-white border-white/10">
               {tag}
               <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-500">
                 <X className="w-3 h-3" />

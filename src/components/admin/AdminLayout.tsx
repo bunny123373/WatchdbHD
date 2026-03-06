@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Film } from "lucide-react";
+import { Lock, Film, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAdminAuthenticated } from "@/redux/slices/uiSlice";
+import { motion } from "framer-motion";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -45,7 +46,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   };
 
-  // Check session storage on mount
   if (typeof window !== "undefined") {
     const storedKey = sessionStorage.getItem("adminKey");
     if (storedKey && !isAdminAuthenticated) {
@@ -67,42 +67,75 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-[#1f1f1f] rounded-lg p-8 shadow-2xl">
-            {/* Logo */}
+      <div className="min-h-screen bg-[#141414]">
+        <div className="fixed inset-0 bg-gradient-to-b from-black via-[#0d0d0d] to-[#141414]">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(229,9,20,0.1),transparent_50%)]" />
+        </div>
+
+        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-sm"
+          >
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-lg bg-red-600 flex items-center justify-center mx-auto mb-4">
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                className="inline-flex items-center justify-center w-16 h-16 bg-[#e50914] rounded-lg mb-4"
+              >
                 <Film className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-white">
+              </motion.div>
+              <h1 className="text-3xl font-bold text-white">
                 Admin Panel
               </h1>
-              <p className="text-gray-400 mt-2">Enter admin key to continue</p>
+              <p className="text-gray-400 mt-2">Enter your credentials to continue</p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
                   type="password"
                   value={adminKey}
                   onChange={(e) => setAdminKey(e.target.value)}
-                  placeholder="Enter admin key"
-                  className="w-full pl-12 pr-4 py-3 rounded bg-[#2a2a2a] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-600 transition-all"
+                  placeholder="Admin Key"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914] focus:bg-white/10 transition-all"
                 />
               </div>
-              {error && <p className="text-red-500 text-sm">{error}</p>}
-              <button 
+              
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm text-center"
+                >
+                  {error}
+                </motion.p>
+              )}
+              
+              <motion.button 
                 type="submit" 
                 disabled={isLoading}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded transition-colors disabled:opacity-50"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-[#e50914] hover:bg-[#f40612] text-white font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {isLoading ? "Loading..." : "Access Admin Panel"}
-              </button>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  <span>Sign In</span>
+                )}
+              </motion.button>
             </form>
-          </div>
+
+            <p className="text-gray-500 text-xs text-center mt-6">
+              Restricted access. Authorized personnel only.
+            </p>
+          </motion.div>
         </div>
       </div>
     );
