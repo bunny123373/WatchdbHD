@@ -80,13 +80,13 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
                 className="block"
               >
                 <div className="relative flex items-center">
-                  {/* Rank Number */}
-                  <span className="text-3xl sm:text-4xl md:text-5xl font-black text-black/80 drop-shadow-lg leading-none mr-1 sm:mr-2">
+                  {/* Rank Number - Netflix Style */}
+                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-black drop-shadow-xl leading-none -mr-4 sm:-mr-6 z-10">
                     {index + 1}
                   </span>
                   
                   {/* Card */}
-                  <div className="w-24 sm:w-32 md:w-40 lg:w-48 aspect-[2/3] relative rounded-md overflow-hidden transition-transform duration-300 group-hover/item:scale-105 group-hover/item:z-10">
+                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-transform duration-300 group-hover/item:scale-105 group-hover/item:z-20 border-2 border-transparent group-hover/item:border-white">
                     {item.poster ? (
                       <Image
                         src={item.poster}
