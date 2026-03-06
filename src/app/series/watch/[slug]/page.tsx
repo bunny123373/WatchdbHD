@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown } from "lucide-react";
+import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown, CircleCheck, CircleDashed } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -29,6 +29,7 @@ function SeriesWatchContent() {
   const [showEpisodeList, setShowEpisodeList] = useState(false);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
+  const [watchedEpisodes, setWatchedEpisodes] = useState<Set<string>>(new Set());
 
   const slug = params.slug as string;
   const contentId = resolveContentIdFromSlug(slug);
@@ -39,6 +40,10 @@ function SeriesWatchContent() {
     if (slug) {
       fetchSeries();
       setActiveServer(1);
+      const saved = localStorage.getItem(`watched_${contentId}`);
+      if (saved) {
+        setWatchedEpisodes(new Set(JSON.parse(saved)));
+      }
     }
   }, [slug]);
 
@@ -86,8 +91,28 @@ function SeriesWatchContent() {
     window.history.replaceState({}, "", url);
   };
 
+  const markAsWatched = (episode: IEpisode, seasonNum: number) => {
+    const key = `${seasonNum}-${episode.episodeNumber}`;
+    const newWatched = new Set(watchedEpisodes);
+    newWatched.add(key);
+    setWatchedEpisodes(newWatched);
+    localStorage.setItem(`watched_${contentId}`, JSON.stringify([...newWatched]));
+  };
+
+  const isEpisodeWatched = (episodeNum: number, seasonNum: number) => {
+    return watchedEpisodes.has(`${seasonNum}-${episodeNum}`);
+  };
+
+  const getWatchedCountForSeason = (seasonNum: number) => {
+    const season = series?.seasons?.find(s => s.seasonNumber === seasonNum);
+    if (!season) return 0;
+    return season.episodes.filter(ep => watchedEpisodes.has(`${seasonNum}-${ep.episodeNumber}`)).length;
+  };
+
   const playNextEpisode = () => {
     if (!series || !currentEpisode) return;
+    
+    markAsWatched(currentEpisode, currentSeason);
     
     const currentSeasonData = series.seasons?.find((s) => s.seasonNumber === currentSeason);
     const currentEpisodeIndex = currentSeasonData?.episodes.findIndex((e) => e.episodeNumber === currentEpisode?.episodeNumber);
@@ -268,13 +293,16 @@ function SeriesWatchContent() {
                           handleEpisodeSelect(season.episodes[0], season.seasonNumber);
                         }
                       }}
-                      className={`flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                      className={`flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full transition-all flex items-center gap-2 ${
                         currentSeason === season.seasonNumber
                           ? "bg-white text-black"
                           : "bg-white/10 text-white hover:bg-white/20"
                       }`}
                     >
-                      Season {season.seasonNumber}
+                      <span>Season {season.seasonNumber}</span>
+                      <span className={`text-xs ${currentSeason === season.seasonNumber ? 'text-gray-500' : 'text-gray-400'}`}>
+                        {getWatchedCountForSeason(season.seasonNumber)}/{season.episodes.length}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -282,6 +310,7 @@ function SeriesWatchContent() {
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
                   {currentSeasonData?.episodes.map((episode, idx) => {
                     const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
+                    const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
 
                     return (
                       <button
@@ -292,7 +321,7 @@ function SeriesWatchContent() {
                         }`}
                       >
                         <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
-                          isActive ? "ring-2 ring-white" : "ring-1 ring-white/20 group-hover:ring-white/50"
+                          isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
                         }`}>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                           <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
@@ -320,10 +349,20 @@ function SeriesWatchContent() {
                               </span>
                             </div>
                           )}
+                          {!isActive && isWatched && (
+                            <div className="absolute top-2 right-2">
+                              <CircleCheck className="w-5 h-5 text-green-500" />
+                            </div>
+                          )}
                         </div>
-                        <h4 className="text-sm font-medium text-white truncate text-left">
-                          {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                        </h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-medium text-white truncate text-left flex-1">
+                            {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                          </h4>
+                          {isWatched && (
+                            <CircleCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          )}
+                        </div>
                         <p className="text-xs text-gray-400 text-left">
                           {series.title}
                         </p>
