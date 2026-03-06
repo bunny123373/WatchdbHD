@@ -245,7 +245,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                   )}
                   {movie.audioLanguages && movie.audioLanguages.length > 0 && (
                     <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-white rounded">
-                      <span className="text-red-500">Audio:</span> {movie.audioLanguages.join("  ")}
+                      <span className="text-red-500">Audio</span>
                     </span>
                   )}
                   <span className="px-2.5 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded">
