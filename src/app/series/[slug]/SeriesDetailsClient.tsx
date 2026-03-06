@@ -95,7 +95,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                     </span>
                   )}
                   {series.audioLanguages && series.audioLanguages.length > 0 && (
-                    <span className="px-2 py-0.5 text-xs font-medium bg-blue-600 text-white rounded">
+                    <span className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white rounded">
                       Audio: {series.audioLanguages.join(", ")}
                     </span>
                   )}
