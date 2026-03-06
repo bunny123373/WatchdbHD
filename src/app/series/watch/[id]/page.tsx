@@ -3,14 +3,13 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { ArrowLeft, Download, ExternalLink, Play } from "lucide-react";
+import { ArrowLeft, Download, Play, ChevronLeft, ChevronRight, SkipForward, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IContent, IEpisode, ISeason } from "@/models/Content";
+import { IContent, IEpisode } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import { normalizeExternalUrl } from "@/utils/url";
-import AdBanner from "@/components/AdBanner";
 
 function SeriesWatchContent() {
   const params = useParams();
@@ -99,7 +98,6 @@ function SeriesWatchContent() {
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
   const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
-  const currentEpisodeNumber = currentEpisode?.episodeNumber;
 
   if (loading) {
     return (
@@ -130,177 +128,188 @@ function SeriesWatchContent() {
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <Navbar />
-
-      <div className="pt-20 pb-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="mb-6"
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 to-transparent py-4 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link
+            href={`/series/${String(series._id)}`}
+            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
-            <Link
-              href={`/series/${String(series._id)}`}
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Series Details
-            </Link>
-          </motion.div>
+            <ChevronLeft className="w-6 h-6" />
+            <span className="hidden sm:inline font-medium">{series.title}</span>
+          </Link>
+          
+          <div className="flex items-center gap-3">
+            <span className="px-2 py-0.5 text-xs font-bold bg-purple-600 text-white rounded-sm">
+              S{currentSeason} E{currentEpisode?.episodeNumber}
+            </span>
+            {currentEpisode?.quality && (
+              <span className="px-2 py-0.5 text-xs font-bold bg-red-600 text-white rounded-sm">
+                {currentEpisode.quality}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-          >
-            <IframePlayer
-              src={currentEpisodeEmbedLink}
-              title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
-            />
-          </motion.div>
+      <div className="pt-16 pb-8">
+        <div className="w-full aspect-video bg-black">
+          <IframePlayer
+            src={currentEpisodeEmbedLink}
+            title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
+          />
+        </div>
 
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mb-8"
+            className="mb-6"
           >
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded">S{currentSeason}</span>
-              <span className="px-3 py-1 bg-yellow-500 text-black text-xs font-bold rounded">E{currentEpisode?.episodeNumber}</span>
-              {currentEpisode?.quality && (
-                <span className="px-3 py-1 bg-gray-700 text-white text-xs font-bold rounded">{currentEpisode.quality}</span>
-              )}
-              <button
-                onClick={() => setAutoPlayNext(!autoPlayNext)}
-                className={`ml-auto px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  autoPlayNext 
-                    ? "bg-green-600 text-white" 
-                    : "bg-gray-600 text-gray-300"
-                }`}
-              >
-                {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
-              </button>
-            </div>
-            
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
               <div>
-                <h1 className="text-2xl font-bold text-white mb-2">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">
                   {currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
                 </h1>
-                <p className="text-gray-400 text-lg">{series.title}</p>
+                <p className="text-gray-400">{series.title} • Season {currentSeason}</p>
               </div>
               
               <div className="flex items-center gap-3">
-                {currentEpisodeDownloadUrl && (
-                  <a
-                    href={currentEpisodeDownloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </a>
-                )}
-                {currentEpisode?.embedIframeLink && (
-                  <button
-                    onClick={() => setActiveServer(1)}
-                    className={`flex items-center gap-2 px-4 py-2 font-bold rounded-lg transition-colors ${
-                      activeServer === 1 
-                        ? 'bg-purple-600 hover:bg-purple-500 text-white' 
-                        : 'bg-gray-700 hover:bg-gray-600 text-white'
-                    }`}
-                  >
-                    <Play className="w-4 h-4" />
-                    Server 1
-                  </button>
-                )}
-                {currentEpisode?.embedIframeLink2 && (
-                  <button
-                    onClick={() => setActiveServer(2)}
-                    className={`flex items-center gap-2 px-4 py-2 font-bold rounded-lg transition-colors ${
-                      activeServer === 2 
-                        ? 'bg-green-600 hover:bg-green-500 text-white' 
-                        : 'bg-gray-700 hover:bg-gray-600 text-white'
-                    }`}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Server 2
-                  </button>
-                )}
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden"
-          >
-            <div className="flex border-b border-gray-800 overflow-x-auto">
-              {series.seasons?.map((season) => (
                 <button
-                  key={season.seasonNumber}
-                  onClick={() => {
-                    setCurrentSeason(season.seasonNumber);
-                    if (season.episodes.length > 0) {
-                      handleEpisodeSelect(season.episodes[0], season.seasonNumber);
-                    }
-                  }}
-                  className={`px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
-                    currentSeason === season.seasonNumber
-                      ? "text-yellow-500 border-b-2 border-yellow-500"
-                      : "text-gray-400 hover:text-white"
+                  onClick={() => setAutoPlayNext(!autoPlayNext)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    autoPlayNext 
+                      ? "bg-green-600 text-white" 
+                      : "bg-gray-700 text-gray-300"
                   }`}
                 >
-                  Season {season.seasonNumber}
+                  {autoPlayNext ? <SkipForward className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
+                  {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
                 </button>
-              ))}
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-3 mb-6">
+              {currentEpisode?.embedIframeLink && (
+                <button
+                  onClick={() => setActiveServer(1)}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
+                    activeServer === 1 
+                      ? 'bg-[#e50914] hover:bg-[#f40612] text-white' 
+                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  }`}
+                >
+                  <Play className="w-4 h-4" />
+                  Server 1
+                </button>
+              )}
+              {currentEpisode?.embedIframeLink2 && (
+                <button
+                  onClick={() => setActiveServer(2)}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
+                    activeServer === 2 
+                      ? 'bg-green-600 hover:bg-green-500 text-white' 
+                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  }`}
+                >
+                  <Play className="w-4 h-4" />
+                  Server 2
+                </button>
+              )}
+              {currentEpisodeDownloadUrl && (
+                <a
+                  href={currentEpisodeDownloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </a>
+              )}
             </div>
 
-            <div className="max-h-96 overflow-y-auto">
-              {currentSeasonData?.episodes.map((episode) => {
-                const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
-
-                return (
-                  <button
-                    key={episode.episodeNumber}
-                    onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                    className={`w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-gray-800/50 ${
-                      isActive ? "bg-yellow-500/10 border-l-4 border-l-yellow-500" : ""
-                    }`}
-                  >
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center">
-                      <span className="text-sm font-semibold text-gray-300">
-                        {episode.episodeNumber}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-white truncate">
-                        {episode.episodeTitle}
-                      </h4>
-                      {episode.quality && (
-                        <span className="text-xs text-gray-400">{episode.quality}</span>
-                      )}
-                    </div>
-                    {normalizeExternalUrl(episode.downloadLink) && (
-                      <a
-                        href={normalizeExternalUrl(episode.downloadLink)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
-                      >
-                        <Download className="w-4 h-4" />
-                      </a>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <button
+              onClick={() => setShowEpisodeList(!showEpisodeList)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-colors"
+            >
+              <span>Episodes</span>
+              <ChevronRight className={`w-4 h-4 transition-transform ${showEpisodeList ? 'rotate-90' : ''}`} />
+            </button>
           </motion.div>
+
+          <AnimatePresence>
+            {showEpisodeList && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="bg-[#1a1a1a] rounded-xl border border-gray-800 overflow-hidden mb-8"
+              >
+                <div className="flex border-b border-gray-800 overflow-x-auto">
+                  {series.seasons?.map((season) => (
+                    <button
+                      key={season.seasonNumber}
+                      onClick={() => {
+                        setCurrentSeason(season.seasonNumber);
+                        if (season.episodes.length > 0) {
+                          handleEpisodeSelect(season.episodes[0], season.seasonNumber);
+                        }
+                      }}
+                      className={`px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                        currentSeason === season.seasonNumber
+                          ? "text-yellow-500 border-b-2 border-yellow-500 bg-white/5"
+                          : "text-gray-400 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      Season {season.seasonNumber}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="max-h-80 overflow-y-auto">
+                  {currentSeasonData?.episodes.map((episode) => {
+                    const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
+
+                    return (
+                      <button
+                        key={episode.episodeNumber}
+                        onClick={() => handleEpisodeSelect(episode, currentSeason)}
+                        className={`w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-white/5 ${
+                          isActive ? "bg-yellow-500/10 border-l-4 border-l-yellow-500" : ""
+                        }`}
+                      >
+                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center">
+                          <span className="text-sm font-semibold text-gray-300">
+                            {episode.episodeNumber}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-white truncate">
+                            {episode.episodeTitle}
+                          </h4>
+                          {episode.quality && (
+                            <span className="text-xs text-gray-500">{episode.quality}</span>
+                          )}
+                        </div>
+                        {normalizeExternalUrl(episode.downloadLink) && (
+                          <a
+                            href={normalizeExternalUrl(episode.downloadLink)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
+                          >
+                            <Download className="w-4 h-4" />
+                          </a>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
