@@ -49,6 +49,7 @@ export interface IContent {
   _id: string;
   type: "movie" | "series";
   title: string;
+  slug?: string;
   poster: string;
   banner?: string;
   description?: string;
@@ -135,6 +136,7 @@ const ContentSchema = new Schema<IContent>(
   {
     type: { type: String, required: true, enum: ["movie", "series"] },
     title: { type: String, required: true },
+    slug: { type: String },
     poster: { type: String, required: true },
     banner: { type: String },
     description: { type: String },

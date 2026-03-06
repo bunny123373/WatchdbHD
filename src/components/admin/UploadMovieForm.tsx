@@ -75,6 +75,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
 
   const [formData, setFormData] = useState({
     title: "",
+    slug: "",
     poster: "",
     banner: "",
     description: "",
@@ -188,6 +189,13 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const generateSlug = () => {
+    if (formData.title) {
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      setFormData((prev) => ({ ...prev, slug }));
+    }
+  };
+
   const addTag = () => {
     if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
       setFormData((prev) => ({ ...prev, tags: [...prev.tags, tagInput.trim()] }));
@@ -234,6 +242,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         
         setFormData({
           title: "",
+          slug: "",
           poster: "",
           banner: "",
           description: "",
@@ -353,6 +362,28 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           required
           placeholder="Enter movie title"
         />
+
+        {/* Slug */}
+        <div>
+          <label className="block text-sm font-medium text-[#808080] mb-1.5">Slug URL</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="slug"
+              value={formData.slug}
+              onChange={handleChange}
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#141414] border border-[#333] text-white focus:outline-none focus:border-[#e50914] text-sm"
+              placeholder="movie-title"
+            />
+            <button
+              type="button"
+              onClick={generateSlug}
+              className="px-3 py-2 bg-[#333] hover:bg-[#444] text-white rounded-lg text-sm"
+            >
+              Generate
+            </button>
+          </div>
+        </div>
 
         {/* Year */}
         <Input
