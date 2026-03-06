@@ -15,6 +15,7 @@ export interface ICrew {
 export interface IEpisode {
   episodeNumber: number;
   episodeTitle: string;
+  episodeDescription?: string;
   embedIframeLink?: string;
   embedIframeLink2?: string;
   hlsUrl?: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown, CircleCheck, CircleDashed } from "lucide-react";
@@ -30,6 +30,8 @@ function SeriesWatchContent() {
   const [autoPlayNext, setAutoPlayNext] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [watchedEpisodes, setWatchedEpisodes] = useState<Set<string>>(new Set());
+  const [hoveredEpisode, setHoveredEpisode] = useState<number | null>(null);
+  const episodeRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   const slug = params.slug as string;
   const contentId = resolveContentIdFromSlug(slug);
@@ -133,6 +135,28 @@ function SeriesWatchContent() {
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
   const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
+
+  useEffect(() => {
+    if (showEpisodeList && currentEpisode && episodeRefs.current.size > 0) {
+      const currentEl = episodeRefs.current.get(currentEpisode.episodeNumber);
+      if (currentEl) {
+        setTimeout(() => {
+          currentEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }, 300);
+      }
+    }
+  }, [showEpisodeList, currentEpisode]);
+
+  const playSeason = () => {
+    const firstUnwatched = currentSeasonData?.episodes.find(
+      ep => !watchedEpisodes.has(`${currentSeason}-${ep.episodeNumber}`)
+    );
+    if (firstUnwatched) {
+      handleEpisodeSelect(firstUnwatched, currentSeason);
+    } else if (currentSeasonData?.episodes.length) {
+      handleEpisodeSelect(currentSeasonData.episodes[0], currentSeason);
+    }
+  };
 
   if (loading) {
     return (
@@ -305,6 +329,13 @@ function SeriesWatchContent() {
                       </span>
                     </button>
                   ))}
+                  <button
+                    onClick={playSeason}
+                    className="flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full transition-all flex items-center gap-2 bg-[#e50914] hover:bg-[#f40612] text-white"
+                  >
+                    <Play className="w-4 h-4 fill-white" />
+                    Play Season
+                  </button>
                 </div>
 
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
@@ -313,60 +344,83 @@ function SeriesWatchContent() {
                     const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
 
                     return (
-                      <button
+                      <div
                         key={episode.episodeNumber}
-                        onClick={() => handleEpisodeSelect(episode, currentSeason)}
+                        ref={(el) => {
+                          if (el) episodeRefs.current.set(episode.episodeNumber, el);
+                        }}
                         className={`flex-shrink-0 w-48 snap-start group relative transition-all ${
                           isActive ? "scale-105" : "opacity-70 hover:opacity-100"
                         }`}
+                        onMouseEnter={() => setHoveredEpisode(episode.episodeNumber)}
+                        onMouseLeave={() => setHoveredEpisode(null)}
                       >
-                        <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
-                          isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
-                        }`}>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                            <Play className="w-8 h-8 text-white/50" />
-                          </div>
-                          <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                            <span className="text-xs font-medium text-white/90">
-                              E{episode.episodeNumber}
-                            </span>
-                            {episode.quality && (
-                              <span className="text-[10px] px-1 py-0.5 bg-white/20 text-white rounded">
-                                {episode.quality}
+                        <button
+                          onClick={() => handleEpisodeSelect(episode, currentSeason)}
+                          className="w-full"
+                        >
+                          <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
+                            isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
+                          }`}>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                              <Play className="w-8 h-8 text-white/50" />
+                            </div>
+                            <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                              <span className="text-xs font-medium text-white/90">
+                                E{episode.episodeNumber}
                               </span>
+                              {episode.quality && (
+                                <span className="text-[10px] px-1 py-0.5 bg-white/20 text-white rounded">
+                                  {episode.quality}
+                                </span>
+                              )}
+                            </div>
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
+                                <Play className="w-5 h-5 text-black ml-0.5" fill="black" />
+                              </div>
+                            </div>
+                            {isActive && (
+                              <div className="absolute top-2 right-2">
+                                <span className="text-[10px] px-2 py-0.5 bg-[#e50914] text-white rounded font-medium">
+                                  Playing
+                                </span>
+                              </div>
+                            )}
+                            {!isActive && isWatched && (
+                              <div className="absolute top-2 right-2">
+                                <CircleCheck className="w-5 h-5 text-green-500" />
+                              </div>
                             )}
                           </div>
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
-                              <Play className="w-5 h-5 text-black ml-0.5" fill="black" />
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-medium text-white truncate text-left flex-1">
+                              {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                            </h4>
+                            {isWatched && (
+                              <CircleCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            )}
                           </div>
-                          {isActive && (
-                            <div className="absolute top-2 right-2">
-                              <span className="text-[10px] px-2 py-0.5 bg-[#e50914] text-white rounded font-medium">
-                                Playing
-                              </span>
-                            </div>
+                          <p className="text-xs text-gray-400 text-left">
+                            {series.title}
+                          </p>
+                        </button>
+                        <AnimatePresence>
+                          {hoveredEpisode === episode.episodeNumber && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              className="absolute top-full left-0 right-0 mt-2 p-3 bg-[#1a1a1a] rounded-lg border border-gray-700 z-20"
+                            >
+                              <p className="text-xs text-gray-300 line-clamp-4">
+                                {episode.episodeDescription || episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                              </p>
+                            </motion.div>
                           )}
-                          {!isActive && isWatched && (
-                            <div className="absolute top-2 right-2">
-                              <CircleCheck className="w-5 h-5 text-green-500" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium text-white truncate text-left flex-1">
-                            {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                          </h4>
-                          {isWatched && (
-                            <CircleCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
-                          )}
-                        </div>
-                        <p className="text-xs text-gray-400 text-left">
-                          {series.title}
-                        </p>
-                      </button>
+                        </AnimatePresence>
+                      </div>
                     );
                   })}
                 </div>
