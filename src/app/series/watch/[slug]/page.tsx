@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check } from "lucide-react";
+import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -241,22 +241,24 @@ function SeriesWatchContent() {
 
             <button
               onClick={() => setShowEpisodeList(!showEpisodeList)}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-colors"
+              className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
+                showEpisodeList ? "bg-white text-black" : "bg-white/10 hover:bg-white/20 text-white"
+              }`}
             >
               <span>Episodes</span>
-              <ChevronRight className={`w-4 h-4 transition-transform ${showEpisodeList ? 'rotate-90' : ''}`} />
+              <ChevronDown className={`w-4 h-4 transition-transform ${showEpisodeList ? 'rotate-180' : ''}`} />
             </button>
           </motion.div>
 
           <AnimatePresence>
             {showEpisodeList && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="bg-[#1a1a1a] rounded-xl border border-gray-800 overflow-hidden mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="mb-8"
               >
-                <div className="flex border-b border-gray-800 overflow-x-auto">
+                <div className="flex items-center gap-3 mb-6 overflow-x-auto pb-2 scrollbar-hide">
                   {series.seasons?.map((season) => (
                     <button
                       key={season.seasonNumber}
@@ -266,10 +268,10 @@ function SeriesWatchContent() {
                           handleEpisodeSelect(season.episodes[0], season.seasonNumber);
                         }
                       }}
-                      className={`px-5 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                      className={`flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full transition-all ${
                         currentSeason === season.seasonNumber
-                          ? "text-yellow-500 border-b-2 border-yellow-500 bg-white/5"
-                          : "text-gray-400 hover:text-white hover:bg-white/5"
+                          ? "bg-white text-black"
+                          : "bg-white/10 text-white hover:bg-white/20"
                       }`}
                     >
                       Season {season.seasonNumber}
@@ -277,42 +279,54 @@ function SeriesWatchContent() {
                   ))}
                 </div>
 
-                <div className="max-h-80 overflow-y-auto">
-                  {currentSeasonData?.episodes.map((episode) => {
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                  {currentSeasonData?.episodes.map((episode, idx) => {
                     const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
 
                     return (
                       <button
                         key={episode.episodeNumber}
                         onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                        className={`w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-white/5 ${
-                          isActive ? "bg-yellow-500/10 border-l-4 border-l-yellow-500" : ""
+                        className={`flex-shrink-0 w-48 snap-start group relative transition-all ${
+                          isActive ? "scale-105" : "opacity-70 hover:opacity-100"
                         }`}
                       >
-                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center">
-                          <span className="text-sm font-semibold text-gray-300">
-                            {episode.episodeNumber}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-white truncate">
-                            {episode.episodeTitle}
-                          </h4>
-                          {episode.quality && (
-                            <span className="text-xs text-gray-500">{episode.quality}</span>
+                        <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
+                          isActive ? "ring-2 ring-white" : "ring-1 ring-white/20 group-hover:ring-white/50"
+                        }`}>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                            <Play className="w-8 h-8 text-white/50" />
+                          </div>
+                          <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                            <span className="text-xs font-medium text-white/90">
+                              E{episode.episodeNumber}
+                            </span>
+                            {episode.quality && (
+                              <span className="text-[10px] px-1 py-0.5 bg-white/20 text-white rounded">
+                                {episode.quality}
+                              </span>
+                            )}
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
+                              <Play className="w-5 h-5 text-black ml-0.5" fill="black" />
+                            </div>
+                          </div>
+                          {isActive && (
+                            <div className="absolute top-2 right-2">
+                              <span className="text-[10px] px-2 py-0.5 bg-[#e50914] text-white rounded font-medium">
+                                Playing
+                              </span>
+                            </div>
                           )}
                         </div>
-                        {normalizeExternalUrl(episode.downloadLink) && (
-                          <a
-                            href={normalizeExternalUrl(episode.downloadLink)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="p-2 rounded-lg bg-gray-700 text-gray-300 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
-                          >
-                            <Download className="w-4 h-4" />
-                          </a>
-                        )}
+                        <h4 className="text-sm font-medium text-white truncate text-left">
+                          {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                        </h4>
+                        <p className="text-xs text-gray-400 text-left">
+                          {series.title}
+                        </p>
                       </button>
                     );
                   })}
