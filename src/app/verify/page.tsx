@@ -105,18 +105,18 @@ function VerifyContent() {
 
       {/* Header */}
       <div className="relative z-10 border-b border-white/5 bg-gradient-to-b from-black/80 to-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#e50914] rounded-md flex items-center justify-center">
-              <span className="text-white font-bold text-sm">W</span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#e50914] rounded-md flex items-center justify-center">
+              <span className="text-white font-bold text-xs sm:text-sm">W</span>
             </div>
-            <span className="text-white font-semibold text-lg">WatchDB</span>
+            <span className="text-white font-semibold text-base sm:text-lg">WatchDB</span>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-65px)] px-4">
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-56px)] px-3 sm:px-4">
         <AnimatePresence mode="wait">
           {step === "idle" && (
             <motion.div
@@ -124,31 +124,31 @@ function VerifyContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-md"
+              className="w-full max-w-sm sm:max-w-md"
             >
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-[#e50914]/10 rounded-full mb-6">
-                  <Shield className="w-10 h-10 text-[#e50914]" />
+              <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 bg-[#e50914]/10 rounded-full mb-4 sm:mb-6">
+                  <Shield className="w-7 h-7 sm:w-10 sm:h-10 text-[#e50914]" />
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+                <h1 className="text-2xl sm:text-3xl sm:text-4xl font-bold text-white mb-2 sm:mb-3">
                   Ready to watch?
                 </h1>
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 text-sm sm:text-lg">
                   Verify to access {getContentTitle()}
                 </p>
               </div>
 
               <button
                 onClick={startVerify}
-                className="w-full flex items-center justify-center gap-3 bg-[#e50914] hover:bg-[#f40612] text-white font-bold py-4 px-8 rounded-md transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 bg-[#e50914] hover:bg-[#f40612] text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-md transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                <Play className="w-6 h-6 fill-current" />
-                <span className="text-lg">Verify & Watch</span>
-                <ArrowRight className="w-5 h-5" />
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
+                <span className="text-base sm:text-lg">Verify & Watch</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              <div className="mt-6 flex items-center justify-center gap-2 text-gray-500 text-sm">
-                <AlertCircle className="w-4 h-4" />
+              <div className="mt-4 sm:mt-6 flex items-center justify-center gap-2 text-gray-500 text-xs sm:text-sm text-center">
+                <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                 <span>One-time verification to keep content free</span>
               </div>
             </motion.div>
@@ -160,25 +160,25 @@ function VerifyContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              className="w-full max-w-md text-center"
+              className="w-full max-w-sm sm:max-w-md text-center"
             >
-              <div className="relative w-32 h-32 mx-auto mb-8">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8">
                 <div className="absolute inset-0 border-4 border-[#e50914]/20 rounded-full" />
                 <div className="absolute inset-0 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-white">{countdown}</span>
+                  <span className="text-3xl sm:text-4xl font-bold text-white">{countdown}</span>
                 </div>
               </div>
 
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Verifying...
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm sm:text-base">
                 Please complete the verification process
               </p>
 
-              <div className="mt-8 flex items-center justify-center gap-2 text-gray-500 text-sm">
-                <Loader2 className="w-4 h-4 animate-spin" />
+              <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2 text-gray-500 text-xs sm:text-sm">
+                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                 <span>Opening verification window</span>
               </div>
             </motion.div>
@@ -189,25 +189,25 @@ function VerifyContent() {
               key="done"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-md text-center"
+              className="w-full max-w-sm sm:max-w-md text-center"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", duration: 0.6 }}
-                className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6"
+                className="w-20 h-20 sm:w-24 sm:h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6"
               >
-                <CheckCircle className="w-12 h-12 text-green-500" />
+                <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-green-500" />
               </motion.div>
 
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                 You're all set!
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm sm:text-base">
                 Redirecting to your content...
               </p>
 
-              <div className="mt-8">
+              <div className="mt-6 sm:mt-8">
                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: "0%" }}
@@ -230,19 +230,19 @@ function Loading() {
     <div className="min-h-screen bg-[#141414]">
       <div className="fixed inset-0 bg-gradient-to-b from-black via-[#141414] to-[#141414]" />
       <div className="relative z-10 border-b border-white/5 bg-gradient-to-b from-black/80 to-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#e50914] rounded-md flex items-center justify-center">
-              <span className="text-white font-bold text-sm">W</span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#e50914] rounded-md flex items-center justify-center">
+              <span className="text-white font-bold text-xs sm:text-sm">W</span>
             </div>
-            <span className="text-white font-semibold text-lg">WatchDB</span>
+            <span className="text-white font-semibold text-base sm:text-lg">WatchDB</span>
           </div>
         </div>
       </div>
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-65px)]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-3 border-[#e50914] border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400">Loading...</p>
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-56px)]">
+        <div className="flex flex-col items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 border-[3px] border-[#e50914] border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-400 text-sm sm:text-base">Loading...</p>
         </div>
       </div>
     </div>
