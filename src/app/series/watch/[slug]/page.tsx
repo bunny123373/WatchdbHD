@@ -3,13 +3,21 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { ArrowLeft, Download, Play, ChevronLeft, ChevronRight, SkipForward, Check } from "lucide-react";
+import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import { normalizeExternalUrl } from "@/utils/url";
+
+function resolveContentIdFromSlug(slug: string) {
+  const normalized = (slug || "").trim();
+  if (!normalized) return normalized;
+  const maybeId = normalized.split("-").pop() || normalized;
+  const objectIdRegex = /^[a-f\d]{24}$/i;
+  return objectIdRegex.test(maybeId) ? maybeId : normalized;
+}
 
 function SeriesWatchContent() {
   const params = useParams();
@@ -22,15 +30,17 @@ function SeriesWatchContent() {
   const [autoPlayNext, setAutoPlayNext] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
 
+  const slug = params.slug as string;
+  const contentId = resolveContentIdFromSlug(slug);
   const seasonParam = searchParams.get("season");
   const episodeParam = searchParams.get("episode");
 
   useEffect(() => {
-    if (params.id) {
+    if (slug) {
       fetchSeries();
       setActiveServer(1);
     }
-  }, [params.id]);
+  }, [slug]);
 
   useEffect(() => {
     if (series && seasonParam && episodeParam) {
@@ -54,7 +64,7 @@ function SeriesWatchContent() {
 
   const fetchSeries = async () => {
     try {
-      const response = await fetch(`/api/content/${params.id}`);
+      const response = await fetch(`/api/content/${contentId}`);
       const data = await response.json();
       if (data.success) {
         setSeries(data.data);
@@ -195,8 +205,8 @@ function SeriesWatchContent() {
                   onClick={() => setActiveServer(1)}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
                     activeServer === 1 
-                      ? 'bg-[#e50914] hover:bg-[#f40612] text-white' 
-                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                      ? "bg-[#e50914] hover:bg-[#f40612] text-white" 
+                      : "bg-gray-700 hover:bg-gray-600 text-white"
                   }`}
                 >
                   <Play className="w-4 h-4" />
@@ -208,8 +218,8 @@ function SeriesWatchContent() {
                   onClick={() => setActiveServer(2)}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
                     activeServer === 2 
-                      ? 'bg-green-600 hover:bg-green-500 text-white' 
-                      : 'bg-gray-700 hover:bg-gray-600 text-white'
+                      ? "bg-green-600 hover:bg-green-500 text-white" 
+                      : "bg-gray-700 hover:bg-gray-600 text-white"
                   }`}
                 >
                   <Play className="w-4 h-4" />

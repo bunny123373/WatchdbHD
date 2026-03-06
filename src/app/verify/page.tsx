@@ -36,15 +36,22 @@ function VerifyContent() {
           const contentId = searchParams.get("id");
           const contentType = searchParams.get("type") || "movie";
           const downloadUrl = searchParams.get("url");
+          const season = searchParams.get("season");
+          const episode = searchParams.get("episode");
 
           if (contentType === "download" && downloadUrl) {
             window.location.href = decodeURIComponent(downloadUrl);
           } else if (contentId) {
+            let watchUrl = "";
             if (contentType === "series") {
-              window.location.href = `/series/watch/${contentId}`;
+              watchUrl = `/series/watch/${contentId}`;
+              if (season && episode) {
+                watchUrl += `?season=${season}&episode=${episode}`;
+              }
             } else {
-              window.location.href = `/watch/${contentId}`;
+              watchUrl = `/watch/${contentId}`;
             }
+            window.location.href = watchUrl;
           } else {
             window.location.href = "/";
           }

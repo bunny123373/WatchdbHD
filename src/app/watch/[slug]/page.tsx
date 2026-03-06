@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { Play, Download, ArrowLeft, Calendar, Globe, ChevronLeft, ChevronRight, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
+import { Play, Download, Calendar, Globe, ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { IContent } from "@/models/Content";
 import Navbar from "@/components/Navbar";
@@ -14,26 +14,35 @@ import HlsPlayer from "@/components/HlsPlayer";
 import ContentGrid from "@/components/ContentGrid";
 import { normalizeExternalUrl } from "@/utils/url";
 
+function resolveContentIdFromSlug(slug: string) {
+  const normalized = (slug || "").trim();
+  if (!normalized) return normalized;
+  const maybeId = normalized.split("-").pop() || normalized;
+  const objectIdRegex = /^[a-f\d]{24}$/i;
+  return objectIdRegex.test(maybeId) ? maybeId : normalized;
+}
+
 function WatchMovieContent() {
   const params = useParams();
   const [movie, setMovie] = useState<IContent | null>(null);
   const [relatedMovies, setRelatedMovies] = useState<IContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
-  const [showControls, setShowControls] = useState(true);
+  const slug = params.slug as string;
+  const contentId = resolveContentIdFromSlug(slug);
   const movieDownloadUrl = normalizeExternalUrl(movie?.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie?.embedIframeLink2 : movie?.embedIframeLink;
 
   useEffect(() => {
-    if (params.id) {
+    if (slug) {
       fetchMovie();
       setActiveServer(1);
     }
-  }, [params.id]);
+  }, [slug]);
 
   const fetchMovie = async () => {
     try {
-      const response = await fetch(`/api/content/${params.id}`);
+      const response = await fetch(`/api/content/${contentId}`);
       const data = await response.json();
       if (data.success) {
         setMovie(data.data);
