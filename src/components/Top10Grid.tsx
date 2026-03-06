@@ -81,7 +81,7 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
               >
                 <div className="relative flex items-center">
                   {/* Rank Number - Netflix Style */}
-                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-black drop-shadow-xl leading-none -mr-4 sm:-mr-6 z-10">
+                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)] leading-none -mr-4 sm:-mr-6 z-10">
                     {index + 1}
                   </span>
                   
