@@ -81,12 +81,12 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
               >
                 <div className="relative flex items-center">
                   {/* Rank Number - Netflix Style */}
-                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-black drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] leading-none -mr-4 sm:-mr-6 z-10">
+                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-black drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] leading-none -mr-4 sm:-mr-6 z-10 select-none">
                     {index + 1}
                   </span>
                   
                   {/* Card - Netflix Hover Style */}
-                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-all duration-300 ease-out group-hover/item:scale-110 group-hover/item:z-20 group-hover/item:shadow-2xl group-hover/item:shadow-black/50">
+                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-all duration-300 ease-out lg:group-hover/item:scale-110 lg:group-hover/item:z-20 lg:group-hover/item:shadow-2xl lg:group-hover/item:shadow-black/50">
                     {item.poster ? (
                       <Image
                         src={item.poster}
@@ -102,10 +102,10 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
                     )}
                     
                     {/* Netflix Hover Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 lg:group-hover/item:opacity-100 transition-opacity duration-300" />
                     
                     {/* Hover Info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover/item:opacity-100 transition-all duration-300 translate-y-2 group-hover/item:translate-y-0">
+                    <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 lg:group-hover/item:opacity-100 transition-all duration-300 lg:translate-y-2 lg:group-hover/item:translate-y-0">
                       <p className="text-white text-xs font-medium truncate">{item.title}</p>
                       {item.year && <p className="text-gray-400 text-xs">{item.year}</p>}
                     </div>
