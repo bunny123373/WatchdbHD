@@ -16,6 +16,7 @@ export interface IEpisode {
   episodeNumber: number;
   episodeTitle: string;
   episodeDescription?: string;
+  episodeThumbnail?: string;
   embedIframeLink?: string;
   embedIframeLink2?: string;
   hlsUrl?: string;

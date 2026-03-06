@@ -117,9 +117,9 @@ export default function EpisodeList({
                     <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
                       isAutoPlayed ? "ring-2 ring-white" : "ring-1 ring-white/20 group-hover:ring-white/50"
                     }`}>
-                      {seriesPoster ? (
+                      {episode.episodeThumbnail || seriesPoster ? (
                         <Image
-                          src={seriesPoster}
+                          src={episode.episodeThumbnail || seriesPoster!}
                           alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
                           fill
                           className="object-cover"

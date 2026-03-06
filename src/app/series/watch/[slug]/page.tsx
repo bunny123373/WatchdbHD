@@ -362,10 +362,23 @@ function SeriesWatchContent() {
                           <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
                             isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
                           }`}>
+                            {episode.episodeThumbnail || series.poster ? (
+                              <img 
+                                src={episode.episodeThumbnail || series.poster} 
+                                alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                                <Play className="w-8 h-8 text-white/50" />
+                              </div>
+                            )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                              <Play className="w-8 h-8 text-white/50" />
-                            </div>
+                            {!episode.episodeThumbnail && !series.poster && (
+                              <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                                <Play className="w-8 h-8 text-white/50" />
+                              </div>
+                            )}
                             <div className="absolute bottom-2 left-2 flex items-center gap-1">
                               <span className="text-xs font-medium text-white/90">
                                 E{episode.episodeNumber}
@@ -441,9 +454,17 @@ function SeriesWatchContent() {
                         <div className={`relative w-24 flex-shrink-0 aspect-video rounded overflow-hidden ${
                           isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500" : "ring-1 ring-white/20"
                         }`}>
-                          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                            <Play className="w-6 h-6 text-white/50" />
-                          </div>
+                          {episode.episodeThumbnail || series.poster ? (
+                            <img 
+                              src={episode.episodeThumbnail || series.poster} 
+                              alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                              <Play className="w-6 h-6 text-white/50" />
+                            </div>
+                          )}
                           {isActive && (
                             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                               <Play className="w-8 h-8 text-white" fill="white" />
