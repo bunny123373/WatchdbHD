@@ -30,7 +30,7 @@ export default function GenreFilter() {
   };
 
   return (
-    <div className="lg:hidden px-4 py-3 -mt-2 mb-2">
+    <div className="hidden lg:flex px-4 py-3 -mt-2 mb-2">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {genres.map((genre) => (
           <button
