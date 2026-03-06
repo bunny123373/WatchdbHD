@@ -39,6 +39,7 @@ async function getMovie(id: string) {
       rating: movie.rating != undefined ? Number(movie.rating) : undefined,
       quality: movie.quality ? String(movie.quality) : "",
       language: movie.language ? String(movie.language) : "",
+      audioLanguages: Array.isArray(movie.audioLanguages) ? movie.audioLanguages.map(String) : [],
       type: String(movie.type || "movie"),
       tags: Array.isArray(movie.tags) ? movie.tags.map(String) : [],
       seasons: Array.isArray(movie.seasons) ? movie.seasons : [],
