@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Film, Loader2 } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAdminAuthenticated } from "@/redux/slices/uiSlice";
 import { motion } from "framer-motion";
+import Logo from "@/components/Logo";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -82,9 +83,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                className="inline-flex items-center justify-center w-16 h-16 bg-[#e50914] rounded-lg mb-4"
+                className="inline-flex items-center justify-center mb-4"
               >
-                <Film className="w-8 h-8 text-white" />
+                <Logo size="lg" className="w-12 h-12" />
               </motion.div>
               <h1 className="text-3xl font-bold text-white">
                 Admin Panel

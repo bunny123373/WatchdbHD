@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Search, X, Film, Tv, Clock, TrendingUp, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSelector from "@/components/LanguageSelector";
+import Logo from "@/components/Logo";
 
 interface SearchResult {
   _id: string;
@@ -316,7 +317,8 @@ export default function MobileNavbar() {
               )}
             </div>
             
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center gap-2">
+              <Logo size="sm" className="w-6 h-6" />
               <span className="text-lg font-bold text-[#e50914]">
                 WATCH<span className="text-white">TMDB</span>
               </span>

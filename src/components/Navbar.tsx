@@ -10,6 +10,7 @@ import { setSearch, setTypeFilter } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
 import { IContent } from "@/models/Content";
 import LanguageSelector from "@/components/LanguageSelector";
+import Logo from "@/components/Logo";
 
 interface SearchResult {
   _id: string;
@@ -125,7 +126,8 @@ export default function Navbar() {
           <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#e50914]">
+              <Logo size="md" className="w-8 h-8" />
+              <span className="hidden sm:block text-xl sm:text-2xl md:text-3xl font-bold text-[#e50914]">
                 WATCH<span className="text-white">TMDB</span>
               </span>
             </Link>

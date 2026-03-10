@@ -1,10 +1,12 @@
 "use client";
 
+import Logo from "./Logo";
+
 export default function HomeSkeleton() {
   return (
     <div className="animate-pulse">
       {/* Hero Banner Skeleton */}
-      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#1f1f1f]" />
+      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#1a1a1a]" />
 
       {/* Genre Filter Skeleton */}
       <div className="lg:hidden px-4 py-3">
@@ -47,5 +49,20 @@ export default function HomeSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function LogoSkeleton({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+  const sizes = {
+    sm: 24,
+    md: 32,
+    lg: 48,
+  };
+  
+  return (
+    <div 
+      className="animate-pulse rounded-full bg-white/10"
+      style={{ width: sizes[size], height: sizes[size] }}
+    />
   );
 }
