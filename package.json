@@ -17,6 +17,7 @@
     "@capacitor/share": "^8.0.1",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/hls.js": "^0.13.3",
+    "@videojs/react": "^10.0.0-beta.3",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.8",
     "hls.js": "^1.6.15",

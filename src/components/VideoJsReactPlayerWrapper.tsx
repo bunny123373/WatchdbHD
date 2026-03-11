@@ -1,0 +1,89 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+
+interface VideoJsReactPlayerProps {
+  src?: string;
+  title?: string;
+  poster?: string;
+  autoplay?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  loop?: boolean;
+}
+
+export default function VideoJsReactPlayer({
+  src,
+  title,
+  poster,
+  autoplay = false,
+  muted = false,
+  controls = true,
+  loop = false,
+}: VideoJsReactPlayerProps) {
+  const videoRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<ReturnType<typeof videojs> | null>(null);
+
+  useEffect(() => {
+    if (!src || !videoRef.current) return;
+
+    const videoElement = document.createElement("video-js");
+    videoElement.classList.add("vjs-fill", "vjs-big-play-centered");
+    videoRef.current.appendChild(videoElement);
+
+    const player = videojs(videoElement, {
+      autoplay,
+      muted,
+      controls,
+      responsive: true,
+      fluid: true,
+      playbackRates: [0.5, 1, 1.5, 2],
+      poster: poster,
+      sources: [{
+        src: src,
+        type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+      }]
+    });
+
+    playerRef.current = player;
+
+    player.on("ready", () => {
+      console.log("Player is ready");
+    });
+
+    player.on("error", () => {
+      console.error("Player error:", player.error());
+    });
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
+      }
+    };
+  }, [src, poster]);
+
+  if (!src) {
+    return (
+      <div className="relative w-full aspect-video bg-[#141414] rounded-2xl border border-[#222] flex items-center justify-center">
+        <div className="text-center p-8">
+          <div className="w-20 h-20 rounded-full bg-[#222] flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-white mb-2">Stream Not Available</h3>
+          <p className="text-gray-500">This content does not have a stream yet.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
+      <div data-vjs-player ref={videoRef} className="w-full h-full" />
+    </div>
+  );
+}
