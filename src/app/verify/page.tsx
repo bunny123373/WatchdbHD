@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Shield, CheckCircle, Loader2, Play, ArrowRight, AlertCircle } from "lucide-react";
+import { CheckCircle, Loader2, Play, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "@/components/Logo";
 
@@ -125,7 +125,7 @@ function VerifyContent() {
             >
               <div className="text-center mb-5 md:mb-6 lg:mb-8">
                 <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-[#e50914]/10 rounded-full mb-3 md:mb-4">
-                  <Shield className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-[#e50914]" />
+                  <Logo size="md" className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10" />
                 </div>
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 md:mb-2">
                   Ready to watch?
@@ -158,12 +158,8 @@ function VerifyContent() {
               exit={{ opacity: 0, scale: 1.05 }}
               className="w-full max-w-[280px] md:max-w-sm lg:max-w-md text-center"
             >
-              <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mx-auto mb-4 md:mb-5 lg:mb-6">
-                <div className="absolute inset-0 border-4 border-[#e50914]/20 rounded-full" />
-                <div className="absolute inset-0 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">{countdown}</span>
-                </div>
+              <div className="relative w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 mx-auto mb-4 md:mb-5 lg:mb-6 flex items-center justify-center">
+                <Logo size="lg" className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 animate-pulse" />
               </div>
 
               <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-1">
