@@ -187,22 +187,22 @@ function SeriesWatchContent() {
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 to-transparent py-2 sm:py-3 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent">
+        <div className="flex items-center justify-between px-3 py-2">
           <Link
             href={`/series/${String(series._id)}`}
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-white/80 hover:text-white transition-colors"
           >
-            <ChevronLeft className="w-6 h-6" />
-            <span className="hidden sm:inline font-medium">{series.title}</span>
+            <ChevronLeft className="w-5 h-5" />
+            <span className="hidden xs:inline text-sm font-medium">{series.title?.slice(0, 15)}{series.title && series.title.length > 15 ? '...' : ''}</span>
           </Link>
           
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white rounded-sm">
-              S{currentSeason} E{currentEpisode?.episodeNumber}
+          <div className="flex items-center gap-2">
+            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded">
+              S{currentSeason}E{currentEpisode?.episodeNumber}
             </span>
             {currentEpisode?.quality && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-black text-white border border-white/50 rounded-sm">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-black/70 text-white border border-white/30 rounded">
                 {currentEpisode.quality}
               </span>
             )}
@@ -210,7 +210,7 @@ function SeriesWatchContent() {
         </div>
       </div>
 
-      <div className="pt-14 sm:pt-16 pb-8">
+      <div className="pt-10 pb-8">
         <div className="w-full aspect-video bg-black">
           <IframePlayer
             src={currentEpisodeEmbedLink}
