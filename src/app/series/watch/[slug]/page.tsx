@@ -211,7 +211,7 @@ function SeriesWatchContent() {
       </div>
 
       <div className="pt-10 pb-8">
-        <div className="w-full aspect-video bg-black">
+        <div className="w-full aspect-video bg-black mt-1">
           <IframePlayer
             src={currentEpisodeEmbedLink}
             title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
