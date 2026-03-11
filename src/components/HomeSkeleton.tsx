@@ -2,9 +2,35 @@
 
 import Logo from "./Logo";
 
+function SkeletonNavbar() {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-gradient-to-b from-[#141414] to-transparent">
+      <div className="flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-8">
+          <Logo size="md" className="w-8 h-8" />
+          <div className="hidden md:flex items-center gap-6">
+            <div className="w-12 h-4 bg-white/20 rounded animate-pulse" />
+            <div className="w-16 h-4 bg-white/10 rounded animate-pulse" />
+            <div className="w-14 h-4 bg-white/10 rounded animate-pulse" />
+          </div>
+        </div>
+        
+        {/* Right side */}
+        <div className="flex items-center gap-4">
+          <div className="w-5 h-5 bg-white/20 rounded-full animate-pulse" />
+          <div className="w-8 h-8 bg-white/10 rounded-full animate-pulse" />
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 export default function HomeSkeleton() {
   return (
     <div className="min-h-screen bg-[#141414]">
+      <SkeletonNavbar />
+      
       {/* Hero Banner */}
       <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#0a0a0a]">
         {/* Gradient Overlays */}
@@ -18,9 +44,6 @@ export default function HomeSkeleton() {
             WatchDB
           </span>
         </div>
-
-        {/* Top gradient for navbar */}
-        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#141414]/90 to-transparent z-20" />
       </div>
 
       {/* Content Sections */}
