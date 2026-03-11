@@ -104,8 +104,8 @@ function VerifyContent() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(229,9,20,0.15),transparent_50%)]" />
       </div>
 
-      {/* Content - Centered */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full px-3 py-4">
+      {/* Content - Top Centered */}
+      <div className="relative z-10 w-full px-3 pt-8 sm:pt-10 md:pt-12">
         <AnimatePresence mode="wait">
           {step === "idle" && (
             <motion.div
@@ -209,9 +209,9 @@ function VerifyContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen w-full bg-[#141414] overflow-hidden flex flex-col">
+    <div className="min-h-screen w-full bg-[#141414] overflow-hidden">
       <div className="fixed inset-0 bg-gradient-to-b from-black via-[#141414] to-[#141414]" />
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full">
+      <div className="relative z-10 w-full pt-8 sm:pt-10 md:pt-12">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" />
           <p className="text-gray-400 text-xs sm:text-sm">Loading...</p>
