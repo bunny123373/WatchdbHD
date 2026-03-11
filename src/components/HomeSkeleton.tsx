@@ -11,9 +11,12 @@ export default function HomeSkeleton() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/80 via-transparent to-transparent z-10" />
         
-        {/* Logo in center */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Logo size="lg" className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-40" />
+        {/* Logo + Brand Name */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <Logo size="lg" className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-50" />
+          <span className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold text-white/40 tracking-wider">
+            WatchDB
+          </span>
         </div>
 
         {/* Top gradient for navbar */}
