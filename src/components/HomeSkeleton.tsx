@@ -6,7 +6,12 @@ export default function HomeSkeleton() {
   return (
     <div className="animate-pulse">
       {/* Hero Banner Skeleton */}
-      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#1a1a1a]" />
+      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#1a1a1a]">
+        {/* Logo in center of hero */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Logo size="lg" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 opacity-30" />
+        </div>
+      </div>
 
       {/* Genre Filter Skeleton */}
       <div className="lg:hidden px-4 py-3">
