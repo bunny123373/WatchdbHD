@@ -1,15 +1,13 @@
 "use client";
 
-import Logo from "./Logo";
-
 export default function HomeSkeleton() {
   return (
     <div className="animate-pulse">
       {/* Hero Banner Skeleton */}
       <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] min-h-[400px] bg-[#1a1a1a]">
-        {/* Logo in center of hero */}
+        {/* Logo skeleton - pulsing placeholder */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <Logo size="lg" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 opacity-30" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl bg-gradient-to-br from-white/5 to-white/10 animate-pulse" />
         </div>
       </div>
 
