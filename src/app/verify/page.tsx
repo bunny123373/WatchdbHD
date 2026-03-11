@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircle, Loader2, Play, AlertCircle } from "lucide-react";
+import { Play, Loader2, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "@/components/Logo";
 
@@ -12,24 +12,20 @@ const SMARTLINK_URL = "https://www.effectivegatecpm.com/ez0wrxx0zn?key=b166ecee7
 
 function VerifyContent() {
   const [step, setStep] = useState<"idle" | "verifying" | "done">("idle");
-  const [countdown, setCountdown] = useState(5);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const startVerify = () => {
     setStep("verifying");
+    localStorage.setItem("watchdb_verified", "true");
     
     const popup = window.open(SMARTLINK_URL, "_blank");
     if (!popup || popup.closed || typeof popup.closed === "undefined") {
       window.location.href = SMARTLINK_URL;
     }
-    
-    localStorage.setItem("watchdb_verified", "true");
   };
 
   useEffect(() => {
-    let countdownInterval: NodeJS.Timeout;
-
     const handleVerification = () => {
       if (step === "verifying") {
         setStep("done");
@@ -62,35 +58,27 @@ function VerifyContent() {
     };
 
     if (step === "verifying") {
-      countdownInterval = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(countdownInterval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    window.addEventListener("focus", handleVerification);
-    
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible" && step === "verifying") {
+      const timer = setTimeout(() => {
         handleVerification();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    
-    return () => {
-      window.removeEventListener("focus", handleVerification);
-      document.removeEventListener("visibilitychange", handleVisibility);
-      if (countdownInterval) clearInterval(countdownInterval);
-    };
+      }, 3000);
+      
+      window.addEventListener("focus", handleVerification);
+      const handleVisibility = () => {
+        if (document.visibilityState === "visible" && step === "verifying") {
+          handleVerification();
+        }
+      };
+      document.addEventListener("visibilitychange", handleVisibility);
+      
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("focus", handleVerification);
+        document.removeEventListener("visibilitychange", handleVisibility);
+      };
+    }
   }, [step, searchParams, router]);
 
   const getContentTitle = () => {
-    const contentId = searchParams.get("id");
     const contentType = searchParams.get("type");
     if (contentType === "series") return "TV Show";
     if (contentType === "movie") return "Movie";
@@ -98,73 +86,102 @@ function VerifyContent() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#141414] overflow-hidden flex flex-col">
-      {/* Background */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black via-[#141414] to-[#141414]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(229,9,20,0.15),transparent_50%)]" />
+    <div className="min-h-screen w-full bg-black relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-black to-black" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl" />
       </div>
 
-      {/* Content - Centered */}
-      <div className="relative z-10 w-full px-3 pt-8">
+      {/* Top Bar */}
+      <div className="absolute top-0 left-0 right-0 z-20 px-4 py-3 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
+        <Logo size="md" className="w-8 h-8" />
+        <span className="text-white/60 text-xs">Verification Required</span>
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
         <AnimatePresence mode="wait">
           {step === "idle" && (
             <motion.div
               key="idle"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-[260px] sm:max-w-xs"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="w-full max-w-sm text-center"
             >
-              <div className="text-center mb-4 sm:mb-6">
-                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-[#e50914]/10 rounded-full mb-3">
-                  <Logo size="md" className="w-7 h-7 sm:w-8 sm:h-8" />
-                </div>
-                <h1 className="text-lg sm:text-xl font-bold text-white mb-1">
-                  Ready to watch?
-                </h1>
-                <p className="text-gray-400 text-xs sm:text-sm">
-                  Verify to access {getContentTitle()}
-                </p>
-              </div>
-
-              <button
-                onClick={startVerify}
-                className="w-full flex items-center justify-center gap-2 bg-[#e50914] hover:bg-[#f40612] text-white font-bold py-2.5 sm:py-3 px-4 rounded-md transition-all text-sm"
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", duration: 0.8 }}
+                className="mb-6"
               >
-                <Play className="w-4 h-4 fill-current" />
-                <span>Verify & Watch</span>
-              </button>
+                <Logo size="lg" className="w-20 h-20 mx-auto" />
+              </motion.div>
+              
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl sm:text-3xl font-bold text-white mb-2"
+              >
+                Ready to Watch?
+              </motion.h1>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-400 text-sm mb-8"
+              >
+                Verify to access {getContentTitle()}
+              </motion.p>
 
-              <div className="mt-3 flex items-center justify-center gap-2 text-gray-500 text-[10px] sm:text-xs">
-                <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                <span>One-time verification</span>
-              </div>
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={startVerify}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#e50914] hover:bg-[#f40612] text-white font-bold py-3 px-8 rounded-sm transition-all"
+              >
+                <Play className="w-5 h-5 fill-current" />
+                <span>Verify Now</span>
+              </motion.button>
+
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-gray-500 text-xs mt-4"
+              >
+                One-time verification • Keeps content free
+              </motion.p>
             </motion.div>
           )}
 
           {step === "verifying" && (
             <motion.div
               key="verifying"
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              className="w-full max-w-[260px] sm:max-w-xs text-center"
+              className="w-full max-w-sm text-center"
             >
-              <div className="flex items-center justify-center mb-4">
-                <Logo size="lg" className="w-12 h-12 sm:w-14 sm:h-14 animate-pulse" />
+              <div className="mb-6">
+                <div className="w-16 h-16 mx-auto border-4 border-[#e50914] border-t-transparent rounded-full animate-spin" />
               </div>
-
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
+              
+              <h2 className="text-xl font-bold text-white mb-2">
                 Verifying...
               </h2>
-              <p className="text-gray-400 text-xs sm:text-sm mb-3">
+              <p className="text-gray-400 text-sm mb-4">
                 Please complete the verification
               </p>
-
-              <div className="flex items-center justify-center gap-2 text-gray-500 text-[10px] sm:text-xs">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span>Opening verification</span>
-              </div>
+              <p className="text-gray-500 text-xs">
+                Opening verification window
+              </p>
             </motion.div>
           )}
 
@@ -173,25 +190,25 @@ function VerifyContent() {
               key="done"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-[260px] sm:max-w-xs text-center"
+              className="w-full max-w-sm text-center"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", duration: 0.6 }}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4"
+                className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6"
               >
-                <CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-green-500" />
+                <Check className="w-8 h-8 text-green-500" />
               </motion.div>
 
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1">
-                You're all set!
+              <h2 className="text-xl font-bold text-white mb-2">
+                Verified!
               </h2>
-              <p className="text-gray-400 text-xs sm:text-sm mb-4">
+              <p className="text-gray-400 text-sm">
                 Redirecting...
               </p>
 
-              <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
+              <div className="mt-6 h-1 bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
@@ -209,14 +226,8 @@ function VerifyContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen w-full bg-[#141414] overflow-hidden">
-      <div className="fixed inset-0 bg-gradient-to-b from-black via-[#141414] to-[#141414]" />
-      <div className="relative z-10 w-full px-3 pt-8">
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400 text-xs sm:text-sm">Loading...</p>
-        </div>
-      </div>
+    <div className="min-h-screen w-full bg-black flex items-center justify-center">
+      <div className="w-10 h-10 border-3 border-[#e50914] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
