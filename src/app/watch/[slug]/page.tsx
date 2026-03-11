@@ -97,31 +97,33 @@ function WatchMovieContent() {
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent">
-        <div className="flex items-center justify-between px-3 py-2">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/95 via-black/80 to-transparent">
+        <div className="flex items-center justify-between px-3 py-1.5">
           <Link
             href={`/movie/${String(movie._id)}`}
-            className="flex items-center gap-1 text-white/80 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="hidden xs:inline text-sm font-medium">{movie.title?.slice(0, 15)}{movie.title && movie.title.length > 15 ? '...' : ''}</span>
+            <span className="hidden sm:inline text-xs font-medium">{movie.title?.slice(0, 12)}{movie.title && movie.title.length > 12 ? '...' : ''}</span>
           </Link>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {movie.quality && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-black/70 text-white border border-white/30 rounded">
+              <span className="px-1.5 py-0.5 text-[9px] font-bold bg-white/10 text-white rounded">
                 {movie.quality}
               </span>
             )}
-            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded">
-              MOVIE
+            <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#e50914] text-white rounded">
+              HD
             </span>
           </div>
         </div>
       </div>
 
-      <div className="pt-10 pb-8">
-        <div className="w-full aspect-video bg-black mt-1">
+      {/* Player */}
+      <div className="pt-10">
+        <div className="w-full aspect-video bg-black">
           {movie.hlsUrl ? (
             <HlsPlayer src={movie.hlsUrl} title={movie.title} />
           ) : (
@@ -129,63 +131,66 @@ function WatchMovieContent() {
           )}
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Info Section */}
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mb-8"
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">{movie.title}</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">{movie.title}</h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-gray-400 mb-6">
-              {movie.year && (
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4" />
-                  {movie.year}
-                </span>
-              )}
-              {movie.language && (
-                <span className="flex items-center gap-1.5">
-                  <Globe className="w-4 h-4" />
-                  {movie.language}
-                </span>
-              )}
-              {movie.rating && (
-                <span className="flex items-center gap-1.5 text-yellow-500">
-                  ★ {movie.rating}
-                </span>
-              )}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-400 mb-4">
+              {movie.year && <span>{movie.year}</span>}
+              {movie.language && <span className="flex items-center gap-1">{movie.language}</span>}
+              {movie.rating && <span className="text-yellow-500">★ {movie.rating}</span>}
             </div>
 
-            {movie.description && (
-              <p className="text-gray-300 leading-relaxed max-w-3xl mb-6">{movie.description}</p>
-            )}
-
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {movie.embedIframeLink && (
                 <button
                   onClick={() => setActiveServer(1)}
-                  className={`inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-md transition-colors ${
-                    activeServer === 1
-                      ? "bg-[#e50914] hover:bg-[#f40612] text-white"
-                      : "bg-gray-700 hover:bg-gray-600 text-white"
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors ${
+                    activeServer === 1 ? "bg-[#e50914] text-white" : "bg-white/10 text-white/80 hover:bg-white/20"
                   }`}
                 >
-                  <Play className="w-4 h-4" />
                   Server 1
                 </button>
               )}
               {movie.embedIframeLink2 && (
                 <button
-                  onClick={() => setActiveServer(activeServer === 2 ? 1 : 2)}
-                  className={`inline-flex items-center gap-2 px-5 py-2.5 font-semibold rounded-md transition-colors ${
-                    activeServer === 2
-                      ? "bg-yellow-500 hover:bg-yellow-400 text-black"
-                      : "bg-gray-700 hover:bg-gray-600 text-white"
+                  onClick={() => setActiveServer(2)}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors ${
+                    activeServer === 2 ? "bg-[#e50914] text-white" : "bg-white/10 text-white/80 hover:bg-white/20"
                   }`}
                 >
-                  <Play className="w-4 h-4" />
+                  Server 2
+                </button>
+              )}
+            </div>
+
+            {movie.description && (
+              <p className="text-gray-300 leading-relaxed max-w-3xl mb-4">{movie.description}</p>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+              {movie.embedIframeLink && (
+                <button
+                  onClick={() => setActiveServer(1)}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors ${
+                    activeServer === 1 ? "bg-[#e50914] text-white" : "bg-white/10 text-white/80 hover:bg-white/20"
+                  }`}
+                >
+                  Server 1
+                </button>
+              )}
+              {movie.embedIframeLink2 && (
+                <button
+                  onClick={() => setActiveServer(2)}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors ${
+                    activeServer === 2 ? "bg-[#e50914] text-white" : "bg-white/10 text-white/80 hover:bg-white/20"
+                  }`}
+                >
                   Server 2
                 </button>
               )}
@@ -194,9 +199,8 @@ function WatchMovieContent() {
                   href={movieDownloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-colors"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 hover:bg-white/20 text-white rounded text-xs sm:text-sm font-medium transition-colors"
                 >
-                  <Download className="w-4 h-4" />
                   Download
                 </a>
               )}
@@ -205,7 +209,7 @@ function WatchMovieContent() {
         </div>
 
         {relatedMovies.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pb-6">
             <ContentGrid title="More Movies" items={relatedMovies} isNetflixStyle />
           </div>
         )}
