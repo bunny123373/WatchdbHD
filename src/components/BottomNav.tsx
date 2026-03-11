@@ -41,8 +41,8 @@ function BottomNavContent() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#141414] border-t border-zinc-800 z-50 lg:hidden">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#141414] border-t border-zinc-800 z-50 lg:hidden w-full">
+      <div className="flex items-center justify-around h-16 max-w-full">
         <Link
           href="/"
           className={`flex flex-col items-center justify-center w-full h-full ${
@@ -89,8 +89,8 @@ function BottomNavContent() {
 
 function BottomNavFallback() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#141414] border-t border-zinc-800 z-50 lg:hidden">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#141414] border-t border-zinc-800 z-50 lg:hidden w-full">
+      <div className="flex items-center justify-around h-16 max-w-full">
         <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
           <Home className="w-6 h-6" />
           <span className="text-xs mt-1">Home</span>

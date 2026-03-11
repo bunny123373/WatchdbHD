@@ -83,11 +83,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased overflow-x-hidden`}>
         <ReduxProviderClient>
           <LanguageProvider>
             <MobileNavbar />
-            <main className="min-h-screen pb-20 pt-14 lg:pt-16 overflow-x-hidden">
+            <main className="min-h-screen pb-20 lg:pb-0 pt-14 lg:pt-16 w-full max-w-full overflow-x-hidden">
               {children}
             </main>
           </LanguageProvider>

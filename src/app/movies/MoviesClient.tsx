@@ -56,7 +56,7 @@ export default function MoviesClient() {
   return (
     <div className="min-h-screen bg-[#141414]">
       <Navbar />
-      <div className="pt-20 pb-8">
+      <div className="pt-20 pb-24 lg:pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-white">Movies</h1>

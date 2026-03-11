@@ -4,7 +4,7 @@ export default function DownloadApp() {
   const apkUrl = "/TeluguDB.apk";
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 pt-20 pb-24 lg:pt-16 lg:pb-4">
       <div className="max-w-md w-full bg-zinc-900 rounded-2xl p-8 text-center">
         <div className="w-24 h-24 bg-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <Download className="w-12 h-12 text-white" />

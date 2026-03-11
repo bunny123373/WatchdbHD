@@ -8,6 +8,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  max-width: 100vw;
 }
 
 html {
@@ -27,15 +28,16 @@ body {
 }
 
 /* Fix for all containers */
-div, section, article, header, footer, nav, main {
+div, section, article, header, footer, nav, main, ul, ol, li, p, h1, h2, h3, h4, h5, h6 {
   max-width: 100%;
   overflow-x: hidden;
 }
 
 /* Fix for content overflow */
-img, video, iframe, canvas, svg {
+img, video, iframe, canvas, svg, picture {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
 /* Hide horizontal scrollbar but allow scrolling */

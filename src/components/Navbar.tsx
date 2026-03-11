@@ -116,11 +116,11 @@ export default function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 hidden lg:block",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 hidden lg:block w-full",
         isScrolled || isSearchActive ? "bg-[#141414]" : "bg-gradient-to-b from-black/90 to-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+      <div className="max-w-full mx-3 sm:mx-4 lg:mx-6">
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
           {/* Left - Logo & Nav Links */}
           <div className="flex items-center gap-4 sm:gap-6 md:gap-8">

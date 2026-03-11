@@ -52,7 +52,7 @@ export default function RequestPage() {
     <div className="min-h-screen bg-[#141414]">
       <Navbar />
       
-      <div className="pt-24 pb-12 px-4">
+      <div className="pt-20 pb-24 lg:pb-12 px-4">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold text-white mb-2">Request Content</h1>
           <p className="text-gray-400 mb-8">
