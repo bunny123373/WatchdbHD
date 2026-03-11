@@ -104,13 +104,8 @@ function VerifyContent() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(229,9,20,0.15),transparent_50%)]" />
       </div>
 
-      {/* Header - Logo only */}
-      <div className="relative z-10 pt-2 md:pt-3 lg:pt-4 flex justify-center">
-        <Logo size="sm" className="w-5 h-5 md:w-6 md:h-6" />
-      </div>
-
       {/* Content - Centered */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-40px)] px-3 md:px-4 lg:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 md:px-4 lg:px-6">
         <AnimatePresence mode="wait">
           {step === "idle" && (
             <motion.div
@@ -216,10 +211,7 @@ function Loading() {
   return (
     <div className="min-h-screen bg-[#141414] overflow-hidden">
       <div className="fixed inset-0 bg-gradient-to-b from-black via-[#141414] to-[#141414]" />
-      <div className="relative z-10 pt-2 md:pt-3 lg:pt-4 flex justify-center">
-        <Logo size="sm" className="w-5 h-5 md:w-6 md:h-6" />
-      </div>
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-40px)]">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-2 md:gap-3">
           <div className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 border-2 md:border-[3px] border-[#e50914] border-t-transparent rounded-full animate-spin" />
           <p className="text-gray-400 text-xs md:text-sm">Loading...</p>
