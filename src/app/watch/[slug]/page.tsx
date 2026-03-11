@@ -96,25 +96,25 @@ function WatchMovieContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414]">
-      {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/95 via-black/80 to-transparent">
-        <div className="flex items-center justify-between px-3 py-1.5">
+    <div className="min-h-screen bg-black">
+      {/* Fixed Header - Netflix Style */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
+        <div className="flex items-center justify-between px-3 py-2">
           <Link
             href={`/movie/${String(movie._id)}`}
-            className="flex items-center gap-1 text-white/70 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="hidden sm:inline text-xs font-medium">{movie.title?.slice(0, 12)}{movie.title && movie.title.length > 12 ? '...' : ''}</span>
+            <span className="text-xs font-medium hidden sm:block">{movie.title?.slice(0, 15)}{movie.title && movie.title.length > 15 ? '...' : ''}</span>
           </Link>
           
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {movie.quality && (
-              <span className="px-1.5 py-0.5 text-[9px] font-bold bg-white/10 text-white rounded">
+              <span className="px-2 py-0.5 text-[10px] font-bold bg-white/20 text-white rounded-sm">
                 {movie.quality}
               </span>
             )}
-            <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#e50914] text-white rounded">
+            <span className="px-2 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded-sm">
               HD
             </span>
           </div>
@@ -122,7 +122,7 @@ function WatchMovieContent() {
       </div>
 
       {/* Player */}
-      <div className="pt-10">
+      <div className="pt-11">
         <div className="w-full aspect-video bg-black">
           {movie.hlsUrl ? (
             <HlsPlayer src={movie.hlsUrl} title={movie.title} />
