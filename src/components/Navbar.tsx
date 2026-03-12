@@ -115,13 +115,15 @@ export default function Navbar() {
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full",
-          isScrolled || isSearchActive || isMenuOpen ? "bg-[#141414] border-b border-white/5" : "bg-gradient-to-b from-black/90 to-transparent"
+          isScrolled || isSearchActive || isMenuOpen
+            ? "bg-[rgba(10,10,10,0.92)] border-b border-white/10 backdrop-blur-xl"
+            : "bg-gradient-to-b from-black via-black/80 to-transparent"
         )}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-1 sm:gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Logo size="md" className="w-8 h-8" />
               <span className="text-lg sm:text-xl font-bold text-[#e50914] tracking-tight">
                 WATCH<span className="text-white">DB</span>
@@ -129,16 +131,16 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-5 lg:gap-6">
+            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-white/5 hover:text-white",
+                    "rounded-full px-3.5 py-2 text-sm font-medium transition-all",
                     pathname === link.href || (pathname === "/" && link.href === "/")
-                      ? "bg-white/10 text-white"
-                      : "text-gray-400"
+                      ? "bg-white text-black shadow-[0_8px_24px_rgba(255,255,255,0.08)]"
+                      : "text-gray-400 hover:bg-white/5 hover:text-white"
                   )}
                 >
                   {link.label}
@@ -147,7 +149,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center gap-1.5 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               {/* Search */}
               <div ref={searchRef} className="relative">
                 <div
@@ -160,6 +162,7 @@ export default function Navbar() {
                   <button
                     onClick={() => setIsSearchActive(true)}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                    aria-label="Open search"
                   >
                     <Search className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </button>
@@ -227,14 +230,14 @@ export default function Navbar() {
               </div>
 
               {/* Language */}
-              <div className="hidden sm:block">
+              <div className="hidden sm:block rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
                 <LanguageSelector />
               </div>
 
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 hover:bg-white/10 rounded-xl transition-colors md:hidden"
+                className="p-2 hover:bg-white/10 rounded-full border border-white/10 bg-white/[0.03] transition-colors md:hidden"
                 aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
                 {isMenuOpen ? (
@@ -250,32 +253,36 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 top-14 z-40 bg-black/95 backdrop-blur-sm">
-          <div className="px-4 py-6 space-y-4">
+        <div className="fixed inset-0 top-14 z-40 bg-black/92 backdrop-blur-xl">
+          <div className="mx-auto max-w-lg px-4 py-6 space-y-4">
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-3">
             {/* Mobile Nav Links */}
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                    pathname === link.href || (pathname === "/" && link.href === "/")
-                      ? "bg-red-600/20 text-red-500"
-                      : "text-gray-300 hover:bg-white/10"
-                  )}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{link.label}</span>
-                </Link>
-              );
-            })}
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors",
+                      pathname === link.href || (pathname === "/" && link.href === "/")
+                        ? "bg-white text-black"
+                        : "text-gray-300 hover:bg-white/8"
+                    )}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-medium">{link.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
 
             {/* Mobile Language */}
-            <div className="pt-4 border-t border-white/10">
-              <p className="text-gray-400 text-sm px-4 mb-2">Language</p>
-              <LanguageSelector />
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-gray-400 text-sm mb-3">Language</p>
+              <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
+                <LanguageSelector />
+              </div>
             </div>
           </div>
         </div>

@@ -313,16 +313,43 @@ function SeriesWatchContent() {
           </motion.div>
 
           <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">About This Episode</h3>
-              <p className="leading-relaxed text-gray-300">
-                {currentEpisode?.episodeDescription || currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-              </p>
-              {series.description && (
-                <p className="mt-4 border-t border-white/5 pt-4 text-sm leading-relaxed text-gray-400">
-                  {series.description}
+            <div className="space-y-4">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">About This Episode</h3>
+                <p className="leading-relaxed text-gray-300">
+                  {currentEpisode?.episodeDescription || currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
                 </p>
-              )}
+                {series.description && (
+                  <p className="mt-4 border-t border-white/5 pt-4 text-sm leading-relaxed text-gray-400">
+                    {series.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Playback</h3>
+                  <div className="space-y-3 text-sm text-gray-300">
+                    <div className="flex items-start gap-3">
+                      <Tv className="mt-0.5 h-4 w-4 text-red-400" />
+                      <p>Use Server 1 first, then switch only if the current source stalls or fails.</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="mt-0.5 h-4 w-4 text-red-400" />
+                      <p>Open episodes below the player to stay in the same flow, especially on mobile.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.1),rgba(255,255,255,0.02))] p-5 sm:p-6">
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-white">Series Context</h3>
+                  <div className="space-y-2 text-sm text-gray-300">
+                    <p>{series.title}</p>
+                    <p>Season {currentSeason}</p>
+                    <p>{currentSeasonData?.episodes.length || 0} episodes in this season</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -348,15 +375,13 @@ function SeriesWatchContent() {
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.1),rgba(255,255,255,0.02))] p-5 sm:p-6">
-                <div className="mb-3 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-white" />
-                  <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white">Responsive Notes</h3>
-                </div>
-                <div className="space-y-2 text-sm text-gray-300">
-                  <p>Episode controls stay grouped under the player for one-thumb use on phones.</p>
-                  <p>The episode browser expands below as a drawer-like section and remains scan-friendly on larger screens.</p>
-                </div>
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Next Up</h3>
+                <p className="text-sm leading-relaxed text-gray-300">
+                  {autoPlayNext
+                    ? "When enabled, the player can continue your current season flow more smoothly after each episode."
+                    : "Auto-play is off. You’ll manually choose the next episode from the browser below."}
+                </p>
               </div>
             </div>
           </div>
