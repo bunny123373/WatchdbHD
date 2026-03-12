@@ -139,19 +139,57 @@ img, video, iframe, canvas, svg, picture {
 }
 
 /* Animation utilities */
-@keyframes shimmer {
+@keyframes skeleton-sheen {
   0% {
-    background-position: -200% 0;
+    transform: translateX(-140%);
   }
   100% {
-    background-position: 200% 0;
+    transform: translateX(140%);
   }
 }
 
+.netflix-skeleton {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    linear-gradient(90deg, #1b1b1b 0%, #242424 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.netflix-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-140%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 35%,
+    rgba(229, 9, 20, 0.16) 50%,
+    rgba(255, 255, 255, 0.04) 65%,
+    transparent 100%
+  );
+  animation: skeleton-sheen 1.8s ease-in-out infinite;
+}
+
 .animate-shimmer {
-  background: linear-gradient(90deg, #0E1015 25%, #1F232D 50%, #0E1015 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-140%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  animation: skeleton-sheen 1.8s ease-in-out infinite;
 }
 
 /* Focus styles */
@@ -183,19 +221,6 @@ a:focus-visible, div[role="link"]:focus-visible {
   }
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
 .animate-slide-down {
   animation: slide-down 0.3s ease-out;
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite;
 }
