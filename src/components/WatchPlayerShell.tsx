@@ -22,6 +22,7 @@ export default function WatchPlayerShell({
   return (
     <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#111111] shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(229,9,20,0.18),_transparent_36%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent" />
       <div className="relative">
         <div className="border-b border-white/10 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -35,7 +36,7 @@ export default function WatchPlayerShell({
               {subtitle && <p className="mt-2 max-w-3xl text-sm text-gray-400 sm:text-base">{subtitle}</p>}
             </div>
 
-            {badges && <div className="flex flex-wrap items-center gap-2 lg:justify-end">{badges}</div>}
+            {badges && <div className="flex flex-wrap items-center gap-2 lg:max-w-[42%] lg:justify-end">{badges}</div>}
           </div>
         </div>
 
@@ -45,7 +46,7 @@ export default function WatchPlayerShell({
 
         {actions && (
           <div className="border-t border-white/10 px-4 py-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap gap-3">{actions}</div>
+            <div className="flex flex-wrap items-stretch gap-3">{actions}</div>
           </div>
         )}
       </div>

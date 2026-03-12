@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3 } from "lucide-react";
+import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3, ListVideo, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
 import Footer from "@/components/Footer";
@@ -184,7 +184,7 @@ function SeriesWatchContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
         <div className="flex items-center justify-between px-3 py-2">
           <Link
@@ -309,14 +309,71 @@ function SeriesWatchContent() {
             </WatchPlayerShell>
           </motion.div>
 
+          <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">About This Episode</h3>
+              <p className="leading-relaxed text-gray-300">
+                {currentEpisode?.episodeDescription || currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
+              </p>
+              {series.description && (
+                <p className="mt-4 border-t border-white/5 pt-4 text-sm leading-relaxed text-gray-400">
+                  {series.description}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Watch Status</h3>
+                <div className="space-y-3 text-sm text-gray-300">
+                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                    <span className="text-gray-500">Season</span>
+                    <span>{currentSeason}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                    <span className="text-gray-500">Episode</span>
+                    <span>{currentEpisode?.episodeNumber}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                    <span className="text-gray-500">Watched</span>
+                    <span>{getWatchedCountForSeason(currentSeason)}/{currentSeasonData?.episodes.length || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-gray-500">Auto-play</span>
+                    <span>{autoPlayNext ? "Enabled" : "Disabled"}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.1),rgba(255,255,255,0.02))] p-5 sm:p-6">
+                <div className="mb-3 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-white">Responsive Notes</h3>
+                </div>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p>Episode controls stay grouped under the player for one-thumb use on phones.</p>
+                  <p>The episode browser expands below as a drawer-like section and remains scan-friendly on larger screens.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <AnimatePresence>
             {showEpisodeList && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="mb-8"
+                className="mb-8 rounded-[28px] border border-white/10 bg-white/[0.03] p-4 sm:p-5 lg:p-6"
               >
+                <div className="mb-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <ListVideo className="h-4 w-4 text-red-400" />
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Episode Browser</h3>
+                  </div>
+                  <span className="text-xs text-gray-500">Season {currentSeason}</span>
+                </div>
+
                 <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide lg:mb-6">
                   {series.seasons?.map((season) => (
                     <button

@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Download, Calendar, Globe, ChevronLeft, Star, Clapperboard, BadgeInfo } from "lucide-react";
+import { Download, Calendar, Globe, ChevronLeft, Star, Clapperboard, BadgeInfo, Clock3, Film } from "lucide-react";
 import { motion } from "framer-motion";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
@@ -87,7 +87,7 @@ function WatchMovieContent() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 to-transparent">
         <div className="flex items-center justify-between px-4 py-3">
@@ -221,31 +221,87 @@ function WatchMovieContent() {
             )}
           </WatchPlayerShell>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-            {movie.description && (
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Synopsis</h3>
-                <p className="leading-relaxed text-gray-300">{movie.description}</p>
-              </div>
-            )}
+          <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+            <div className="space-y-4">
+              {movie.description && (
+                <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Synopsis</h3>
+                  <p className="leading-relaxed text-gray-300">{movie.description}</p>
+                </div>
+              )}
 
-            {movie.tags && movie.tags.length > 0 && (
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Playback</h3>
+                  <div className="space-y-3 text-sm text-gray-300">
+                    <div className="flex items-start gap-3">
+                      <Film className="mt-0.5 h-4 w-4 text-red-400" />
+                      <p>{movie.hlsUrl ? "Adaptive HLS playback is available for smoother streaming." : "Embed playback is active. Switch servers if one source stalls."}</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Clock3 className="mt-0.5 h-4 w-4 text-red-400" />
+                      <p>Use full screen on mobile for the cleanest viewing layout and better touch controls.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {movie.tags && movie.tags.length > 0 && (
+                  <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {movie.tags.map((tag, index) => (
+                        <span key={index} className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {movie.tags.map((tag, index) => (
-                    <span key={index} className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-gray-300">
-                      {tag}
-                    </span>
-                  ))}
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Details</h3>
+                <div className="space-y-3 text-sm text-gray-300">
+                  {movie.year && (
+                    <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                      <span className="text-gray-500">Release</span>
+                      <span>{movie.year}</span>
+                    </div>
+                  )}
+                  {movie.language && (
+                    <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                      <span className="text-gray-500">Language</span>
+                      <span>{movie.language}</span>
+                    </div>
+                  )}
+                  {movie.quality && (
+                    <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                      <span className="text-gray-500">Quality</span>
+                      <span>{movie.quality}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-gray-500">Source</span>
+                    <span>{movie.hlsUrl ? "HLS Stream" : "Embed Player"}</span>
+                  </div>
                 </div>
               </div>
-            )}
+
+              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.1),rgba(255,255,255,0.02))] p-5 sm:p-6">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-white">Viewing Tips</h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p>Use `Server 1` first, then switch only if playback buffers or the source fails.</p>
+                  <p>If download is available, it stays in the action row for quick access on mobile.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
 
         {relatedMovies.length > 0 && (
-          <div className="mt-10">
+          <div className="mt-10 rounded-[28px] border border-white/10 bg-white/[0.02] py-4">
             <ContentGrid title="More Movies" items={relatedMovies} isNetflixStyle />
           </div>
         )}
