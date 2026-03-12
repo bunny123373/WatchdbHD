@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAdminAuthenticated } from "@/redux/slices/uiSlice";
 import { motion } from "framer-motion";
@@ -16,9 +16,44 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [adminKey, setAdminKey] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const dispatch = useAppDispatch();
   const { isAdminAuthenticated } = useAppSelector((state) => state.ui);
-  const router = useRouter();
+
+  useEffect(() => {
+    const storedKey = sessionStorage.getItem("adminKey");
+
+    if (!storedKey || isAdminAuthenticated) {
+      setIsCheckingSession(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    fetch("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: storedKey }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success) {
+          dispatch(setAdminAuthenticated(true));
+        } else {
+          sessionStorage.removeItem("adminKey");
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsCheckingSession(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch, isAdminAuthenticated]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,95 +82,120 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   };
 
-  if (typeof window !== "undefined") {
-    const storedKey = sessionStorage.getItem("adminKey");
-    if (storedKey && !isAdminAuthenticated) {
-      fetch("/api/admin/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: storedKey }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            dispatch(setAdminAuthenticated(true));
-          } else {
-            sessionStorage.removeItem("adminKey");
-          }
-        });
-    }
+  if (isCheckingSession && !isAdminAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#141414]">
+        <div className="flex min-h-screen items-center justify-center px-4">
+          <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white">
+            <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+            Checking admin session...
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <div className="fixed inset-0 bg-gradient-to-b from-black via-[#0d0d0d] to-[#141414]">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(229,9,20,0.1),transparent_50%)]" />
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.14),transparent_24%),linear-gradient(180deg,#050505_0%,#0d0d0d_45%,#141414_100%)]">
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.02)_25%,transparent_55%)]" />
         </div>
 
-        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="relative z-10 flex min-h-screen items-center justify-center p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-sm"
+            className="grid w-full max-w-5xl overflow-hidden rounded-[32px] border border-white/10 bg-[#101010]/90 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur xl:grid-cols-[1fr_460px]"
           >
-            <div className="text-center mb-8">
-              <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                className="inline-flex items-center justify-center mb-4"
-              >
-                <Logo size="lg" className="w-12 h-12" />
-              </motion.div>
-              <h1 className="text-3xl font-bold text-white">
-                Admin Panel
-              </h1>
-              <p className="text-gray-400 mt-2">Enter your credentials to continue</p>
+            <div className="hidden xl:flex flex-col justify-between border-r border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(229,9,20,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)] p-10">
+              <div>
+                <div className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                  <Logo size="lg" className="h-8 w-8" />
+                </div>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-red-400">WatchDB Control Room</p>
+                <h1 className="max-w-sm text-4xl font-bold text-white">Manage uploads, requests, reports, and live content in one place.</h1>
+                <p className="mt-4 max-w-md text-sm leading-6 text-gray-400">
+                  This admin surface is optimized for quick moderation and content operations across desktop and mobile devices.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 text-red-400" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Secure Access</p>
+                    <p className="mt-1 text-sm text-gray-400">Session-based verification keeps access restricted to approved users.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <Sparkles className="mt-0.5 h-5 w-5 text-red-400" />
+                  <div>
+                    <p className="text-sm font-medium text-white">Responsive Workspace</p>
+                    <p className="mt-1 text-sm text-gray-400">The admin dashboard adapts cleanly for phones, tablets, and wider screens.</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                <input
-                  type="password"
-                  value={adminKey}
-                  onChange={(e) => setAdminKey(e.target.value)}
-                  placeholder="Admin Key"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#e50914] focus:bg-white/10 transition-all"
-                />
-              </div>
-              
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-red-500 text-sm text-center"
+            <div className="p-5 sm:p-8 xl:p-10">
+              <div className="mb-8 text-center xl:text-left">
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  className="mb-4 inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 xl:hidden"
                 >
-                  {error}
-                </motion.p>
-              )}
-              
-              <motion.button 
-                type="submit" 
-                disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#e50914] hover:bg-[#f40612] text-white font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Authenticating...</span>
-                  </>
-                ) : (
-                  <span>Sign In</span>
-                )}
-              </motion.button>
-            </form>
+                  <Logo size="lg" className="h-8 w-8" />
+                </motion.div>
+                <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
+                <p className="mt-2 text-gray-400">Enter your admin key to continue</p>
+              </div>
 
-            <p className="text-gray-500 text-xs text-center mt-6">
-              Restricted access. Authorized personnel only.
-            </p>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
+                  <input
+                    type="password"
+                    value={adminKey}
+                    onChange={(e) => setAdminKey(e.target.value)}
+                    placeholder="Admin Key"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 py-4 pl-12 pr-4 text-white placeholder-gray-500 transition-all focus:border-[#e50914] focus:bg-white/10 focus:outline-none"
+                  />
+                </div>
+
+                {error && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-center text-red-400"
+                  >
+                    {error}
+                  </motion.p>
+                )}
+
+                <motion.button
+                  type="submit"
+                  disabled={isLoading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#e50914] py-4 font-semibold text-white transition-colors hover:bg-[#f40612] disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Authenticating...</span>
+                    </>
+                  ) : (
+                    <span>Sign In</span>
+                  )}
+                </motion.button>
+              </form>
+
+              <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-sm font-medium text-white">Restricted access</p>
+                <p className="mt-1 text-sm text-gray-400">Authorized personnel only. Session remains stored in this browser until logout.</p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -143,8 +203,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414]">
-      <main className="p-4 md:p-6 lg:p-8">{children}</main>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.1),_transparent_20%),linear-gradient(180deg,_#0a0a0a_0%,_#121212_52%,_#141414_100%)]">
+      <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );
 }

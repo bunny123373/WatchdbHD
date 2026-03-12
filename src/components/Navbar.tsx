@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, Bell, Menu, X, Film, Tv, Home, Loader2, Star, Calendar, Globe } from "lucide-react";
+import { Search, Menu, X, Film, Tv, Home, Loader2, Star, Calendar } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setSearch } from "@/redux/slices/uiSlice";
 import { cn } from "@/utils/cn";
@@ -45,7 +45,8 @@ export default function Navbar() {
   }, []);
 
   const isAdminRoute = pathname.startsWith("/admin");
-  if (isAdminRoute) return null;
+  const isPlayerRoute = pathname.startsWith("/watch/") || pathname.startsWith("/series/watch/");
+  if (isAdminRoute || isPlayerRoute) return null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,21 +107,7 @@ export default function Navbar() {
   }, [searchInput]);
 
   if (!mounted) {
-    return (
-      <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-[#141414] border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-zinc-800 rounded animate-pulse" />
-              <div className="w-20 h-6 bg-zinc-800 rounded animate-pulse hidden sm:block" />
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-zinc-800 rounded-full animate-pulse" />
-            </div>
-          </div>
-        </div>
-      </nav>
-    );
+    return null;
   }
 
   return (
@@ -142,15 +129,15 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-5 lg:gap-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-white",
+                    "rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-white/5 hover:text-white",
                     pathname === link.href || (pathname === "/" && link.href === "/")
-                      ? "text-white"
+                      ? "bg-white/10 text-white"
                       : "text-gray-400"
                   )}
                 >
@@ -160,13 +147,13 @@ export default function Navbar() {
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-3">
               {/* Search */}
               <div ref={searchRef} className="relative">
                 <div
                   className={cn(
                     "flex items-center transition-all duration-300 rounded-full",
-                    isSearchActive ? "bg-[#141414] border border-white/30" : "hover:bg-white/10",
+                    isSearchActive ? "bg-[#141414] border border-white/30 shadow-[0_8px_24px_rgba(0,0,0,0.28)]" : "hover:bg-white/10",
                     isSearchActive ? "w-48 sm:w-56 md:w-64" : "w-8 sm:w-10"
                   )}
                 >
@@ -247,7 +234,8 @@ export default function Navbar() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-white/10 rounded-xl transition-colors md:hidden"
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
                 {isMenuOpen ? (
                   <X className="w-6 h-6 text-white" />

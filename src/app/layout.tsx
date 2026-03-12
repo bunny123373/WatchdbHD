@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG } from "@/utils/constants";
-import Navbar from "@/components/Navbar";
+import AppChrome from "@/components/AppChrome";
 import ReduxProviderClient from "@/components/ReduxProviderClient";
 import { LanguageProvider } from "@/context/LanguageContext";
 
@@ -85,10 +85,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased overflow-x-hidden`}>
         <ReduxProviderClient>
           <LanguageProvider>
-            <Navbar />
-            <main className="min-h-screen pt-14 lg:pt-16 w-full max-w-full overflow-x-hidden">
-              {children}
-            </main>
+            <AppChrome>{children}</AppChrome>
           </LanguageProvider>
         </ReduxProviderClient>
       </body>

@@ -185,25 +185,28 @@ function SeriesWatchContent() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
-        <div className="flex items-center justify-between px-3 py-2">
+      <div className="fixed left-0 right-0 top-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
+        <div
+          className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8"
+          style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
+        >
           <Link
             href={`/series/${String(series._id)}`}
-            className="flex items-center gap-2 text-white/80 transition-colors hover:text-white"
+            className="inline-flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 text-white/90 backdrop-blur transition-colors hover:border-white/20 hover:bg-black/45 hover:text-white"
           >
-            <ChevronLeft className="w-5 h-5" />
-            <span className="hidden text-xs font-medium sm:block">
+            <ChevronLeft className="h-5 w-5 flex-shrink-0" />
+            <span className="max-w-[140px] truncate text-xs font-medium sm:max-w-none sm:text-sm">
               {series.title?.slice(0, 15)}
               {series.title && series.title.length > 15 ? "..." : ""}
             </span>
           </Link>
 
           <div className="flex items-center gap-2">
-            <span className="rounded-sm bg-[#e50914] px-2 py-0.5 text-[10px] font-bold text-white">
+            <span className="rounded-full bg-[#e50914] px-2.5 py-1 text-[11px] font-semibold text-white shadow-[0_8px_20px_rgba(229,9,20,0.3)]">
               S{currentSeason}E{currentEpisode?.episodeNumber}
             </span>
             {currentEpisode?.quality && (
-              <span className="rounded-sm bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
                 {currentEpisode.quality}
               </span>
             )}

@@ -88,24 +88,26 @@ function WatchMovieContent() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/90 to-transparent">
-        <div className="flex items-center justify-between px-4 py-3">
+      <div className="fixed left-0 right-0 top-0 z-50 bg-gradient-to-b from-black via-black/85 to-transparent">
+        <div
+          className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8"
+          style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
+        >
           <Link
             href={`/movie/${String(movie._id)}`}
-            className="flex items-center gap-2 text-white hover:text-red-500 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 text-sm font-medium text-white backdrop-blur transition-colors hover:border-white/20 hover:bg-black/45 hover:text-red-400"
           >
-            <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Back</span>
+            <ChevronLeft className="h-5 w-5" />
+            <span>Back</span>
           </Link>
-          
+
           <div className="flex items-center gap-2">
             {movie.quality && (
-              <span className="px-2 py-0.5 text-xs font-bold bg-white/20 text-white rounded">
+              <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
                 {movie.quality}
               </span>
             )}
-            <span className="px-2 py-0.5 text-xs font-bold bg-red-600 text-white rounded">
+            <span className="rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-[0_8px_20px_rgba(229,9,20,0.3)]">
               HD
             </span>
           </div>

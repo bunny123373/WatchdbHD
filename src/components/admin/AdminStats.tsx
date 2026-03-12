@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Film, Tv, PlayCircle, TrendingUp } from "lucide-react";
+import { Film, Tv, PlayCircle, TrendingUp, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Stats {
@@ -46,30 +46,34 @@ export default function AdminStats() {
       label: "Movies",
       value: stats.totalMovies,
       icon: Film,
-      color: "bg-[#e50914]",
+      color: "from-[#e50914] to-[#b20710]",
+      accent: "text-red-300",
     },
     {
       label: "Series",
       value: stats.totalSeries,
       icon: Tv,
-      color: "bg-purple-600",
+      color: "from-sky-500 to-cyan-500",
+      accent: "text-sky-300",
     },
     {
       label: "Episodes",
       value: stats.totalEpisodes,
       icon: PlayCircle,
-      color: "bg-green-600",
+      color: "from-emerald-500 to-green-500",
+      accent: "text-emerald-300",
     },
     {
       label: "Trending",
       value: stats.trendingCount,
       icon: TrendingUp,
-      color: "bg-blue-600",
+      color: "from-amber-500 to-orange-500",
+      accent: "text-amber-300",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       {statCards.map((stat, index) => {
         const Icon = stat.icon;
         return (
@@ -78,17 +82,23 @@ export default function AdminStats() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-[#1a1a1a] rounded-xl border border-white/5 p-4 sm:p-5 hover:border-white/10 transition-colors"
+            className="group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] p-4 sm:p-5 transition-colors hover:border-white/20"
           >
+            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.color}`} />
+            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/[0.03] blur-2xl transition-transform duration-300 group-hover:scale-125" />
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-400 text-xs sm:text-sm">{stat.label}</p>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                <p className="text-xs uppercase tracking-[0.22em] text-gray-500">{stat.label}</p>
+                <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
                   {loading ? "-" : stat.value.toLocaleString()}
                 </h3>
+                <div className={`mt-3 inline-flex items-center gap-1 text-xs ${stat.accent}`}>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                  Live platform count
+                </div>
               </div>
-              <div className={`w-10 h-10 sm:w-11 sm:h-11 ${stat.color} rounded-lg flex items-center justify-center`}>
-                <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.color} shadow-[0_12px_30px_rgba(0,0,0,0.25)]`}>
+                <Icon className="h-5 w-5 text-white sm:h-6 sm:w-6" />
               </div>
             </div>
           </motion.div>
