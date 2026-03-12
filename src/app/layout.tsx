@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG } from "@/utils/constants";
-import BottomNav from "@/components/BottomNav";
-import MobileNavbar from "@/components/MobileNavbar";
+import Navbar from "@/components/Navbar";
 import ReduxProviderClient from "@/components/ReduxProviderClient";
 import { LanguageProvider } from "@/context/LanguageContext";
 
@@ -86,13 +85,12 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased overflow-x-hidden`}>
         <ReduxProviderClient>
           <LanguageProvider>
-            <MobileNavbar />
-            <main className="min-h-screen pb-20 lg:pb-0 pt-14 lg:pt-16 w-full max-w-full overflow-x-hidden">
+            <Navbar />
+            <main className="min-h-screen pt-14 lg:pt-16 w-full max-w-full overflow-x-hidden">
               {children}
             </main>
           </LanguageProvider>
         </ReduxProviderClient>
-        <BottomNav />
       </body>
     </html>
   );
