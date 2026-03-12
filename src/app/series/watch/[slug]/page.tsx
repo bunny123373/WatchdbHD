@@ -6,7 +6,6 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown, CircleCheck, CircleDashed } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import { normalizeExternalUrl } from "@/utils/url";
@@ -161,7 +160,6 @@ function SeriesWatchContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
@@ -174,7 +172,6 @@ function SeriesWatchContent() {
   if (!series) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-32 text-center">
           <h1 className="text-2xl font-bold text-white">Series not found</h1>
           <Link href="/" className="text-yellow-500 mt-4 inline-block">
@@ -512,7 +509,6 @@ export default function SeriesWatchPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />

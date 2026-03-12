@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import dbConnect from "@/lib/dbconnect";
 import Collection from "@/models/Collection";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import { SITE_CONFIG } from "@/utils/constants";
@@ -32,7 +31,6 @@ export default async function CollectionsPage() {
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <Navbar />
       <div className="pt-20 pb-24 lg:pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-6">Collections</h1>

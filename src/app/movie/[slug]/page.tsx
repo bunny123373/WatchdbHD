@@ -5,7 +5,6 @@ import { Play, Share2, Plus, Info, Star, Calendar, Download, Clapperboard, Users
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import ShareButton from "@/components/ShareButton";
@@ -153,7 +152,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
   if (!movie) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-32 text-center px-4">
           <h1 className="text-2xl font-bold text-white mb-2">Movie not found</h1>
           <Link href="/" className="text-red-600 hover:text-red-500 mt-4 inline-block">
@@ -170,8 +168,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <Navbar />
-      
       <div className="relative">
         <div className="absolute inset-0 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
           {movie.banner ? (

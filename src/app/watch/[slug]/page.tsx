@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 import { Play, Download, Calendar, Globe, ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { IContent } from "@/models/Content";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
@@ -70,7 +69,6 @@ function WatchMovieContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-24 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
@@ -83,7 +81,6 @@ function WatchMovieContent() {
   if (!movie) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-32 text-center">
           <h1 className="text-2xl font-bold text-white">Movie not found</h1>
           <Link href="/" className="text-red-600 mt-4 inline-block">

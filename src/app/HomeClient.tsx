@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { IContent } from "@/models/Content";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import ContentGrid from "@/components/ContentGrid";
@@ -350,7 +349,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <HomeSkeleton />
         <Footer />
       </div>
@@ -360,7 +358,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   if (content.length === 0) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <Navbar />
         <div className="pt-20 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -372,7 +369,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   return (
     <PullToRefresh onRefresh={fetchContent}>
       <div className="min-h-screen bg-[#141814]">
-      <Navbar />
 
       {/* Hero Banner - Show uploaded content */}
       {featuredContent && !showContent && (

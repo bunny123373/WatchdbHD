@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Play, Plus, Star, Calendar, Tv, Info, Download, ChevronDown } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
@@ -26,8 +25,6 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
 
   return (
     <div className="min-h-screen bg-[#141414]">
-      <Navbar />
-      
       <div className="relative">
         <div className="absolute inset-0 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
           {series.banner ? (
