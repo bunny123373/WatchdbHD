@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
@@ -13,6 +13,8 @@ interface HlsPlayerProps {
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<ReturnType<typeof videojs> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (!src || !videoRef.current) return;
@@ -21,6 +23,9 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     if (existingVideo) {
       existingVideo.remove();
     }
+
+    setIsLoading(true);
+    setHasError(false);
 
     const videoElement = document.createElement("video-js");
     videoElement.classList.add("vjs-fill", "vjs-big-play-centered");
@@ -36,7 +41,32 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       sources: [{
         src: src,
         type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      }]
+      }],
+      loadingSpinner: true,
+      notSupportedMessage: "Video not supported",
+    });
+
+    player.on('loadstart', () => {
+      setIsLoading(true);
+      setHasError(false);
+    });
+
+    player.on('canplay', () => {
+      setIsLoading(false);
+    });
+
+    player.on('canplaythrough', () => {
+      setIsLoading(false);
+    });
+
+    player.on('playing', () => {
+      setIsLoading(false);
+    });
+
+    player.on('error', () => {
+      setHasError(true);
+      setIsLoading(false);
+      console.error("Video error:", player.error());
     });
 
     playerRef.current = player;
@@ -67,6 +97,32 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
   return (
     <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
+      {/* Loading/Buffering Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-white text-lg font-medium">Loading...</p>
+            <p className="text-gray-400 text-sm mt-1">Please wait while video buffers</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Error Overlay */}
+      {hasError && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90">
+          <div className="text-center p-8">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">Failed to Load</h3>
+            <p className="text-gray-400 text-sm">Please check your connection and try again</p>
+          </div>
+        </div>
+      )}
+      
       <div data-vjs-player ref={videoRef} className="w-full h-full" />
     </div>
   );
