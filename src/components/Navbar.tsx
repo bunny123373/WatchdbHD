@@ -132,7 +132,12 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
+            <div className="flex items-center gap-3">
+              <Link href="/" className="text-lg sm:text-xl font-bold text-[#e50914] tracking-tight">
+                WATCH<span className="text-white">DB</span>
+              </Link>
+
+              <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -147,9 +152,10 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              </div>
             </div>
 
-            <div className="ml-auto flex items-center gap-1.5 sm:gap-2.5">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               <div ref={searchRef} className="relative">
                 <div
                   className={cn(

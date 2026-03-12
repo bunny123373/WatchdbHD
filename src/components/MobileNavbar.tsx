@@ -326,6 +326,10 @@ export default function MobileNavbar() {
             )}
           </div>
 
+          <Link href="/" className="text-lg font-bold text-[#e50914]">
+            WATCH<span className="text-white">TMDB</span>
+          </Link>
+
           <div className="flex items-center gap-0.5">
             <LanguageSelector />
             <Link href="/request" className="p-2 hover:bg-white/10 rounded-full transition-colors">
