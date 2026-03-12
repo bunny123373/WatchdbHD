@@ -1,102 +1,76 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle } from "lucide-react";
-import Hls from "hls.js";
+import { useRef, useEffect, useState } from "react";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
 
 interface HlsPlayerProps {
   src?: string;
   title: string;
+  poster?: string;
 }
 
-export default function HlsPlayer({ src, title }: HlsPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const hlsRef = useRef<Hls | null>(null);
+export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
+  const videoRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<ReturnType<typeof videojs> | null>(null);
 
   useEffect(() => {
     if (!src || !videoRef.current) return;
 
-    const video = videoRef.current;
+    const existingVideo = videoRef.current.querySelector("video-js");
+    if (existingVideo) {
+      existingVideo.remove();
+    }
 
-    const loadHls = async () => {
-      try {
-        if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = src;
-        } else if (Hls.isSupported()) {
-          const hls = new Hls({
-            enableWorker: true,
-            lowLatencyMode: true,
-          });
-          hlsRef.current = hls;
-          hls.loadSource(src);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.ERROR, (_, data) => {
-            if (data.fatal) {
-              setHasError(true);
-            }
-          });
-        } else {
-          setHasError(true);
-        }
-      } catch (error) {
-        setHasError(true);
+    const videoElement = document.createElement("video-js");
+    videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-custom");
+    videoRef.current.appendChild(videoElement);
+
+    const player = videojs(videoElement, {
+      autoplay: false,
+      controls: true,
+      responsive: true,
+      fluid: true,
+      playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+      poster: poster,
+      sources: [{
+        src: src,
+        type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+      }],
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'flexibleWidthSpacer',
+          'playbackRateMenuButton',
+          'fullscreenToggle'
+        ]
       }
-    };
+    }, () => {
+      player.src({ src, type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+    });
 
-    loadHls();
+    playerRef.current = player;
 
     return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
       }
     };
-  }, [src]);
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const percent = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(percent || 0);
-    }
-  };
-
-  const handleFullscreen = () => {
-    if (videoRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        videoRef.current.requestFullscreen();
-      }
-    }
-  };
+  }, [src, poster]);
 
   if (!src) {
     return (
       <div className="relative w-full aspect-video bg-[#141414] rounded-2xl border border-[#222] flex items-center justify-center">
         <div className="text-center p-8">
           <div className="w-20 h-20 rounded-full bg-[#222] flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-10 h-10 text-gray-500" />
+            <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">Stream Not Available</h3>
           <p className="text-gray-500">This content does not have an HLS stream yet.</p>
@@ -106,47 +80,8 @@ export default function HlsPlayer({ src, title }: HlsPlayerProps) {
   }
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-[#222] group">
-      {hasError && (
-        <div className="absolute inset-0 bg-[#141414] flex items-center justify-center z-10">
-          <div className="text-center p-8">
-            <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-10 h-10 text-red-500" />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Failed to Load Stream</h3>
-            <p className="text-gray-500">Please try again later or use iframe stream.</p>
-          </div>
-        </div>
-      )}
-
-      <video
-        ref={videoRef}
-        className="w-full h-full object-contain"
-        playsInline
-        onTimeUpdate={handleTimeUpdate}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      />
-
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="flex items-center gap-4 mb-2">
-          <button onClick={togglePlay} className="text-white hover:text-yellow-500 transition-colors">
-            {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-          </button>
-          <button onClick={toggleMute} className="text-white hover:text-yellow-500 transition-colors">
-            {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-          </button>
-          <div className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-yellow-500 transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <button onClick={handleFullscreen} className="text-white hover:text-yellow-500 transition-colors">
-            <Maximize className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+    <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
+      <div data-vjs-player ref={videoRef} className="w-full h-full" />
     </div>
   );
 }
