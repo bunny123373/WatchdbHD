@@ -41,10 +41,10 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   }
 
   return (
-    <div className="watch-player-shell relative w-full aspect-video overflow-hidden rounded-[24px] border border-white/10 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+    <div className="watch-player-shell watch-player-shell--react relative w-full aspect-video overflow-hidden rounded-[20px] sm:rounded-[24px] border border-white/10 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 bg-gradient-to-b from-black/55 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-t from-black/65 to-transparent" />
-      <div className="pointer-events-none absolute left-4 top-4 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] font-medium tracking-[0.2em] text-white/80 backdrop-blur">
+      <div className="pointer-events-none absolute left-3 top-3 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] font-medium tracking-[0.18em] text-white/80 backdrop-blur sm:left-4 sm:top-4 sm:px-3 sm:text-[11px] sm:tracking-[0.2em]">
         {isHlsSource(src) ? "HLS STREAM" : "VIDEO STREAM"}
       </div>
 
@@ -65,7 +65,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       <button
         type="button"
         onClick={() => setReloadKey((current) => current + 1)}
-        className="absolute right-4 top-4 z-[3] inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-black/75"
+        className="absolute right-3 top-3 z-[3] inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/55 px-2.5 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-black/75 sm:right-4 sm:top-4 sm:gap-2 sm:px-3 sm:py-2 sm:text-xs"
       >
         <RefreshCcw className="h-3.5 w-3.5" />
         Reload
