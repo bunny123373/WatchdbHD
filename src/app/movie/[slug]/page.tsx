@@ -167,7 +167,18 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
   const downloadUrl = normalizeExternalUrl(movie.downloadLink);
 
   return (
-    <div className="min-h-screen bg-[#141414]">
+    <div className="relative min-h-screen overflow-hidden bg-[#141414]">
+      {(movie.banner || movie.poster) && (
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div
+            className="absolute inset-[-14%] bg-cover bg-center opacity-42 blur-[132px] scale-[1.32] saturate-[1.28]"
+            style={{ backgroundImage: `url(${movie.banner || movie.poster})` }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.18),transparent_24%),radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.1),transparent_20%),radial-gradient(circle_at_82%_10%,rgba(59,130,246,0.08),transparent_18%),linear-gradient(180deg,rgba(5,5,5,0.08),rgba(5,5,5,0.74)_42%,#050608_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.48),transparent_22%,transparent_78%,rgba(5,5,5,0.48))]" />
+          <div className="absolute inset-0 backdrop-blur-[8px]" />
+        </div>
+      )}
       <div className="relative">
         <div className="absolute inset-0 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
           {movie.banner ? (
