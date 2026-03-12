@@ -3,7 +3,9 @@ import {
   type ComponentProps,
   forwardRef,
   type ReactNode,
+  useEffect,
   useRef,
+  useState,
   type PropsWithChildren,
   type CSSProperties,
 } from "react";
@@ -110,9 +112,48 @@ function FullscreenLabel(): ReactNode {
 
 export function VideoSkin(props: VideoSkinProps): ReactNode {
   const { children, className, ...rest } = props;
+  const paused = usePlayer((s) => Boolean(s.paused));
+  const ended = usePlayer((s) => Boolean(s.ended));
+  const [controlsVisible, setControlsVisible] = useState(true);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    const reset = () => {
+      setControlsVisible(true);
+
+      clearTimeout(timer);
+
+      if (paused || ended) return;
+
+      timer = setTimeout(() => {
+        setControlsVisible(false);
+      }, 2200);
+    };
+
+    window.addEventListener("mousemove", reset);
+    window.addEventListener("touchstart", reset, { passive: true });
+
+    reset();
+
+    return () => {
+      window.removeEventListener("mousemove", reset);
+      window.removeEventListener("touchstart", reset);
+      clearTimeout(timer);
+    };
+  }, [ended, paused]);
 
   return (
-    <Container className={["media-default-skin media-default-skin--video", className].filter(Boolean).join(" ")} {...rest}>
+    <Container
+      className={[
+        "media-default-skin media-default-skin--video",
+        controlsVisible ? "media-controls-visible" : "media-controls-hidden",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...rest}
+    >
       {children}
 
       <BufferingIndicator

@@ -361,50 +361,6 @@ a:focus-visible, div[role="link"]:focus-visible {
   isolation: isolate;
 }
 
-.watch-player-video,
-.watch-player-shell .video-js {
-  width: 100%;
-  height: 100%;
-  background: #000;
-}
-
-.watch-player-shell .video-js {
-  font-family: 'Inter', sans-serif;
-}
-
-.watch-player-shell .video-js .vjs-control-bar {
-  background: linear-gradient(180deg, rgba(5, 5, 5, 0.1), rgba(5, 5, 5, 0.88));
-  backdrop-filter: blur(12px);
-  padding: 0 0.85rem;
-}
-
-.watch-player-shell .video-js .vjs-big-play-button {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.62);
-  width: 4.2rem;
-  height: 4.2rem;
-  line-height: 4.2rem;
-  margin-top: -2.1rem;
-  margin-left: -2.1rem;
-  backdrop-filter: blur(10px);
-}
-
-.watch-player-shell .video-js:hover .vjs-big-play-button,
-.watch-player-shell .video-js .vjs-big-play-button:focus {
-  background: rgba(229, 9, 20, 0.88);
-  border-color: rgba(229, 9, 20, 0.95);
-}
-
-.watch-player-shell .video-js .vjs-play-progress,
-.watch-player-shell .video-js .vjs-volume-level {
-  background-color: #e50914;
-}
-
-.watch-player-shell .video-js .vjs-load-progress div {
-  background: rgba(255, 255, 255, 0.24);
-}
-
 .watch-player-shell--react .media-default-skin {
   --media-border-radius: 1.25rem;
   --media-surface-background-color: linear-gradient(180deg, rgba(18, 18, 20, 0.82), rgba(8, 8, 10, 0.68));
@@ -442,6 +398,23 @@ a:focus-visible, div[role="link"]:focus-visible {
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     0 22px 46px rgba(0, 0, 0, 0.42);
+}
+
+.watch-player-shell--react .media-default-skin .media-controls,
+.watch-player-shell--react .media-default-skin .media-overlay {
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.watch-player-shell--react .media-default-skin.media-controls-hidden .media-controls {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.watch-player-shell--react .media-default-skin.media-controls-hidden .media-overlay {
+  opacity: 0.15;
 }
 
 .watch-player-shell--react .media-default-skin .media-button {
