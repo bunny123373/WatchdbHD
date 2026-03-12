@@ -113,7 +113,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               <Logo size="md" className="w-8 h-8" />
-              <span className="hidden sm:block text-xl sm:text-2xl font-bold text-[#e50914]">
+              <span className="text-lg sm:text-xl font-bold text-[#e50914]">
                 WATCH<span className="text-white">DB</span>
               </span>
             </Link>
