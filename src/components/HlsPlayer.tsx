@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import { AlertCircle, RefreshCcw } from "lucide-react";
 import { createPlayer, Poster } from "@videojs/react";
-import { VideoSkin, Video, videoFeatures } from "@videojs/react/video";
+import { Video, videoFeatures } from "@videojs/react/video";
 import HlsVideo from "@videojs/react/media/hls-video";
+import { VideoSkin } from "@/components/VideoJsReactPlayer";
 import "@videojs/react/video/skin.css";
 
 interface HlsPlayerProps {
