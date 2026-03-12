@@ -137,7 +137,7 @@ function WatchMovieContent() {
                   className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Download Instead
+                  Download
                 </a>
               )}
             </div>
