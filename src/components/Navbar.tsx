@@ -36,8 +36,7 @@ export default function Navbar() {
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isHomePage = pathname === "/";
-  const isWatchPage = pathname.startsWith("/watch/") || pathname.startsWith("/series/watch/");
-  if (isAdminRoute || isWatchPage) return null;
+  if (isAdminRoute) return null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,12 +131,11 @@ export default function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full",
-        isScrolled || isSearchActive ? "bg-[#141414]" : "bg-gradient-to-b from-black/90 to-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full bg-[#141414]/95 backdrop-blur-md border-b border-white/5"
       )}
     >
-      <div className="max-w-full mx-3 sm:mx-4 lg:mx-6">
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+      <div className="max-w-full mx-2 sm:mx-4">
+        <div className="flex items-center justify-between h-12 sm:h-14">
           {/* Left - Logo & Nav Links */}
           <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
             {/* Logo */}
@@ -332,12 +330,12 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-1.5 sm:p-2 hover:bg-white/10 rounded-full transition-colors"
+              className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors bg-white/5"
             >
               {isMobileMenuOpen ? (
-                <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <X className="w-6 h-6 text-white" />
               ) : (
-                <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <Menu className="w-6 h-6 text-white" />
               )}
             </button>
           </div>
@@ -346,7 +344,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div ref={mobileMenuRef} className="lg:hidden absolute left-0 right-0 top-full bg-[#141414] border-t border-gray-800 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div ref={mobileMenuRef} className="md:hidden fixed inset-0 top-12 z-40 bg-[#141414]/98 backdrop-blur-sm overflow-y-auto">
           <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 sm:space-y-3">
             {/* Mobile Search */}
             <form onSubmit={(e) => { handleSearch(e); setIsMobileMenuOpen(false); }}>
