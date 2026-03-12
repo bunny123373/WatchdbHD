@@ -3,8 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Download, ChevronLeft, Clapperboard } from "lucide-react";
-import { motion } from "framer-motion";
+import { Download, ChevronLeft, Clapperboard, Clock3, Film, Star } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
@@ -28,6 +27,7 @@ function WatchMovieContent() {
   const contentId = resolveContentIdFromSlug(slug);
   const movieDownloadUrl = normalizeExternalUrl(movie?.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie?.embedIframeLink2 : movie?.embedIframeLink;
+  const movieTags = movie?.tags?.slice(0, 4) || [];
 
   useEffect(() => {
     if (slug) {
@@ -72,10 +72,10 @@ function WatchMovieContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.16),_transparent_20%),linear-gradient(180deg,_#020202_0%,_#070707_42%,_#020202_100%)]">
       <div className="fixed left-0 right-0 top-0 z-50 bg-gradient-to-b from-black via-black/85 to-transparent">
         <div
-          className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8"
+          className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-10"
           style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
         >
           <Link
@@ -99,16 +99,34 @@ function WatchMovieContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pb-12 pt-20 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+      <div className="mx-auto max-w-[1440px] px-4 pb-14 pt-20 sm:px-6 lg:px-10">
+        <div>
           <WatchPlayerShell
-            eyebrow="Now Playing"
+            eyebrow="Watch Movie"
             title={movie.title}
-            subtitle=""
+            subtitle={movie.description || "Stream instantly in a cleaner, cinema-first layout."}
+            badges={
+              <>
+                {movie.year && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-white/85">
+                    <Clock3 className="h-3.5 w-3.5 text-red-400" />
+                    {movie.year}
+                  </span>
+                )}
+                {movie.language && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-white/85">
+                    <Film className="h-3.5 w-3.5 text-red-400" />
+                    {movie.language}
+                  </span>
+                )}
+                {movie.rating && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-white/85">
+                    <Star className="h-3.5 w-3.5 text-red-400" />
+                    {movie.rating}/10
+                  </span>
+                )}
+              </>
+            }
             actions={
               <>
                 {movie.embedIframeLink && (
@@ -177,7 +195,64 @@ function WatchMovieContent() {
               </div>
             )}
           </WatchPlayerShell>
-        </motion.div>
+
+          <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_360px]">
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 shadow-[0_18px_54px_rgba(0,0,0,0.22)] sm:p-6 lg:p-8">
+              <div className="mb-5 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-[#e50914] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white">
+                  Now Streaming
+                </span>
+                {movie.quality && (
+                  <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-medium text-white/75">
+                    {movie.quality}
+                  </span>
+                )}
+              </div>
+
+              <h2 className="text-2xl font-semibold text-white sm:text-3xl">{movie.title}</h2>
+              {movie.description && (
+                <p className="mt-4 max-w-4xl text-sm leading-7 text-gray-300 sm:text-[15px]">
+                  {movie.description}
+                </p>
+              )}
+
+              {movieTags.length > 0 && (
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {movieTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-xs font-medium text-white/80"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <aside className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 shadow-[0_18px_54px_rgba(0,0,0,0.22)] sm:p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-red-400">Details</p>
+              <div className="mt-4 space-y-4 text-sm">
+                <div>
+                  <p className="text-white/45">Type</p>
+                  <p className="mt-1 font-medium text-white">Movie</p>
+                </div>
+                <div>
+                  <p className="text-white/45">Quality</p>
+                  <p className="mt-1 font-medium text-white">{movie.quality || "HD"}</p>
+                </div>
+                <div>
+                  <p className="text-white/45">Language</p>
+                  <p className="mt-1 font-medium text-white">{movie.language || "Telugu"}</p>
+                </div>
+                <div>
+                  <p className="text-white/45">Stream</p>
+                  <p className="mt-1 font-medium text-white">{movie.hlsUrl ? "Native HLS" : primaryEmbedLink ? "Embed Server" : "Offline"}</p>
+                </div>
+              </div>
+            </aside>
+          </section>
+        </div>
       </div>
     </div>
   );

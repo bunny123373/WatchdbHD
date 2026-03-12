@@ -61,7 +61,7 @@ export default function ContentDetailModal({ content, isOpen, onClose }: Content
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto">
       <div className="absolute inset-0 bg-black" onClick={onClose} />
       
-      <div className="relative w-full bg-[#141414] min-h-screen sm:min-h-0 sm:my-8 sm:mx-4 sm:mb-8 sm:rounded-lg overflow-hidden shadow-2xl animate-in fade-in duration-300">
+      <div className="relative w-full bg-[#141414] min-h-screen sm:min-h-0 sm:my-8 sm:mx-4 sm:mb-8 sm:rounded-lg overflow-hidden shadow-2xl">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 p-2 rounded-full bg-black/60 hover:bg-black/80 transition-colors text-white"

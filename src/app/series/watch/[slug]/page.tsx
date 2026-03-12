@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState, Suspense, useRef } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3, ListVideo } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Download, Play, ChevronLeft, SkipForward, Check, CircleCheck, Tv, ListVideo, Clock3 } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
@@ -29,8 +28,6 @@ function SeriesWatchContent() {
   const [autoPlayNext, setAutoPlayNext] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [watchedEpisodes, setWatchedEpisodes] = useState<Set<string>>(new Set());
-  const [hoveredEpisode, setHoveredEpisode] = useState<number | null>(null);
-  const episodeRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   const slug = params.slug as string;
   const contentId = resolveContentIdFromSlug(slug);
@@ -113,17 +110,7 @@ function SeriesWatchContent() {
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
   const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
-
-  useEffect(() => {
-    if (showEpisodeList && currentEpisode && episodeRefs.current.size > 0) {
-      const currentEl = episodeRefs.current.get(currentEpisode.episodeNumber);
-      if (currentEl) {
-        setTimeout(() => {
-          currentEl.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-        }, 300);
-      }
-    }
-  }, [showEpisodeList, currentEpisode]);
+  const totalEpisodes = currentSeasonData?.episodes.length || 0;
 
   const playSeason = () => {
     const firstUnwatched = currentSeasonData?.episodes.find(
@@ -162,10 +149,10 @@ function SeriesWatchContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_22%),linear-gradient(180deg,_#050505_0%,_#090909_45%,_#040404_100%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.16),_transparent_20%),linear-gradient(180deg,_#020202_0%,_#070707_42%,_#020202_100%)]">
       <div className="fixed left-0 right-0 top-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
         <div
-          className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8"
+          className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-10"
           style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
         >
           <Link
@@ -192,18 +179,13 @@ function SeriesWatchContent() {
         </div>
       </div>
 
-      <div className="px-4 pb-10 pt-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-6"
-          >
+      <div className="px-4 pb-12 pt-16 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="mb-6">
             <WatchPlayerShell
-              eyebrow="Now Playing"
+              eyebrow="Watch Series"
               title={currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-              subtitle=""
+              subtitle={currentEpisode?.episodeDescription || series.description || `Season ${currentSeason}, Episode ${currentEpisode?.episodeNumber}`}
               badges={
                 <>
                   <span className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200">
@@ -216,6 +198,10 @@ function SeriesWatchContent() {
                       {currentEpisode.quality}
                     </span>
                   )}
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-200">
+                    <Clock3 className="h-3.5 w-3.5 text-red-400" />
+                    {getWatchedCountForSeason(currentSeason)}/{totalEpisodes} watched
+                  </span>
                   <button
                     onClick={() => setAutoPlayNext(!autoPlayNext)}
                     className={`inline-flex min-h-[34px] items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -276,9 +262,8 @@ function SeriesWatchContent() {
                         : "border border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
                     }`}
                   >
-                    <Layers3 className="w-4 h-4" />
-                    Episodes
-                    <ChevronDown className={`w-4 h-4 transition-transform ${showEpisodeList ? "rotate-180" : ""}`} />
+                    <ListVideo className="w-4 h-4" />
+                    {showEpisodeList ? "Hide Episodes" : "Browse Episodes"}
                   </button>
                 </>
               }
@@ -288,25 +273,13 @@ function SeriesWatchContent() {
                 title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
               />
             </WatchPlayerShell>
-          </motion.div>
+          </div>
 
-          <AnimatePresence>
-            {showEpisodeList && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="mb-8 rounded-[28px] border border-white/10 bg-white/[0.03] p-4 sm:p-5 lg:p-6"
-              >
-                <div className="mb-4 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <ListVideo className="h-4 w-4 text-red-400" />
-                    <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Episode Browser</h3>
-                  </div>
-                  <span className="text-xs text-gray-500">Season {currentSeason}</span>
-                </div>
-
-                <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide lg:mb-6">
+          {showEpisodeList && (
+            <section className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
+              <aside className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5 shadow-[0_18px_54px_rgba(0,0,0,0.22)] sm:p-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-red-400">Seasons</p>
+                <div className="mt-4 space-y-2">
                   {series.seasons?.map((season) => (
                     <button
                       key={season.seasonNumber}
@@ -316,113 +289,41 @@ function SeriesWatchContent() {
                           handleEpisodeSelect(season.episodes[0], season.seasonNumber);
                         }
                       }}
-                      className={`flex flex-shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all lg:gap-2 lg:px-4 lg:py-2 lg:text-sm ${
+                      className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition-colors ${
                         currentSeason === season.seasonNumber
                           ? "bg-white text-black"
-                          : "bg-white/10 text-white hover:bg-white/20"
+                          : "border border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
                       }`}
                     >
-                      <span>S{season.seasonNumber}</span>
-                      <span className={`text-[10px] lg:text-xs ${currentSeason === season.seasonNumber ? "text-gray-500" : "text-gray-400"}`}>
+                      <span className="font-medium">Season {season.seasonNumber}</span>
+                      <span className={`text-xs ${currentSeason === season.seasonNumber ? "text-black/60" : "text-white/45"}`}>
                         {getWatchedCountForSeason(season.seasonNumber)}/{season.episodes.length}
                       </span>
                     </button>
                   ))}
-                  <button
-                    onClick={playSeason}
-                    className="flex flex-shrink-0 items-center gap-1 rounded-full bg-[#e50914] px-3 py-1.5 text-xs font-medium text-white transition-all hover:bg-[#f40612] lg:gap-2 lg:px-4 lg:py-2 lg:text-sm"
-                  >
-                    <Play className="h-3 w-3 fill-white lg:h-4 lg:w-4" />
-                    <span className="hidden sm:inline">Play</span>
-                  </button>
                 </div>
 
-                <div className="hidden gap-4 overflow-x-auto pb-4 snap-x lg:flex lg:snap-none lg:scrollbar-hide">
-                  {currentSeasonData?.episodes.map((episode) => {
-                    const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
-                    const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
+                <button
+                  onClick={playSeason}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#e50914] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#f40612]"
+                >
+                  <Play className="h-4 w-4 fill-white" />
+                  Continue Watching
+                </button>
+              </aside>
 
-                    return (
-                      <div
-                        key={episode.episodeNumber}
-                        ref={(el) => {
-                          if (el) episodeRefs.current.set(episode.episodeNumber, el);
-                        }}
-                        className={`group relative w-48 flex-shrink-0 snap-start transition-all ${
-                          isActive ? "scale-105" : "opacity-70 hover:opacity-100"
-                        }`}
-                        onMouseEnter={() => setHoveredEpisode(episode.episodeNumber)}
-                        onMouseLeave={() => setHoveredEpisode(null)}
-                      >
-                        <button onClick={() => handleEpisodeSelect(episode, currentSeason)} className="w-full">
-                          <div className={`relative mb-2 aspect-video overflow-hidden rounded-lg ${
-                            isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
-                          }`}>
-                            {episode.episodeThumbnail || series.poster ? (
-                              <img
-                                src={episode.episodeThumbnail || series.poster}
-                                alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                                <Play className="h-8 w-8 text-white/50" />
-                              </div>
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                            <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                              <span className="text-xs font-medium text-white/90">E{episode.episodeNumber}</span>
-                              {episode.quality && (
-                                <span className="rounded bg-white/20 px-1 py-0.5 text-[10px] text-white">
-                                  {episode.quality}
-                                </span>
-                              )}
-                            </div>
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90">
-                                <Play className="ml-0.5 h-5 w-5 text-black" fill="black" />
-                              </div>
-                            </div>
-                            {isActive && (
-                              <div className="absolute top-2 right-2">
-                                <span className="rounded bg-[#e50914] px-2 py-0.5 text-[10px] font-medium text-white">
-                                  Playing
-                                </span>
-                              </div>
-                            )}
-                            {!isActive && isWatched && (
-                              <div className="absolute top-2 right-2">
-                                <CircleCheck className="h-5 w-5 text-green-500" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="flex-1 truncate text-left text-sm font-medium text-white">
-                              {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                            </h4>
-                            {isWatched && <CircleCheck className="h-4 w-4 flex-shrink-0 text-green-500" />}
-                          </div>
-                        </button>
-                        <AnimatePresence>
-                          {hoveredEpisode === episode.episodeNumber && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 10 }}
-                              className="absolute top-full left-0 right-0 z-20 mt-2 hidden rounded-lg border border-gray-700 bg-[#1a1a1a] p-3 lg:block"
-                            >
-                              <p className="line-clamp-4 text-xs text-gray-300">
-                                {episode.episodeDescription || episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                              </p>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
+              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-4 shadow-[0_18px_54px_rgba(0,0,0,0.22)] sm:p-5 lg:p-6">
+                <div className="mb-5 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-red-400">Episodes</p>
+                    <h3 className="mt-2 text-xl font-semibold text-white">Season {currentSeason}</h3>
+                  </div>
+                  <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/75">
+                    {totalEpisodes} episodes
+                  </div>
                 </div>
 
-                <div className="space-y-2 lg:hidden">
+                <div className="space-y-3">
                   {currentSeasonData?.episodes.map((episode) => {
                     const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
                     const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
@@ -431,12 +332,14 @@ function SeriesWatchContent() {
                       <button
                         key={episode.episodeNumber}
                         onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                        className={`flex w-full items-center gap-3 rounded-lg p-2 transition-all ${
-                          isActive ? "bg-white/10" : "hover:bg-white/5"
+                        className={`grid w-full gap-4 rounded-[24px] border p-3 text-left transition-colors sm:grid-cols-[220px_minmax(0,1fr)] sm:p-4 ${
+                          isActive
+                            ? "border-white/30 bg-white/[0.08]"
+                            : "border-white/10 bg-black/20 hover:bg-white/[0.04]"
                         }`}
                       >
-                        <div className={`relative aspect-video w-24 flex-shrink-0 overflow-hidden rounded ${
-                          isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500" : "ring-1 ring-white/20"
+                        <div className={`relative aspect-video overflow-hidden rounded-2xl ${
+                          isActive ? "ring-2 ring-white/80" : isWatched ? "ring-1 ring-emerald-500/50" : "ring-1 ring-white/10"
                         }`}>
                           {episode.episodeThumbnail || series.poster ? (
                             <img
@@ -446,41 +349,48 @@ function SeriesWatchContent() {
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                              <Play className="h-6 w-6 text-white/50" />
+                              <Play className="h-8 w-8 text-white/50" />
                             </div>
                           )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                          <div className="absolute left-3 top-3 rounded-full bg-black/65 px-2 py-1 text-[11px] font-medium text-white">
+                            Episode {episode.episodeNumber}
+                          </div>
                           {isActive && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                              <Play className="h-8 w-8 text-white" fill="white" />
-                            </div>
-                          )}
-                          {isWatched && !isActive && (
-                            <div className="absolute top-1 right-1">
-                              <CircleCheck className="h-4 w-4 text-green-500" />
+                            <div className="absolute right-3 top-3 rounded-full bg-[#e50914] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white">
+                              Playing
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0 flex-1 text-left">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-400">E{episode.episodeNumber}</span>
-                            {isActive && (
-                              <span className="rounded bg-[#e50914] px-1.5 py-0.5 text-[10px] font-medium text-white">
-                                Playing
+
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="text-base font-semibold text-white sm:text-lg">
+                              {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
+                            </h4>
+                            {episode.quality && (
+                              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-white/75">
+                                {episode.quality}
+                              </span>
+                            )}
+                            {isWatched && (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
+                                <CircleCheck className="h-3.5 w-3.5" />
+                                Watched
                               </span>
                             )}
                           </div>
-                          <h4 className="truncate text-sm font-medium text-white">
-                            {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                          </h4>
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-300">
+                            {episode.episodeDescription || `Continue watching ${series.title} from Episode ${episode.episodeNumber}.`}
+                          </p>
                         </div>
-                        {isWatched && <CircleCheck className="h-5 w-5 flex-shrink-0 text-green-500" />}
                       </button>
                     );
                   })}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
