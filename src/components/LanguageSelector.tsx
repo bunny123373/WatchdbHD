@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, Check } from "lucide-react";
+import { Globe, Check, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -32,31 +32,37 @@ export default function LanguageSelector() {
     <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 bg-[#1F232D] hover:bg-[#2a2f3d] rounded-lg transition-colors"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors"
       >
         <Globe className="w-4 h-4 text-gray-400" />
-        <span className="text-sm text-white">{currentLang.flag}</span>
+        <span className="text-xs text-white hidden sm:block">{currentLang.label}</span>
+        <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-40 bg-[#1F232D] rounded-lg shadow-xl border border-[#2a2f3d] overflow-hidden z-50">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => {
-                setLanguage(lang.code as "en" | "te" | "hi" | "ta");
-                setIsOpen(false);
-              }}
-              className={`flex items-center justify-between w-full px-3 py-2 text-sm transition-colors ${
-                language === lang.code
-                  ? "bg-yellow-500/20 text-yellow-500"
-                  : "text-gray-300 hover:bg-[#2a2f3d]"
-              }`}
-            >
-              <span>{lang.flag} {lang.label}</span>
-              {language === lang.code && <Check className="w-4 h-4" />}
-            </button>
-          ))}
+        <div className="absolute top-full right-0 mt-1.5 w-44 bg-[#1a1a1a] rounded-lg shadow-2xl border border-white/10 overflow-hidden z-[100]">
+          <div className="py-1">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  setLanguage(lang.code as "en" | "te" | "hi" | "ta");
+                  setIsOpen(false);
+                }}
+                className={`flex items-center justify-between w-full px-3 py-2.5 text-sm transition-colors ${
+                  language === lang.code
+                    ? "bg-red-600/20 text-red-500"
+                    : "text-gray-300 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-base">{lang.flag}</span>
+                  <span>{lang.label}</span>
+                </span>
+                {language === lang.code && <Check className="w-4 h-4" />}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
