@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import "@videojs/themes/city/index.css";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import "@videojs/themes/city/index.css";
 
 interface HlsPlayerProps {
   src?: string;
@@ -12,7 +12,7 @@ interface HlsPlayerProps {
 }
 
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
-  const videoRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -20,19 +20,10 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   useEffect(() => {
     if (!src || !videoRef.current) return;
 
-    const existingVideo = videoRef.current.querySelector("video-js");
-    if (existingVideo) {
-      existingVideo.remove();
-    }
-
     setIsLoading(true);
     setHasError(false);
 
-    const videoElement = document.createElement("video-js");
-    videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-city");
-    videoRef.current.appendChild(videoElement);
-
-    const player: any = videojs(videoElement, {
+    const player = videojs(videoRef.current, {
       autoplay: false,
       controls: true,
       responsive: true,
@@ -42,7 +33,20 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       sources: [{
         src: src,
         type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      }]
+      }],
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'progressControl',
+          'flexibleWidthSpacer',
+          'playbackRateMenuButton',
+          'fullscreenToggle'
+        ]
+      }
     });
 
     player.on('loadstart', () => {
@@ -75,22 +79,22 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
   if (!src) {
     return (
-      <div className="relative w-full aspect-video bg-[#141414] rounded-2xl border border-[#222] flex items-center justify-center">
+      <div className="relative w-full aspect-video bg-zinc-900 flex items-center justify-center">
         <div className="text-center p-8">
-          <div className="w-20 h-20 rounded-full bg-[#222] flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-20 h-20 rounded-full bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">Stream Not Available</h3>
-          <p className="text-gray-500">This content does not have an HLS stream yet.</p>
+          <p className="text-zinc-500">This content does not have an HLS stream yet.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
+    <div className="relative w-full bg-black">
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
           <div className="text-center">
@@ -104,12 +108,16 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90">
           <div className="text-center p-8">
             <h3 className="text-xl font-semibold text-white mb-2">Failed to Load</h3>
-            <p className="text-gray-400 text-sm">Please check your connection</p>
+            <p className="text-zinc-400 text-sm">Please check your connection</p>
           </div>
         </div>
       )}
       
-      <div data-vjs-player ref={videoRef} className="w-full h-full" />
+      <video
+        ref={videoRef}
+        className="video-js vjs-fill vjs-big-play-centered vjs-theme-city"
+        playsInline
+      />
     </div>
   );
 }
