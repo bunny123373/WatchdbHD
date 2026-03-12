@@ -28,6 +28,7 @@ export default function Navbar() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const { search, typeFilter } = useAppSelector((state) => state.ui);
   const pathname = usePathname();
@@ -53,10 +54,24 @@ export default function Navbar() {
           setSearchInput("");
         }
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [searchInput]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -330,7 +345,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#141414] border-t border-gray-800">
+        <div ref={mobileMenuRef} className="lg:hidden absolute left-0 right-0 top-full bg-[#141414] border-t border-gray-800 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 sm:space-y-3">
             {/* Mobile Search */}
             <form onSubmit={(e) => { handleSearch(e); setIsMobileMenuOpen(false); }}>
