@@ -52,7 +52,7 @@ function AdminPageContent() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(229,9,20,0.18),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-5 sm:p-6 lg:p-8">
+        <section className="glass-surface relative overflow-hidden rounded-[32px] p-5 sm:p-6 lg:p-8">
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent" />
           <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl">
@@ -67,15 +67,15 @@ function AdminPageContent() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:w-[420px]">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="glass-surface rounded-2xl p-4">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Current View</p>
                 <p className="mt-2 text-sm font-semibold text-white">{activeTabMeta.label}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="glass-surface rounded-2xl p-4">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Focus</p>
                 <p className="mt-2 text-sm font-semibold text-white">Fast mobile access</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 col-span-2 sm:col-span-1">
+              <div className="glass-surface col-span-2 rounded-2xl p-4 sm:col-span-1">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Workflow</p>
                 <p className="mt-2 text-sm font-semibold text-white">Publish, review, notify</p>
               </div>
@@ -91,11 +91,11 @@ function AdminPageContent() {
               className={`group flex min-h-[92px] items-start gap-3 rounded-[24px] border p-4 text-left transition-all ${
                 activeTab === tab.id
                   ? "border-red-500/30 bg-red-500/10 text-white shadow-[0_16px_40px_rgba(229,9,20,0.12)]"
-                  : "border-white/10 bg-white/[0.03] text-white hover:border-white/20 hover:bg-white/[0.05]"
+                  : "glass-surface text-white hover:border-white/20 hover:bg-white/[0.08]"
               }`}
             >
               <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl ${
-                activeTab === tab.id ? "bg-red-600 text-white" : "bg-white/5 text-gray-300"
+                activeTab === tab.id ? "bg-red-600 text-white" : "glass-surface text-gray-300"
               }`}>
                 <tab.icon className="h-5 w-5" />
               </div>
@@ -109,12 +109,12 @@ function AdminPageContent() {
           ))}
         </div>
 
-        <section className="rounded-[32px] border border-white/10 bg-[#111111]/90 p-4 sm:p-5 lg:p-6">
+        <section className="glass-surface-strong rounded-[32px] p-4 sm:p-5 lg:p-6">
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               <AdminStats />
               <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+                <div className="glass-surface rounded-[28px] p-5 sm:p-6">
                   <h2 className="text-xl font-bold text-white">Welcome to Admin Panel</h2>
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-400">
                     Use the navigation cards above to move between uploads, moderation, requests, and collection management.
@@ -122,33 +122,33 @@ function AdminPageContent() {
                   </p>
 
                   <div className="mt-6 grid gap-4 md:grid-cols-3">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
+                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
                       <h3 className="mb-2 font-semibold text-white">Upload Movie</h3>
                       <p className="text-sm text-gray-400">Add new movies with streaming and download links.</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
+                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
                       <h3 className="mb-2 font-semibold text-white">Upload Series</h3>
                       <p className="text-sm text-gray-400">Add full season structures with episode links.</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
+                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
                       <h3 className="mb-2 font-semibold text-white">Manage Content</h3>
                       <p className="text-sm text-gray-400">Review and update existing movies or series.</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.12),rgba(255,255,255,0.03))] p-5 sm:p-6">
+                <div className="glass-surface rounded-[28px] bg-[linear-gradient(180deg,rgba(229,9,20,0.14),rgba(255,255,255,0.04))] p-5 sm:p-6">
                   <h2 className="text-lg font-bold text-white">Quick Guidance</h2>
                   <div className="mt-4 space-y-4 text-sm text-gray-200">
-                    <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+                    <div className="glass-surface rounded-2xl p-4">
                       <p className="font-medium text-white">1. Publish</p>
                       <p className="mt-1 text-gray-300">Add movies or series first, then jump to Manage Content for verification.</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+                    <div className="glass-surface rounded-2xl p-4">
                       <p className="font-medium text-white">2. Moderate</p>
                       <p className="mt-1 text-gray-300">Check Requests and Reports regularly to keep the catalog healthy.</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+                    <div className="glass-surface rounded-2xl p-4">
                       <p className="font-medium text-white">3. Notify</p>
                       <p className="mt-1 text-gray-300">Use notifications after major uploads or collection refreshes.</p>
                     </div>
@@ -184,7 +184,7 @@ function AdminPageContent() {
 
           {activeTab === "notification" && (
             <div className="max-w-3xl">
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+              <div className="glass-surface rounded-[28px] p-5 sm:p-6">
                 <h2 className="mb-4 text-xl font-bold text-white">Send Notification</h2>
                 <NotificationForm />
               </div>

@@ -20,11 +20,13 @@ export default function AppChrome({ children }: AppChromeProps) {
       {shouldShowNavbar && <Navbar />}
       <main
         className={cn(
-          "min-h-screen w-full max-w-full overflow-x-hidden",
+          "app-page-shell min-h-screen w-full max-w-full overflow-x-hidden",
           shouldShowNavbar ? "pt-14 lg:pt-16" : "pt-0"
         )}
       >
-        {children}
+        <div className="min-h-screen bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))]">
+          {children}
+        </div>
       </main>
     </>
   );

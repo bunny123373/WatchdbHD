@@ -86,7 +86,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="min-h-screen bg-[#141414]">
         <div className="flex min-h-screen items-center justify-center px-4">
-          <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white">
+          <div className="glass-pill flex items-center gap-3 rounded-full px-5 py-3 text-sm text-white">
             <Loader2 className="h-4 w-4 animate-spin text-red-500" />
             Checking admin session...
           </div>
@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.14),transparent_24%),linear-gradient(180deg,#050505_0%,#0d0d0d_45%,#141414_100%)]">
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.18),transparent_24%),radial-gradient(circle_at_18%_20%,rgba(255,255,255,0.05),transparent_24%),linear-gradient(180deg,#050505_0%,#0d0d0d_45%,#141414_100%)]">
           <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.02)_25%,transparent_55%)]" />
         </div>
 
@@ -106,11 +106,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid w-full max-w-5xl overflow-hidden rounded-[32px] border border-white/10 bg-[#101010]/90 shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur xl:grid-cols-[1fr_460px]"
+            className="glass-surface-strong grid w-full max-w-5xl overflow-hidden rounded-[32px] xl:grid-cols-[1fr_460px]"
           >
-            <div className="hidden xl:flex flex-col justify-between border-r border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(229,9,20,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)] p-10">
+            <div className="hidden xl:flex flex-col justify-between border-r border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(229,9,20,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-10">
               <div>
-                <div className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                <div className="glass-surface mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl">
                   <Logo size="lg" className="h-8 w-8" />
                 </div>
                 <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-red-400">WatchDB Control Room</p>
@@ -121,14 +121,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="glass-surface flex items-start gap-3 rounded-2xl p-4">
                   <ShieldCheck className="mt-0.5 h-5 w-5 text-red-400" />
                   <div>
                     <p className="text-sm font-medium text-white">Secure Access</p>
                     <p className="mt-1 text-sm text-gray-400">Session-based verification keeps access restricted to approved users.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="glass-surface flex items-start gap-3 rounded-2xl p-4">
                   <Sparkles className="mt-0.5 h-5 w-5 text-red-400" />
                   <div>
                     <p className="text-sm font-medium text-white">Responsive Workspace</p>
@@ -143,7 +143,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <motion.div
                   initial={{ scale: 0.9 }}
                   animate={{ scale: 1 }}
-                  className="mb-4 inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 xl:hidden"
+                  className="glass-surface mb-4 inline-flex items-center justify-center rounded-2xl p-3 xl:hidden"
                 >
                   <Logo size="lg" className="h-8 w-8" />
                 </motion.div>
@@ -159,7 +159,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     value={adminKey}
                     onChange={(e) => setAdminKey(e.target.value)}
                     placeholder="Admin Key"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 py-4 pl-12 pr-4 text-white placeholder-gray-500 transition-all focus:border-[#e50914] focus:bg-white/10 focus:outline-none"
+                    className="glass-surface w-full rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-500 transition-all focus:border-[#e50914] focus:bg-white/10 focus:outline-none"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </motion.button>
               </form>
 
-              <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="glass-surface mt-6 rounded-2xl p-4">
                 <p className="text-sm font-medium text-white">Restricted access</p>
                 <p className="mt-1 text-sm text-gray-400">Authorized personnel only. Session remains stored in this browser until logout.</p>
               </div>
@@ -203,7 +203,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.1),_transparent_20%),linear-gradient(180deg,_#0a0a0a_0%,_#121212_52%,_#141414_100%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_20%),radial-gradient(circle_at_16%_18%,_rgba(255,255,255,0.04),_transparent_24%),linear-gradient(180deg,_#0a0a0a_0%,_#121212_52%,_#141414_100%)]">
       <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );

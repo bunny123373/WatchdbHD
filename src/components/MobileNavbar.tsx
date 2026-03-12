@@ -123,8 +123,8 @@ export default function MobileNavbar() {
 
   if (isSearchActive) {
     return (
-      <div ref={searchRef} className="fixed inset-0 z-[100] bg-[#141414] overflow-y-auto">
-        <div className="sticky top-0 bg-[#141414] px-4 pt-4 pb-2">
+      <div ref={searchRef} className="glass-surface-strong fixed inset-0 z-[100] overflow-y-auto">
+        <div className="sticky top-0 border-b border-white/10 bg-[linear-gradient(180deg,rgba(8,8,10,0.88),rgba(8,8,10,0.62))] px-4 pt-4 pb-2 backdrop-blur-2xl">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <button
               type="button"
@@ -140,7 +140,7 @@ export default function MobileNavbar() {
                 placeholder="Search movies, TV shows..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-white/40 text-lg"
+                className="glass-surface w-full rounded-lg pl-10 pr-4 py-3 text-lg text-white placeholder-gray-400 focus:outline-none focus:border-white/40"
                 autoFocus
               />
               {searchInput && (
@@ -247,7 +247,7 @@ export default function MobileNavbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 lg:hidden ${
-        isScrolled ? "bg-[#141414]" : "bg-gradient-to-b from-black/95 to-transparent"
+        isScrolled ? "navbar-blur-surface border-b border-white/10" : "bg-gradient-to-b from-black/75 via-black/40 to-transparent"
       }`}
     >
       <div className="px-3 py-2">
@@ -263,7 +263,7 @@ export default function MobileNavbar() {
               </button>
               
               {isMenuOpen && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-xl overflow-hidden z-[70]">
+                <div className="glass-surface-strong absolute top-full left-0 z-[70] mt-2 w-56 overflow-hidden rounded-lg">
                   <div className="py-2">
                     {MENU_ITEMS.map((item) => {
                       const isActive = item.href === "/" 
@@ -298,7 +298,7 @@ export default function MobileNavbar() {
                       );
                     })}
                   </div>
-                  <div className="border-t border-gray-800 py-2">
+                  <div className="border-t border-white/10 py-2">
                     <Link
                       href="/collections"
                       onClick={() => setIsMenuOpen(false)}

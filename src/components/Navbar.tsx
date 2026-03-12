@@ -87,7 +87,7 @@ export default function Navbar() {
         setSearchResults([]);
         return;
       }
-      
+
       setSearching(true);
       try {
         const response = await fetch(`/api/content?search=${encodeURIComponent(searchInput)}&limit=8`);
@@ -101,7 +101,7 @@ export default function Navbar() {
         setSearching(false);
       }
     };
-    
+
     const debounceTimer = setTimeout(fetchSearchResults, 300);
     return () => clearTimeout(debounceTimer);
   }, [searchInput]);
@@ -122,7 +122,6 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               <Logo size="md" className="w-8 h-8" />
               <span className="text-lg sm:text-xl font-bold text-[#e50914] tracking-tight">
@@ -130,7 +129,6 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
               {navLinks.map((link) => (
                 <Link
@@ -148,9 +146,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Right Side */}
             <div className="flex items-center gap-1.5 sm:gap-2.5">
-              {/* Search */}
               <div ref={searchRef} className="relative">
                 <div
                   className={cn(
@@ -186,7 +182,6 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Search Dropdown */}
                 {isSearchActive && searchInput.length >= 2 && (
                   <div className="absolute top-full right-0 mt-2 w-72 sm:w-80 max-h-96 overflow-y-auto bg-[#1f1f1f] rounded-lg shadow-xl border border-[#333]">
                     {searching ? (
@@ -229,12 +224,10 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* Language */}
               <div className="hidden sm:block rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">
                 <LanguageSelector />
               </div>
 
-              {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="p-2 hover:bg-white/10 rounded-full border border-white/10 bg-white/[0.03] transition-colors md:hidden"
@@ -251,12 +244,10 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 top-14 z-40 bg-black/92 backdrop-blur-xl">
           <div className="mx-auto max-w-lg px-4 py-6 space-y-4">
             <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-3">
-            {/* Mobile Nav Links */}
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 return (
@@ -277,7 +268,6 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Mobile Language */}
             <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-4">
               <p className="text-gray-400 text-sm mb-3">Language</p>
               <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-2 py-1">

@@ -3,10 +3,9 @@
 import { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3, ListVideo, Sparkles } from "lucide-react";
+import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3, ListVideo } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
-import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import { normalizeExternalUrl } from "@/utils/url";
@@ -111,27 +110,6 @@ function SeriesWatchContent() {
     return season.episodes.filter((ep) => watchedEpisodes.has(`${seasonNum}-${ep.episodeNumber}`)).length;
   };
 
-  const playNextEpisode = () => {
-    if (!series || !currentEpisode) return;
-
-    markAsWatched(currentEpisode, currentSeason);
-
-    const currentSeasonData = series.seasons?.find((s) => s.seasonNumber === currentSeason);
-    const currentEpisodeIndex = currentSeasonData?.episodes.findIndex((e) => e.episodeNumber === currentEpisode?.episodeNumber);
-
-    if (currentEpisodeIndex !== undefined && currentEpisodeIndex < (currentSeasonData?.episodes.length || 0) - 1) {
-      const nextEpisode = currentSeasonData?.episodes[currentEpisodeIndex + 1];
-      if (nextEpisode) {
-        handleEpisodeSelect(nextEpisode, currentSeason);
-      }
-    } else {
-      const nextSeason = series.seasons?.find((s) => s.seasonNumber === currentSeason + 1);
-      if (nextSeason && nextSeason.episodes.length > 0) {
-        handleEpisodeSelect(nextSeason.episodes[0], nextSeason.seasonNumber);
-      }
-    }
-  };
-
   const currentSeasonData = series?.seasons?.find((s) => s.seasonNumber === currentSeason);
   const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
@@ -223,9 +201,9 @@ function SeriesWatchContent() {
             className="mb-6"
           >
             <WatchPlayerShell
-              eyebrow={`Season ${currentSeason}`}
+              eyebrow="Now Playing"
               title={currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-              subtitle={`${series.title} | Episode ${currentEpisode?.episodeNumber}${currentEpisode?.quality ? ` | ${currentEpisode.quality}` : ""}`}
+              subtitle=""
               badges={
                 <>
                   <span className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200">
@@ -233,7 +211,7 @@ function SeriesWatchContent() {
                     S{currentSeason}E{currentEpisode?.episodeNumber}
                   </span>
                   {currentEpisode?.quality && (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-200">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-200">
                       <Play className="h-3.5 w-3.5 text-red-400" />
                       {currentEpisode.quality}
                     </span>
@@ -311,80 +289,6 @@ function SeriesWatchContent() {
               />
             </WatchPlayerShell>
           </motion.div>
-
-          <div className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
-            <div className="space-y-4">
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">About This Episode</h3>
-                <p className="leading-relaxed text-gray-300">
-                  {currentEpisode?.episodeDescription || currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-                </p>
-                {series.description && (
-                  <p className="mt-4 border-t border-white/5 pt-4 text-sm leading-relaxed text-gray-400">
-                    {series.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Playback</h3>
-                  <div className="space-y-3 text-sm text-gray-300">
-                    <div className="flex items-start gap-3">
-                      <Tv className="mt-0.5 h-4 w-4 text-red-400" />
-                      <p>Use Server 1 first, then switch only if the current source stalls or fails.</p>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Sparkles className="mt-0.5 h-4 w-4 text-red-400" />
-                      <p>Open episodes below the player to stay in the same flow, especially on mobile.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(229,9,20,0.1),rgba(255,255,255,0.02))] p-5 sm:p-6">
-                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-white">Series Context</h3>
-                  <div className="space-y-2 text-sm text-gray-300">
-                    <p>{series.title}</p>
-                    <p>Season {currentSeason}</p>
-                    <p>{currentSeasonData?.episodes.length || 0} episodes in this season</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Watch Status</h3>
-                <div className="space-y-3 text-sm text-gray-300">
-                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
-                    <span className="text-gray-500">Season</span>
-                    <span>{currentSeason}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
-                    <span className="text-gray-500">Episode</span>
-                    <span>{currentEpisode?.episodeNumber}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
-                    <span className="text-gray-500">Watched</span>
-                    <span>{getWatchedCountForSeason(currentSeason)}/{currentSeasonData?.episodes.length || 0}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-gray-500">Auto-play</span>
-                    <span>{autoPlayNext ? "Enabled" : "Disabled"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-400">Next Up</h3>
-                <p className="text-sm leading-relaxed text-gray-300">
-                  {autoPlayNext
-                    ? "When enabled, the player can continue your current season flow more smoothly after each episode."
-                    : "Auto-play is off. You’ll manually choose the next episode from the browser below."}
-                </p>
-              </div>
-            </div>
-          </div>
 
           <AnimatePresence>
             {showEpisodeList && (
@@ -498,7 +402,6 @@ function SeriesWatchContent() {
                             </h4>
                             {isWatched && <CircleCheck className="h-4 w-4 flex-shrink-0 text-green-500" />}
                           </div>
-                          <p className="text-left text-xs text-gray-400">{series.title}</p>
                         </button>
                         <AnimatePresence>
                           {hoveredEpisode === episode.episodeNumber && (
@@ -580,8 +483,6 @@ function SeriesWatchContent() {
           </AnimatePresence>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
