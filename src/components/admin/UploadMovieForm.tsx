@@ -89,6 +89,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     embedIframeLink: "",
     embedIframeLink2: "",
     downloadLink: "",
+    hlsUrl: "",
     trailerUrl: "",
   });
   const [selectedAudioLanguages, setSelectedAudioLanguages] = useState<string[]>([]);
@@ -256,6 +257,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           embedIframeLink: "",
           embedIframeLink2: "",
           downloadLink: "",
+          hlsUrl: "",
           trailerUrl: "",
         });
         setSelectedGenres([]);
@@ -569,6 +571,15 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
 
       {/* Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+        <div className="relative">
+          <Input
+            label="HLS/MP4 Stream URL"
+            name="hlsUrl"
+            value={formData.hlsUrl}
+            onChange={handleChange}
+            placeholder="https://example.com/video.m3u8 or .mp4"
+          />
+        </div>
         <div className="relative">
           <Input
             label="Embed Iframe URL (Watch Link)"
