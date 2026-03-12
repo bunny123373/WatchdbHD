@@ -40,8 +40,9 @@ export default function LanguageSelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-1.5 w-44 bg-[#1a1a1a] rounded-lg shadow-2xl border border-white/10 overflow-hidden z-[100]">
-          <div className="py-1">
+        <div className="absolute top-full right-0 mt-1 w-40 bg-[#1a1a1a] rounded-lg shadow-2xl border border-white/10 overflow-hidden z-[9999] fixed"
+             style={{ position: 'fixed', top: 'auto', right: 0 }}>
+          <div className="py-1 max-h-60 overflow-y-auto">
             {languages.map((lang) => (
               <button
                 key={lang.code}

@@ -344,7 +344,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div ref={mobileMenuRef} className="md:hidden fixed inset-0 top-12 z-40 bg-[#141414]/98 backdrop-blur-sm overflow-y-auto">
+        <div className="md:hidden fixed left-0 right-0 top-12 bg-[#141414] border-t border-white/10 z-[100] max-h-[80vh] overflow-y-auto">
           <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-2 sm:space-y-3">
             {/* Mobile Search */}
             <form onSubmit={(e) => { handleSearch(e); setIsMobileMenuOpen(false); }}>

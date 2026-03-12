@@ -14,14 +14,15 @@
 html {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: visible;
   scroll-behavior: smooth;
 }
 
 body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: visible;
+  overflow-y: visible;
   font-family: 'Inter', sans-serif;
   background-color: #050608;
   color: #F9FAFB;
