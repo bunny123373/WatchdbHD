@@ -36,7 +36,8 @@ export default function Navbar() {
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isHomePage = pathname === "/";
-  if (isAdminRoute) return null;
+  const isWatchPage = pathname.startsWith("/watch/") || pathname.startsWith("/series/watch/");
+  if (isAdminRoute || isWatchPage) return null;
 
   useEffect(() => {
     const handleScroll = () => {
