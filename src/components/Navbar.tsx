@@ -49,10 +49,21 @@ export default function Navbar() {
   if (isAdminRoute || isPlayerRoute) return null;
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (ticking) return;
+
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        const nextScrolled = window.scrollY > 20;
+        setIsScrolled((prev) => (prev === nextScrolled ? prev : nextScrolled));
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

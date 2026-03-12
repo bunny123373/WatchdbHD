@@ -8,20 +8,24 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  max-width: 100vw;
 }
 
 html {
+  min-height: 100%;
   width: 100%;
-  max-width: 100%;
-  overflow-x: visible;
+  overflow-x: hidden;
+  overflow-y: scroll;
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  background-color: #040404;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
+  position: relative;
+  min-height: 100%;
   width: 100%;
-  max-width: 100%;
-  overflow-x: visible;
+  overflow-x: clip;
   overflow-y: visible;
   font-family: 'Inter', sans-serif;
   background:
@@ -30,6 +34,8 @@ body {
     radial-gradient(circle at 82% 4%, rgba(109, 40, 217, 0.08), transparent 20%),
     linear-gradient(180deg, #040404 0%, #09090b 42%, #040507 100%);
   color: #F9FAFB;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body::before {
@@ -41,8 +47,10 @@ body::before {
     radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.055), transparent 18%),
     radial-gradient(circle at 84% 0%, rgba(229, 9, 20, 0.12), transparent 20%),
     radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.08), transparent 22%);
-  filter: blur(18px);
   z-index: -2;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 body::after {
@@ -56,12 +64,9 @@ body::after {
   mask-image: linear-gradient(180deg, rgba(0,0,0,0.4), transparent 70%);
   opacity: 0.8;
   z-index: -1;
-}
-
-/* Fix for all containers */
-div, section, article, header, footer, nav, main, ul, ol, li, p, h1, h2, h3, h4, h5, h6 {
-  max-width: 100%;
-  overflow-x: hidden;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 /* Fix for content overflow */
@@ -157,6 +162,7 @@ img, video, iframe, canvas, svg, picture {
 .app-page-shell {
   position: relative;
   isolation: isolate;
+  overflow-x: clip;
 }
 
 .app-page-shell::before {
@@ -168,8 +174,10 @@ img, video, iframe, canvas, svg, picture {
     radial-gradient(circle at top, rgba(229, 9, 20, 0.12), transparent 20%),
     radial-gradient(circle at 10% 24%, rgba(255,255,255,0.04), transparent 18%),
     linear-gradient(180deg, rgba(255,255,255,0.02), transparent 35%);
-  filter: blur(6px);
   z-index: -1;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 .app-page-shell::after {
@@ -180,9 +188,11 @@ img, video, iframe, canvas, svg, picture {
   background:
     radial-gradient(circle at 72% 16%, rgba(255, 255, 255, 0.045), transparent 16%),
     radial-gradient(circle at 50% 120%, rgba(14, 165, 233, 0.08), transparent 22%);
-  filter: blur(32px);
   opacity: 0.85;
   z-index: -1;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 .glass-panel {
@@ -317,6 +327,18 @@ a:focus-visible, div[role="link"]:focus-visible {
 ::selection {
   background: rgba(245, 197, 66, 0.3);
   color: #F9FAFB;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-shimmer::after,
+  .netflix-skeleton::after,
+  .animate-slide-down {
+    animation: none !important;
+  }
 }
 
 /* Notification animation */
