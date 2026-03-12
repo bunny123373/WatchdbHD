@@ -111,7 +111,11 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gray-800 rounded" />
+              <div className="w-8 h-8 bg-zinc-800 rounded animate-pulse" />
+              <div className="w-20 h-6 bg-zinc-800 rounded animate-pulse hidden sm:block" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-zinc-800 rounded-full animate-pulse" />
             </div>
           </div>
         </div>

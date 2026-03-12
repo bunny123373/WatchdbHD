@@ -183,6 +183,19 @@ a:focus-visible, div[role="link"]:focus-visible {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .animate-slide-down {
   animation: slide-down 0.3s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }
