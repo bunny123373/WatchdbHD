@@ -28,6 +28,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,6 +39,10 @@ export default function Navbar() {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isAdminRoute = pathname.startsWith("/admin");
   if (isAdminRoute) return null;
@@ -99,6 +104,20 @@ export default function Navbar() {
     const debounceTimer = setTimeout(fetchSearchResults, 300);
     return () => clearTimeout(debounceTimer);
   }, [searchInput]);
+
+  if (!mounted) {
+    return (
+      <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-[#141414] border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gray-800 rounded" />
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>
