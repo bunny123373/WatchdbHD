@@ -13,7 +13,7 @@ interface HlsPlayerProps {
 
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   const videoRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<ReturnType<typeof videojs> | null>(null);
+  const playerRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -32,7 +32,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-city");
     videoRef.current.appendChild(videoElement);
 
-    const player = videojs(videoElement, {
+    const player: any = videojs(videoElement, {
       autoplay: false,
       controls: true,
       responsive: true,
@@ -91,18 +91,15 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
   return (
     <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
-      {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-white text-lg font-medium">Loading...</p>
-            <p className="text-gray-400 text-sm">Please wait</p>
           </div>
         </div>
       )}
 
-      {/* Error Overlay */}
       {hasError && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90">
           <div className="text-center p-8">
