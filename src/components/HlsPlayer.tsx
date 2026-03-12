@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import "@videojs/themes/city/index.css";
 
 interface HlsPlayerProps {
   src?: string;
