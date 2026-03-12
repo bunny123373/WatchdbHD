@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
@@ -23,7 +23,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     }
 
     const videoElement = document.createElement("video-js");
-    videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-custom");
+    videoElement.classList.add("vjs-fill", "vjs-big-play-centered");
     videoRef.current.appendChild(videoElement);
 
     const player = videojs(videoElement, {
@@ -36,21 +36,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       sources: [{
         src: src,
         type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      }],
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'flexibleWidthSpacer',
-          'playbackRateMenuButton',
-          'fullscreenToggle'
-        ]
-      }
-    }, () => {
-      player.src({ src, type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+      }]
     });
 
     playerRef.current = player;
