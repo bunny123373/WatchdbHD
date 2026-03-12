@@ -3,11 +3,12 @@
 import { useEffect, useState, Suspense, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Download, Play, ChevronLeft, ChevronRight, SkipForward, Check, ChevronDown, CircleCheck, CircleDashed } from "lucide-react";
+import { Download, Play, ChevronLeft, SkipForward, Check, ChevronDown, CircleCheck, Tv, Layers3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContent, IEpisode } from "@/models/Content";
 import Footer from "@/components/Footer";
 import IframePlayer from "@/components/IframePlayer";
+import WatchPlayerShell from "@/components/WatchPlayerShell";
 import { normalizeExternalUrl } from "@/utils/url";
 
 function resolveContentIdFromSlug(slug: string) {
@@ -105,19 +106,19 @@ function SeriesWatchContent() {
   };
 
   const getWatchedCountForSeason = (seasonNum: number) => {
-    const season = series?.seasons?.find(s => s.seasonNumber === seasonNum);
+    const season = series?.seasons?.find((s) => s.seasonNumber === seasonNum);
     if (!season) return 0;
-    return season.episodes.filter(ep => watchedEpisodes.has(`${seasonNum}-${ep.episodeNumber}`)).length;
+    return season.episodes.filter((ep) => watchedEpisodes.has(`${seasonNum}-${ep.episodeNumber}`)).length;
   };
 
   const playNextEpisode = () => {
     if (!series || !currentEpisode) return;
-    
+
     markAsWatched(currentEpisode, currentSeason);
-    
+
     const currentSeasonData = series.seasons?.find((s) => s.seasonNumber === currentSeason);
     const currentEpisodeIndex = currentSeasonData?.episodes.findIndex((e) => e.episodeNumber === currentEpisode?.episodeNumber);
-    
+
     if (currentEpisodeIndex !== undefined && currentEpisodeIndex < (currentSeasonData?.episodes.length || 0) - 1) {
       const nextEpisode = currentSeasonData?.episodes[currentEpisodeIndex + 1];
       if (nextEpisode) {
@@ -148,7 +149,7 @@ function SeriesWatchContent() {
 
   const playSeason = () => {
     const firstUnwatched = currentSeasonData?.episodes.find(
-      ep => !watchedEpisodes.has(`${currentSeason}-${ep.episodeNumber}`)
+      (ep) => !watchedEpisodes.has(`${currentSeason}-${ep.episodeNumber}`)
     );
     if (firstUnwatched) {
       handleEpisodeSelect(firstUnwatched, currentSeason);
@@ -160,9 +161,9 @@ function SeriesWatchContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <div className="pt-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
+        <div className="px-4 pt-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="aspect-video rounded-2xl bg-gray-800 animate-pulse" />
           </div>
         </div>
       </div>
@@ -174,7 +175,7 @@ function SeriesWatchContent() {
       <div className="min-h-screen bg-[#141414]">
         <div className="pt-32 text-center">
           <h1 className="text-2xl font-bold text-white">Series not found</h1>
-          <Link href="/" className="text-yellow-500 mt-4 inline-block">
+          <Link href="/" className="mt-4 inline-block text-yellow-500">
             Go back home
           </Link>
         </div>
@@ -184,23 +185,25 @@ function SeriesWatchContent() {
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Fixed Header - Netflix Style */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black via-black/90 to-transparent">
         <div className="flex items-center justify-between px-3 py-2">
           <Link
             href={`/series/${String(series._id)}`}
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-white/80 transition-colors hover:text-white"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-xs font-medium hidden sm:block">{series.title?.slice(0, 15)}{series.title && series.title.length > 15 ? '...' : ''}</span>
+            <span className="hidden text-xs font-medium sm:block">
+              {series.title?.slice(0, 15)}
+              {series.title && series.title.length > 15 ? "..." : ""}
+            </span>
           </Link>
-          
+
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded-sm">
+            <span className="rounded-sm bg-[#e50914] px-2 py-0.5 text-[10px] font-bold text-white">
               S{currentSeason}E{currentEpisode?.episodeNumber}
             </span>
             {currentEpisode?.quality && (
-              <span className="px-2 py-0.5 text-[10px] font-bold bg-white/20 text-white rounded-sm">
+              <span className="rounded-sm bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white">
                 {currentEpisode.quality}
               </span>
             )}
@@ -208,93 +211,102 @@ function SeriesWatchContent() {
         </div>
       </div>
 
-      <div className="pt-11">
-        <div className="w-full aspect-video bg-black">
-          <IframePlayer
-            src={currentEpisodeEmbedLink}
-            title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
-          />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="px-4 pb-10 pt-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="mb-6"
           >
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-              <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">
-                  {currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
-                </h1>
-                <p className="text-gray-400">{series.title} • Season {currentSeason}</p>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setAutoPlayNext(!autoPlayNext)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                    autoPlayNext 
-                      ? "bg-green-600 text-white" 
-                      : "bg-gray-700 text-gray-300"
-                  }`}
-                >
-                  {autoPlayNext ? <SkipForward className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
-                  {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
-                </button>
-              </div>
-            </div>
-            
-            <div className="flex flex-wrap gap-3 mb-6">
-              {currentEpisode?.embedIframeLink && (
-                <button
-                  onClick={() => setActiveServer(1)}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
-                    activeServer === 1 
-                      ? "bg-[#e50914] hover:bg-[#f40612] text-white" 
-                      : "bg-gray-700 hover:bg-gray-600 text-white"
-                  }`}
-                >
-                  <Play className="w-4 h-4" />
-                  Server 1
-                </button>
-              )}
-              {currentEpisode?.embedIframeLink2 && (
-                <button
-                  onClick={() => setActiveServer(2)}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
-                    activeServer === 2 
-                      ? "bg-green-600 hover:bg-green-500 text-white" 
-                      : "bg-gray-700 hover:bg-gray-600 text-white"
-                  }`}
-                >
-                  <Play className="w-4 h-4" />
-                  Server 2
-                </button>
-              )}
-              {currentEpisodeDownloadUrl && (
-                <a
-                  href={currentEpisodeDownloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-colors"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </a>
-              )}
-            </div>
-
-            <button
-              onClick={() => setShowEpisodeList(!showEpisodeList)}
-              className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-md transition-colors ${
-                showEpisodeList ? "bg-white text-black" : "bg-white/10 hover:bg-white/20 text-white"
-              }`}
+            <WatchPlayerShell
+              eyebrow={`Season ${currentSeason}`}
+              title={currentEpisode?.episodeTitle || `Episode ${currentEpisode?.episodeNumber}`}
+              subtitle={`${series.title} | Episode ${currentEpisode?.episodeNumber}${currentEpisode?.quality ? ` | ${currentEpisode.quality}` : ""}`}
+              badges={
+                <>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200">
+                    <Tv className="h-3.5 w-3.5" />
+                    S{currentSeason}E{currentEpisode?.episodeNumber}
+                  </span>
+                  {currentEpisode?.quality && (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-200">
+                      <Play className="h-3.5 w-3.5 text-red-400" />
+                      {currentEpisode.quality}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => setAutoPlayNext(!autoPlayNext)}
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                      autoPlayNext
+                        ? "bg-emerald-600 text-white"
+                        : "border border-white/10 bg-white/5 text-gray-300"
+                    }`}
+                  >
+                    {autoPlayNext ? <SkipForward className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
+                    {autoPlayNext ? "Auto-play On" : "Auto-play Off"}
+                  </button>
+                </>
+              }
+              actions={
+                <>
+                  {currentEpisode?.embedIframeLink && (
+                    <button
+                      onClick={() => setActiveServer(1)}
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                        activeServer === 1
+                          ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                          : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                      }`}
+                    >
+                      <Play className="w-4 h-4" />
+                      Server 1
+                    </button>
+                  )}
+                  {currentEpisode?.embedIframeLink2 && (
+                    <button
+                      onClick={() => setActiveServer(2)}
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                        activeServer === 2
+                          ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                          : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                      }`}
+                    >
+                      <Play className="w-4 h-4" />
+                      Server 2
+                    </button>
+                  )}
+                  {currentEpisodeDownloadUrl && (
+                    <a
+                      href={currentEpisodeDownloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setShowEpisodeList(!showEpisodeList)}
+                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
+                      showEpisodeList
+                        ? "bg-white text-black"
+                        : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <Layers3 className="w-4 h-4" />
+                    Episodes
+                    <ChevronDown className={`w-4 h-4 transition-transform ${showEpisodeList ? "rotate-180" : ""}`} />
+                  </button>
+                </>
+              }
             >
-              <span>Episodes</span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${showEpisodeList ? 'rotate-180' : ''}`} />
-            </button>
+              <IframePlayer
+                src={currentEpisodeEmbedLink}
+                title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
+              />
+            </WatchPlayerShell>
           </motion.div>
 
           <AnimatePresence>
@@ -305,7 +317,7 @@ function SeriesWatchContent() {
                 exit={{ opacity: 0, y: 20 }}
                 className="mb-8"
               >
-                <div className="flex items-center gap-2 mb-4 lg:mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide lg:mb-6">
                   {series.seasons?.map((season) => (
                     <button
                       key={season.seasonNumber}
@@ -315,29 +327,29 @@ function SeriesWatchContent() {
                           handleEpisodeSelect(season.episodes[0], season.seasonNumber);
                         }
                       }}
-                      className={`flex-shrink-0 px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm font-medium rounded-full transition-all flex items-center gap-1 lg:gap-2 ${
+                      className={`flex flex-shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all lg:gap-2 lg:px-4 lg:py-2 lg:text-sm ${
                         currentSeason === season.seasonNumber
                           ? "bg-white text-black"
                           : "bg-white/10 text-white hover:bg-white/20"
                       }`}
                     >
                       <span>S{season.seasonNumber}</span>
-                      <span className={`text-[10px] lg:text-xs ${currentSeason === season.seasonNumber ? 'text-gray-500' : 'text-gray-400'}`}>
+                      <span className={`text-[10px] lg:text-xs ${currentSeason === season.seasonNumber ? "text-gray-500" : "text-gray-400"}`}>
                         {getWatchedCountForSeason(season.seasonNumber)}/{season.episodes.length}
                       </span>
                     </button>
                   ))}
                   <button
                     onClick={playSeason}
-                    className="flex-shrink-0 px-3 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm font-medium rounded-full transition-all flex items-center gap-1 lg:gap-2 bg-[#e50914] hover:bg-[#f40612] text-white"
+                    className="flex flex-shrink-0 items-center gap-1 rounded-full bg-[#e50914] px-3 py-1.5 text-xs font-medium text-white transition-all hover:bg-[#f40612] lg:gap-2 lg:px-4 lg:py-2 lg:text-sm"
                   >
-                    <Play className="w-3 h-3 lg:w-4 lg:h-4 fill-white" />
+                    <Play className="h-3 w-3 fill-white lg:h-4 lg:w-4" />
                     <span className="hidden sm:inline">Play</span>
                   </button>
                 </div>
 
-                <div className="lg:flex gap-4 overflow-x-auto pb-4 lg:scrollbar-hide snap-x lg:snap-none hidden">
-                  {currentSeasonData?.episodes.map((episode, idx) => {
+                <div className="hidden gap-4 overflow-x-auto pb-4 snap-x lg:flex lg:snap-none lg:scrollbar-hide">
+                  {currentSeasonData?.episodes.map((episode) => {
                     const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
                     const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
 
@@ -347,75 +359,61 @@ function SeriesWatchContent() {
                         ref={(el) => {
                           if (el) episodeRefs.current.set(episode.episodeNumber, el);
                         }}
-                        className={`flex-shrink-0 w-48 snap-start group relative transition-all ${
+                        className={`group relative w-48 flex-shrink-0 snap-start transition-all ${
                           isActive ? "scale-105" : "opacity-70 hover:opacity-100"
                         }`}
                         onMouseEnter={() => setHoveredEpisode(episode.episodeNumber)}
                         onMouseLeave={() => setHoveredEpisode(null)}
                       >
-                        <button
-                          onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                          className="w-full"
-                        >
-                          <div className={`relative aspect-video rounded-lg overflow-hidden mb-2 ${
+                        <button onClick={() => handleEpisodeSelect(episode, currentSeason)} className="w-full">
+                          <div className={`relative mb-2 aspect-video overflow-hidden rounded-lg ${
                             isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500/50" : "ring-1 ring-white/20 group-hover:ring-white/50"
                           }`}>
                             {episode.episodeThumbnail || series.poster ? (
-                              <img 
-                                src={episode.episodeThumbnail || series.poster} 
+                              <img
+                                src={episode.episodeThumbnail || series.poster}
                                 alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                                className="w-full h-full object-cover"
+                                className="h-full w-full object-cover"
                               />
                             ) : (
-                              <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                                <Play className="w-8 h-8 text-white/50" />
+                              <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                                <Play className="h-8 w-8 text-white/50" />
                               </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                            {!episode.episodeThumbnail && !series.poster && (
-                              <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                                <Play className="w-8 h-8 text-white/50" />
-                              </div>
-                            )}
                             <div className="absolute bottom-2 left-2 flex items-center gap-1">
-                              <span className="text-xs font-medium text-white/90">
-                                E{episode.episodeNumber}
-                              </span>
+                              <span className="text-xs font-medium text-white/90">E{episode.episodeNumber}</span>
                               {episode.quality && (
-                                <span className="text-[10px] px-1 py-0.5 bg-white/20 text-white rounded">
+                                <span className="rounded bg-white/20 px-1 py-0.5 text-[10px] text-white">
                                   {episode.quality}
                                 </span>
                               )}
                             </div>
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
-                                <Play className="w-5 h-5 text-black ml-0.5" fill="black" />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90">
+                                <Play className="ml-0.5 h-5 w-5 text-black" fill="black" />
                               </div>
                             </div>
                             {isActive && (
                               <div className="absolute top-2 right-2">
-                                <span className="text-[10px] px-2 py-0.5 bg-[#e50914] text-white rounded font-medium">
+                                <span className="rounded bg-[#e50914] px-2 py-0.5 text-[10px] font-medium text-white">
                                   Playing
                                 </span>
                               </div>
                             )}
                             {!isActive && isWatched && (
                               <div className="absolute top-2 right-2">
-                                <CircleCheck className="w-5 h-5 text-green-500" />
+                                <CircleCheck className="h-5 w-5 text-green-500" />
                               </div>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-sm font-medium text-white truncate text-left flex-1">
+                            <h4 className="flex-1 truncate text-left text-sm font-medium text-white">
                               {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
                             </h4>
-                            {isWatched && (
-                              <CircleCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
-                            )}
+                            {isWatched && <CircleCheck className="h-4 w-4 flex-shrink-0 text-green-500" />}
                           </div>
-                          <p className="text-xs text-gray-400 text-left">
-                            {series.title}
-                          </p>
+                          <p className="text-left text-xs text-gray-400">{series.title}</p>
                         </button>
                         <AnimatePresence>
                           {hoveredEpisode === episode.episodeNumber && (
@@ -423,9 +421,9 @@ function SeriesWatchContent() {
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 10 }}
-                              className="absolute top-full left-0 right-0 mt-2 p-3 bg-[#1a1a1a] rounded-lg border border-gray-700 z-20 hidden lg:block"
+                              className="absolute top-full left-0 right-0 z-20 mt-2 hidden rounded-lg border border-gray-700 bg-[#1a1a1a] p-3 lg:block"
                             >
-                              <p className="text-xs text-gray-300 line-clamp-4">
+                              <p className="line-clamp-4 text-xs text-gray-300">
                                 {episode.episodeDescription || episode.episodeTitle || `Episode ${episode.episodeNumber}`}
                               </p>
                             </motion.div>
@@ -436,8 +434,8 @@ function SeriesWatchContent() {
                   })}
                 </div>
 
-                <div className="lg:hidden space-y-2">
-                  {currentSeasonData?.episodes.map((episode, idx) => {
+                <div className="space-y-2 lg:hidden">
+                  {currentSeasonData?.episodes.map((episode) => {
                     const isActive = currentEpisode?.episodeNumber === episode.episodeNumber;
                     const isWatched = isEpisodeWatched(episode.episodeNumber, currentSeason);
 
@@ -445,51 +443,49 @@ function SeriesWatchContent() {
                       <button
                         key={episode.episodeNumber}
                         onClick={() => handleEpisodeSelect(episode, currentSeason)}
-                        className={`w-full flex items-center gap-3 p-2 rounded-lg transition-all ${
+                        className={`flex w-full items-center gap-3 rounded-lg p-2 transition-all ${
                           isActive ? "bg-white/10" : "hover:bg-white/5"
                         }`}
                       >
-                        <div className={`relative w-24 flex-shrink-0 aspect-video rounded overflow-hidden ${
+                        <div className={`relative aspect-video w-24 flex-shrink-0 overflow-hidden rounded ${
                           isActive ? "ring-2 ring-white" : isWatched ? "ring-1 ring-green-500" : "ring-1 ring-white/20"
                         }`}>
                           {episode.episodeThumbnail || series.poster ? (
-                            <img 
-                              src={episode.episodeThumbnail || series.poster} 
+                            <img
+                              src={episode.episodeThumbnail || series.poster}
                               alt={episode.episodeTitle || `Episode ${episode.episodeNumber}`}
-                              className="w-full h-full object-cover"
+                              className="h-full w-full object-cover"
                             />
                           ) : (
-                            <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                              <Play className="w-6 h-6 text-white/50" />
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                              <Play className="h-6 w-6 text-white/50" />
                             </div>
                           )}
                           {isActive && (
-                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                              <Play className="w-8 h-8 text-white" fill="white" />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                              <Play className="h-8 w-8 text-white" fill="white" />
                             </div>
                           )}
                           {isWatched && !isActive && (
                             <div className="absolute top-1 right-1">
-                              <CircleCheck className="w-4 h-4 text-green-500" />
+                              <CircleCheck className="h-4 w-4 text-green-500" />
                             </div>
                           )}
                         </div>
-                        <div className="flex-1 min-w-0 text-left">
+                        <div className="min-w-0 flex-1 text-left">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-400">E{episode.episodeNumber}</span>
                             {isActive && (
-                              <span className="text-[10px] px-1.5 py-0.5 bg-[#e50914] text-white rounded font-medium">
+                              <span className="rounded bg-[#e50914] px-1.5 py-0.5 text-[10px] font-medium text-white">
                                 Playing
                               </span>
                             )}
                           </div>
-                          <h4 className="text-sm font-medium text-white truncate">
+                          <h4 className="truncate text-sm font-medium text-white">
                             {episode.episodeTitle || `Episode ${episode.episodeNumber}`}
                           </h4>
                         </div>
-                        {isWatched && (
-                          <CircleCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        )}
+                        {isWatched && <CircleCheck className="h-5 w-5 flex-shrink-0 text-green-500" />}
                       </button>
                     );
                   })}
@@ -507,15 +503,17 @@ function SeriesWatchContent() {
 
 export default function SeriesWatchPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#141414]">
-        <div className="pt-24 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="aspect-video bg-gray-800 rounded-2xl animate-pulse" />
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#141414]">
+          <div className="px-4 pt-24">
+            <div className="mx-auto max-w-6xl">
+              <div className="aspect-video rounded-2xl bg-gray-800 animate-pulse" />
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <SeriesWatchContent />
     </Suspense>
   );

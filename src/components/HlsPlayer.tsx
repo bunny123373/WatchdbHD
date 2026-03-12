@@ -79,35 +79,45 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
   if (!src) {
     return (
-      <div className="relative w-full aspect-video bg-zinc-900 flex items-center justify-center">
-        <div className="text-center p-8">
-          <div className="w-20 h-20 rounded-full bg-zinc-800 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
+      <div className="watch-player-shell relative w-full aspect-video overflow-hidden rounded-[24px] border border-white/10 bg-[#050505]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(229,9,20,0.15),_transparent_38%),linear-gradient(180deg,_rgba(255,255,255,0.04),_rgba(255,255,255,0))]" />
+        <div className="relative flex h-full items-center justify-center">
+          <div className="text-center p-8">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <svg className="w-10 h-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-xl font-semibold text-white">Stream Not Available</h3>
+            <p className="text-zinc-500">This content does not have an HLS stream yet.</p>
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2">Stream Not Available</h3>
-          <p className="text-zinc-500">This content does not have an HLS stream yet.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full bg-black">
+    <div className="watch-player-shell relative w-full aspect-video overflow-hidden rounded-[24px] border border-white/10 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 bg-gradient-to-b from-black/55 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-t from-black/65 to-transparent" />
+      <div className="pointer-events-none absolute left-4 top-4 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] font-medium tracking-[0.2em] text-white/80 backdrop-blur">
+        HLS STREAM
+      </div>
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/78 backdrop-blur-sm">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-white text-lg font-medium">Loading...</p>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <div className="h-10 w-10 rounded-full border-[3px] border-red-600/90 border-t-transparent animate-spin" />
+            </div>
+            <p className="text-lg font-medium text-white">Loading stream...</p>
           </div>
         </div>
       )}
 
       {hasError && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90 backdrop-blur-sm">
           <div className="text-center p-8">
-            <h3 className="text-xl font-semibold text-white mb-2">Failed to Load</h3>
+            <h3 className="mb-2 text-xl font-semibold text-white">Failed to Load</h3>
             <p className="text-zinc-400 text-sm">Please check your connection</p>
           </div>
         </div>
@@ -115,7 +125,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       
       <video
         ref={videoRef}
-        className="video-js vjs-fill vjs-big-play-centered vjs-theme-city"
+        className="video-js vjs-fill vjs-big-play-centered vjs-theme-city watch-player-video"
         playsInline
       />
     </div>
