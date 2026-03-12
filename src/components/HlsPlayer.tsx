@@ -28,7 +28,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     setHasError(false);
 
     const videoElement = document.createElement("video-js");
-    videoElement.classList.add("vjs-fill", "vjs-big-play-centered");
+    videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-city");
     videoRef.current.appendChild(videoElement);
 
     const player = videojs(videoElement, {
@@ -41,9 +41,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       sources: [{
         src: src,
         type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      }],
-      loadingSpinner: true,
-      notSupportedMessage: "Video not supported",
+      }]
     });
 
     player.on('loadstart', () => {
@@ -55,10 +53,6 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       setIsLoading(false);
     });
 
-    player.on('canplaythrough', () => {
-      setIsLoading(false);
-    });
-
     player.on('playing', () => {
       setIsLoading(false);
     });
@@ -66,7 +60,6 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     player.on('error', () => {
       setHasError(true);
       setIsLoading(false);
-      console.error("Video error:", player.error());
     });
 
     playerRef.current = player;
@@ -97,28 +90,23 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
   return (
     <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-black">
-      {/* Loading/Buffering Overlay */}
+      {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-white text-lg font-medium">Loading...</p>
-            <p className="text-gray-400 text-sm mt-1">Please wait while video buffers</p>
+            <p className="text-gray-400 text-sm">Please wait</p>
           </div>
         </div>
       )}
-      
+
       {/* Error Overlay */}
       {hasError && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90">
           <div className="text-center p-8">
-            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
             <h3 className="text-xl font-semibold text-white mb-2">Failed to Load</h3>
-            <p className="text-gray-400 text-sm">Please check your connection and try again</p>
+            <p className="text-gray-400 text-sm">Please check your connection</p>
           </div>
         </div>
       )}
