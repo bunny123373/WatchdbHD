@@ -42,11 +42,18 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   }
 
   return (
-    <div className="watch-player-shell watch-player-shell--react relative w-full aspect-video overflow-hidden rounded-[20px] sm:rounded-[24px] border border-white/10 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 bg-gradient-to-b from-black/55 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-t from-black/65 to-transparent" />
+    <div className="watch-player-shell watch-player-shell--react watch-player-shell--netflix relative w-full aspect-video overflow-hidden rounded-[20px] sm:rounded-[24px] border border-white/10 bg-black shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_28%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.18))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/72 via-black/28 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-32 bg-gradient-to-t from-black via-black/78 to-transparent" />
       <div className="pointer-events-none absolute left-3 top-3 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] font-medium tracking-[0.18em] text-white/80 backdrop-blur sm:left-4 sm:top-4 sm:px-3 sm:text-[11px] sm:tracking-[0.2em]">
         {isHlsSource(src) ? "HLS STREAM" : "VIDEO STREAM"}
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[2] flex items-start justify-between p-3 sm:p-4">
+        <div className="max-w-[68%]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/45 sm:text-[11px]">Watching Now</p>
+          <h3 className="mt-1 line-clamp-1 text-sm font-semibold text-white sm:text-lg">{title}</h3>
+        </div>
       </div>
 
       <Player.Provider key={`${src}-${reloadKey}`}>

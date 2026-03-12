@@ -414,12 +414,31 @@ a:focus-visible, div[role="link"]:focus-visible {
   --media-surface-backdrop-filter: blur(28px) saturate(160%);
 }
 
+.watch-player-shell--netflix {
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.03), transparent 22%),
+    linear-gradient(180deg, #000 0%, #050505 100%);
+}
+
+.watch-player-shell--netflix::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -90px 120px rgba(0, 0, 0, 0.58);
+  z-index: 1;
+}
+
 .watch-player-shell--react .media-default-skin .media-controls {
   left: 1rem;
   right: 1rem;
   bottom: 1rem;
   border-radius: 1.15rem;
   padding: 0.85rem;
+  background: linear-gradient(180deg, rgba(18, 18, 22, 0.46), rgba(5, 5, 8, 0.88));
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     0 22px 46px rgba(0, 0, 0, 0.42);
@@ -447,6 +466,8 @@ a:focus-visible, div[role="link"]:focus-visible {
 }
 
 .watch-player-shell--react .media-default-skin .media-button--play {
+  min-height: 3.25rem;
+  min-width: 3.25rem;
   background: linear-gradient(180deg, rgba(229, 9, 20, 0.98), rgba(173, 7, 16, 0.94));
   border-color: rgba(255, 255, 255, 0.08);
   color: #fff;
@@ -455,6 +476,23 @@ a:focus-visible, div[role="link"]:focus-visible {
 
 .watch-player-shell--react .media-default-skin .media-button--play:hover {
   background: linear-gradient(180deg, rgba(244, 6, 18, 1), rgba(190, 8, 18, 0.98));
+}
+
+.watch-player-shell--react .media-default-skin .media-button--seek {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.watch-player-shell--react .media-default-skin .media-button--seek:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.watch-player-shell--react .media-default-skin .media-button--play .media-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .watch-player-shell--react .media-default-skin .media-button[data-active],
@@ -470,6 +508,7 @@ a:focus-visible, div[role="link"]:focus-visible {
 
 .watch-player-shell--react .media-default-skin .media-time {
   gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .watch-player-shell--react .media-default-skin .media-slider {
@@ -492,7 +531,7 @@ a:focus-visible, div[role="link"]:focus-visible {
 .watch-player-shell--react .media-default-skin .media-slider__track {
   height: 0.42rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .watch-player-shell--react .media-default-skin .media-slider__fill {
@@ -509,6 +548,14 @@ a:focus-visible, div[role="link"]:focus-visible {
   background: #fff;
   border: 2px solid #e50914;
   box-shadow: 0 0 0 5px rgba(229, 9, 20, 0.16);
+}
+
+.watch-player-shell--react .media-default-skin .media-controls:has(.media-button--play:not([data-paused])) {
+  background: linear-gradient(180deg, rgba(18, 18, 22, 0.4), rgba(4, 4, 7, 0.84));
+}
+
+.watch-player-shell--react .media-default-skin .media-overlay {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.28), transparent 34%);
 }
 
 .watch-player-shell--react .media-default-skin .media-tooltip,
@@ -564,9 +611,19 @@ a:focus-visible, div[role="link"]:focus-visible {
     padding: 0.45rem;
   }
 
+  .watch-player-shell--react .media-default-skin .media-button--play {
+    min-height: 2.9rem;
+    min-width: 2.9rem;
+  }
+
   .watch-player-shell--react .media-default-skin .media-icon {
     width: 16px;
     height: 16px;
+  }
+
+  .watch-player-shell--react .media-default-skin .media-button--play .media-icon {
+    width: 18px;
+    height: 18px;
   }
 
   .watch-player-shell--react .media-default-skin .media-time {
@@ -588,6 +645,10 @@ a:focus-visible, div[role="link"]:focus-visible {
 
   .watch-player-shell--react .media-default-skin .media-popover,
   .watch-player-shell--react .media-default-skin .media-tooltip {
+    display: none;
+  }
+
+  .watch-player-shell--react .media-default-skin .media-button--secondary {
     display: none;
   }
 }

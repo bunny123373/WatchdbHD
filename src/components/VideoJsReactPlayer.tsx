@@ -202,7 +202,7 @@ export function VideoSkin(props: VideoSkinProps): ReactNode {
             <Tooltip.Trigger
               render={
                 <PlaybackRateButton
-                  render={(props) => <Button {...props} className="media-button--icon media-button--playback-rate" />}
+                  render={(props) => <Button {...props} className="media-button--icon media-button--playback-rate media-button--secondary" />}
                 />
               }
             />
@@ -238,7 +238,7 @@ export function VideoSkin(props: VideoSkinProps): ReactNode {
               render={
                 <CaptionsButton
                   render={(props) => (
-                    <Button {...props} className="media-button--icon media-button--captions">
+                    <Button {...props} className="media-button--icon media-button--captions media-button--secondary">
                       <svg className="media-icon media-icon--captions-off" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" aria-hidden="true" viewBox="0 0 18 18"><rect width="16" height="12" x="1" y="3" stroke="currentColor" strokeWidth="2" rx="3"/><rect width="3" height="2" x="3" y="8" fill="currentColor" rx="1"/><rect width="2" height="2" x="13" y="8" fill="currentColor" rx="1"/><rect width="4" height="2" x="11" y="11" fill="currentColor" rx="1"/><rect width="5" height="2" x="7" y="8" fill="currentColor" rx="1"/><rect width="7" height="2" x="3" y="11" fill="currentColor" rx="1"/></svg>
                       <svg className="media-icon media-icon--captions-on" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" aria-hidden="true" viewBox="0 0 18 18"><path fill="currentColor" d="M15 2a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zM4 11a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2zm8 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zM4 8a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zm4 0a1 1 0 0 0 0 2h3a1 1 0 1 0 0-2zm6 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/></svg>
                     </Button>
@@ -256,7 +256,7 @@ export function VideoSkin(props: VideoSkinProps): ReactNode {
               render={
                 <PiPButton
                   render={(props) => (
-                    <Button {...props} className="media-button--icon">
+                    <Button {...props} className="media-button--icon media-button--secondary media-button--pip">
                       <svg className="media-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" aria-hidden="true" viewBox="0 0 18 18"><path fill="currentColor" d="M13 2a4 4 0 0 1 4 4v2.035A3.5 3.5 0 0 0 16.5 8H15V6.273C15 5.018 13.96 4 12.679 4H4.32C3.04 4 2 5.018 2 6.273v5.454C2 12.982 3.04 14 4.321 14H6v1.5q0 .255.035.5H4a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z"/><rect width="10" height="7" x="8" y="10" fill="currentColor" rx="2"/></svg>
                     </Button>
                   )}
