@@ -127,13 +127,13 @@ function WatchMovieContent() {
             badges={
               <>
                 {movie.year && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-200">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-200">
                     <Calendar className="h-3.5 w-3.5 text-red-400" />
                     {movie.year}
                   </span>
                 )}
                 {movie.language && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-200">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-200">
                     <Globe className="h-3.5 w-3.5 text-red-400" />
                     {movie.language}
                   </span>
@@ -155,10 +155,10 @@ function WatchMovieContent() {
                 {movie.embedIframeLink && (
                   <button
                     onClick={() => setActiveServer(1)}
-                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                    className={`inline-flex min-h-[42px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
                       activeServer === 1
-                        ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
-                        : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                        ? "bg-[#e50914] text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                        : "border border-white/10 bg-white/[0.04] text-gray-200 hover:bg-white/[0.08]"
                     }`}
                   >
                     Server 1
@@ -167,10 +167,10 @@ function WatchMovieContent() {
                 {movie.embedIframeLink2 && (
                   <button
                     onClick={() => setActiveServer(2)}
-                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                    className={`inline-flex min-h-[42px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
                       activeServer === 2
-                        ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
-                        : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                        ? "bg-[#e50914] text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                        : "border border-white/10 bg-white/[0.04] text-gray-200 hover:bg-white/[0.08]"
                     }`}
                   >
                     Server 2
@@ -181,13 +181,13 @@ function WatchMovieContent() {
                     href={movieDownloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                    className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.08]"
                   >
                     <Download className="w-4 h-4" />
                     Download
                   </a>
                 )}
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-transparent px-4 py-2.5 text-sm text-gray-400">
+                <span className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-white/10 bg-transparent px-4 py-2.5 text-sm text-gray-400">
                   <BadgeInfo className="h-4 w-4 text-red-400" />
                   Switch servers if playback is slow.
                 </span>

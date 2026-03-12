@@ -240,10 +240,10 @@ function SeriesWatchContent() {
                   )}
                   <button
                     onClick={() => setAutoPlayNext(!autoPlayNext)}
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                    className={`inline-flex min-h-[34px] items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                       autoPlayNext
                         ? "bg-emerald-600 text-white"
-                        : "border border-white/10 bg-white/5 text-gray-300"
+                        : "border border-white/10 bg-white/[0.04] text-gray-300"
                     }`}
                   >
                     {autoPlayNext ? <SkipForward className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}
@@ -256,10 +256,10 @@ function SeriesWatchContent() {
                   {currentEpisode?.embedIframeLink && (
                     <button
                       onClick={() => setActiveServer(1)}
-                      className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                      className={`inline-flex min-h-[42px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
                         activeServer === 1
-                          ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
-                          : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                          ? "bg-[#e50914] text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                          : "border border-white/10 bg-white/[0.04] text-gray-200 hover:bg-white/[0.08]"
                       }`}
                     >
                       <Play className="w-4 h-4" />
@@ -269,10 +269,10 @@ function SeriesWatchContent() {
                   {currentEpisode?.embedIframeLink2 && (
                     <button
                       onClick={() => setActiveServer(2)}
-                      className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                      className={`inline-flex min-h-[42px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all ${
                         activeServer === 2
-                          ? "bg-red-600 text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
-                          : "border border-white/10 bg-white/5 text-gray-200 hover:bg-white/10"
+                          ? "bg-[#e50914] text-white shadow-[0_10px_30px_rgba(229,9,20,0.28)]"
+                          : "border border-white/10 bg-white/[0.04] text-gray-200 hover:bg-white/[0.08]"
                       }`}
                     >
                       <Play className="w-4 h-4" />
@@ -284,7 +284,7 @@ function SeriesWatchContent() {
                       href={currentEpisodeDownloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                      className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.08]"
                     >
                       <Download className="w-4 h-4" />
                       Download
@@ -292,10 +292,10 @@ function SeriesWatchContent() {
                   )}
                   <button
                     onClick={() => setShowEpisodeList(!showEpisodeList)}
-                    className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
+                    className={`inline-flex min-h-[42px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
                       showEpisodeList
                         ? "bg-white text-black"
-                        : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                        : "border border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
                     }`}
                   >
                     <Layers3 className="w-4 h-4" />

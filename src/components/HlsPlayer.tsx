@@ -1,9 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import videojs from "video.js";
+import type Player from "video.js/dist/types/player";
 import "video.js/dist/video-js.css";
 import "@videojs/themes/city/index.css";
+import { AlertCircle, RefreshCcw, Wifi } from "lucide-react";
 
 interface HlsPlayerProps {
   src?: string;
@@ -11,11 +13,16 @@ interface HlsPlayerProps {
   poster?: string;
 }
 
+function getSourceType(source: string) {
+  return source.includes(".m3u8") ? "application/x-mpegURL" : "video/mp4";
+}
+
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<Player | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!src || !videoRef.current) return;
@@ -28,54 +35,75 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       controls: true,
       responsive: true,
       fluid: true,
+      preload: "auto",
+      inactivityTimeout: 2000,
       playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
-      poster: poster,
-      sources: [{
-        src: src,
-        type: src.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      }],
+      poster,
+      sources: [
+        {
+          src,
+          type: getSourceType(src),
+        },
+      ],
       controlBar: {
         children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'flexibleWidthSpacer',
-          'playbackRateMenuButton',
-          'fullscreenToggle'
-        ]
-      }
+          "playToggle",
+          "volumePanel",
+          "currentTimeDisplay",
+          "timeDivider",
+          "durationDisplay",
+          "progressControl",
+          "flexibleWidthSpacer",
+          "playbackRateMenuButton",
+          "fullscreenToggle",
+        ],
+      },
     });
 
-    player.on('loadstart', () => {
+    const handleLoadStart = () => {
       setIsLoading(true);
       setHasError(false);
-    });
+    };
 
-    player.on('canplay', () => {
+    const handleCanPlay = () => {
       setIsLoading(false);
-    });
+    };
 
-    player.on('playing', () => {
+    const handlePlaying = () => {
       setIsLoading(false);
-    });
+      setHasError(false);
+    };
 
-    player.on('error', () => {
+    const handleWaiting = () => {
+      setIsLoading(true);
+    };
+
+    const handleError = () => {
       setHasError(true);
       setIsLoading(false);
-    });
+    };
+
+    player.on("loadstart", handleLoadStart);
+    player.on("canplay", handleCanPlay);
+    player.on("playing", handlePlaying);
+    player.on("waiting", handleWaiting);
+    player.on("error", handleError);
 
     playerRef.current = player;
 
     return () => {
+      player.off("loadstart", handleLoadStart);
+      player.off("canplay", handleCanPlay);
+      player.off("playing", handlePlaying);
+      player.off("waiting", handleWaiting);
+      player.off("error", handleError);
+
       if (playerRef.current) {
         playerRef.current.dispose();
         playerRef.current = null;
       }
     };
-  }, [src, poster]);
+  }, [src, poster, reloadKey]);
 
   if (!src) {
     return (
@@ -84,9 +112,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
         <div className="relative flex h-full items-center justify-center">
           <div className="text-center p-8">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5">
-              <svg className="w-10 h-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+              <AlertCircle className="h-10 w-10 text-zinc-600" />
             </div>
             <h3 className="mb-2 text-xl font-semibold text-white">Stream Not Available</h3>
             <p className="text-zinc-500">This content does not have an HLS stream yet.</p>
@@ -103,7 +129,8 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       <div className="pointer-events-none absolute left-4 top-4 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] font-medium tracking-[0.2em] text-white/80 backdrop-blur">
         HLS STREAM
       </div>
-      {isLoading && (
+
+      {isLoading && !hasError && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/78 backdrop-blur-sm">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
@@ -115,18 +142,33 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       )}
 
       {hasError && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/90 backdrop-blur-sm">
-          <div className="text-center p-8">
-            <h3 className="mb-2 text-xl font-semibold text-white">Failed to Load</h3>
-            <p className="text-zinc-400 text-sm">Please check your connection</p>
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/92 px-6 backdrop-blur-sm">
+          <div className="max-w-sm text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10">
+              <Wifi className="h-8 w-8 text-red-400" />
+            </div>
+            <h3 className="mb-2 text-xl font-semibold text-white">Failed to Load Stream</h3>
+            <p className="mb-5 text-sm text-zinc-400">
+              The player could not load this source. Retry the stream or switch to another server if available.
+            </p>
+            <button
+              type="button"
+              onClick={() => setReloadKey((current) => current + 1)}
+              className="inline-flex items-center gap-2 rounded-full bg-[#e50914] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#f40612]"
+            >
+              <RefreshCcw className="h-4 w-4" />
+              Retry Stream
+            </button>
           </div>
         </div>
       )}
-      
+
       <video
+        key={reloadKey}
         ref={videoRef}
         className="video-js vjs-fill vjs-big-play-centered vjs-theme-city watch-player-video"
         playsInline
+        aria-label={title}
       />
     </div>
   );
