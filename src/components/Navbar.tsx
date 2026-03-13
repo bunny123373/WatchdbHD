@@ -116,7 +116,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-6">
           <Link href="/" className="text-xl font-bold text-[#e50914]">
-            WATCH<span className="text-white">DB</span>
+            WATCH<span className="text-white">TMDB</span>
           </Link>
 
           {/* Nav Links - Desktop */}
