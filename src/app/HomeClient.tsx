@@ -41,8 +41,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const [selectedContent, setSelectedContent] = useState<IContent | null>(null);
   const [movieGenres, setMovieGenres] = useState<Genre[]>([]);
   const [tvGenres, setTvGenres] = useState<Genre[]>([]);
-  const [loadingGenres, setLoadingGenres] = useState(true);
-  const [loading, setLoading] = useState(!initialContent.length);
+  const [loadingGenres, setLoadingGenres] = useState(false);
   const [tmdbData, setTmdbData] = useState<{
     popular: { movies: TMDBContent[]; series: TMDBContent[] };
     trending: TMDBContent[];
@@ -217,8 +216,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       }
     } catch (error) {
       console.error("Failed to fetch content:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -344,14 +341,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const handleCloseModal = () => {
     setSelectedContent(null);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center">
-        <div className="w-10 h-10 border-3 border-[#e50914] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   if (content.length === 0) {
     return (
