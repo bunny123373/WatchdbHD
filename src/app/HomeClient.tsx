@@ -358,55 +358,18 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       <div className="relative min-h-screen overflow-hidden bg-[#141814]">
       {featuredContent?.banner && (
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div
-            className="absolute inset-[-14%] bg-cover bg-center opacity-30 blur-[80px] scale-[1.32] saturate-[1.1]"
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-40"
             style={{ backgroundImage: `url(${featuredContent.banner})` }}
           />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.18),transparent_24%),radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.1),transparent_20%),radial-gradient(circle_at_82%_10%,rgba(59,130,246,0.08),transparent_18%),linear-gradient(180deg,rgba(5,5,5,0.06),rgba(5,5,5,0.74)_42%,#050608_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.48),transparent_22%,transparent_78%,rgba(5,5,5,0.48))]" />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/60 via-transparent to-transparent" />
         </div>
       )}
 
       {/* Hero Banner - Show uploaded content */}
       {featuredContent && !showContent && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
-      )}
-
-      {/* Top 10 Trending - Netflix Style */}
-      {!showContent && (
-        <>
-          {(() => {
-            // Sort by views - Most watched first
-            const byViews = [...filteredContent].sort((a: IContent, b: IContent) => (b.views || 0) - (a.views || 0));
-            
-            const trendingMovies = byViews
-              .filter((item: IContent) => item.type === "movie")
-              .slice(0, 10);
-            const trendingSeries = byViews
-              .filter((item: IContent) => item.type === "series")
-              .slice(0, 10);
-            
-            return (
-              <>
-                {trendingMovies.length > 0 && (
-                  <Top10Grid 
-                    title="Most Watched Today" 
-                    items={trendingMovies} 
-                    onContentClick={handleContentClick}
-                  />
-                )}
-                {trendingSeries.length > 0 && (
-                  <Top10Grid 
-                    title="Top 10 TV Shows" 
-                    items={trendingSeries} 
-                    onContentClick={handleContentClick}
-                  />
-                )}
-              </>
-            );
-          })()}
-        </>
       )}
 
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">

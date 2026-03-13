@@ -39,10 +39,9 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
           priority
           sizes="100vw"
         />
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#141414]/20 to-[#141414]" />
+        {/* Simple Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
       </div>
 
       {/* Content */}
