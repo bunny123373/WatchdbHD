@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { AlertCircle, RefreshCcw, Maximize2, Minimize2 } from "lucide-react";
+import { AlertCircle, RefreshCcw, Maximize2, Minimize2, Play } from "lucide-react";
 
 interface HlsPlayerProps {
   src?: string;
@@ -9,14 +9,11 @@ interface HlsPlayerProps {
   poster?: string;
 }
 
-function isHlsSource(source: string) {
-  return source.includes(".m3u8");
-}
-
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   const [reloadKey, setReloadKey] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [error, setError] = useState(false);
+  const [showPlayOverlay, setShowPlayOverlay] = useState(true);
   const playerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -38,11 +35,14 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
       (document as any).webkitExitFullscreen();
     }
     setIsFullscreen(false);
+    setShowPlayOverlay(true);
   }, []);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement || !!(document as any).webkitFullscreenElement);
+      const fs = !!document.fullscreenElement || !!(document as any).webkitFullscreenElement;
+      setIsFullscreen(fs);
+      if (!fs) setShowPlayOverlay(true);
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
@@ -61,6 +61,14 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFullscreen, exitFullscreen]);
+
+  const handlePlayClick = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      enterFullscreen();
+      setShowPlayOverlay(false);
+    }
+  };
 
   if (!src) {
     return (
@@ -87,6 +95,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
               onClick={() => {
                 setError(false);
                 setReloadKey(k => k + 1);
+                setShowPlayOverlay(true);
               }}
               className="px-4 py-2 bg-white/10 text-white text-sm rounded hover:bg-white/20"
             >
@@ -102,22 +111,34 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
           poster={poster}
           playsInline={!isFullscreen}
           controls={isFullscreen}
-          autoPlay={isFullscreen}
           preload="auto"
           className="w-full h-full object-contain bg-black"
           onError={() => setError(true)}
-          onPlay={!isFullscreen ? enterFullscreen : undefined}
+          onEnded={() => setShowPlayOverlay(true)}
         />
       )}
 
+      {/* Play Overlay Button */}
+      {showPlayOverlay && !isFullscreen && !error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <button
+            onClick={handlePlayClick}
+            className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+          >
+            <Play className="w-10 h-10 text-white fill-white ml-1" />
+          </button>
+        </div>
+      )}
+
       {/* Controls */}
-      {!isFullscreen && !error && (
+      {!isFullscreen && !error && !showPlayOverlay && (
         <div className="absolute right-3 top-3 z-[3] flex gap-2">
           <button
             type="button"
             onClick={() => {
               setError(false);
               setReloadKey(k => k + 1);
+              setShowPlayOverlay(true);
             }}
             className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
           >
