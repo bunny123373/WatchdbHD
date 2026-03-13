@@ -12,7 +12,6 @@ import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
-import HomeSkeleton from "@/components/HomeSkeleton";
 import { useAppSelector } from "@/redux/hooks";
 
 interface Genre {
@@ -348,9 +347,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#141414]">
-        <HomeSkeleton />
-        <Footer />
+      <div className="min-h-screen bg-[#141414] flex items-center justify-center">
+        <div className="w-10 h-10 border-3 border-[#e50914] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
