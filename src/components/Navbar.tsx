@@ -126,7 +126,7 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-full",
           isScrolled || isSearchActive || isMenuOpen
-            ? "bg-[rgba(10,10,10,0.92)] border-b border-white/10 backdrop-blur-xl"
+            ? "bg-[rgba(10,10,10,0.95)] border-b border-white/10"
             : "bg-gradient-to-b from-black via-black/80 to-transparent"
         )}
       >
@@ -254,7 +254,7 @@ export default function Navbar() {
       </nav>
 
       {isMenuOpen && (
-        <div className="fixed inset-0 top-14 z-40 bg-black/92 backdrop-blur-xl">
+        <div className="fixed inset-0 top-14 z-40 bg-black/95">
           <div className="mx-auto max-w-lg px-4 py-6 space-y-4">
             <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-3">
               {navLinks.map((link) => {

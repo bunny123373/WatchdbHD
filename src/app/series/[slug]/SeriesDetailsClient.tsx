@@ -28,12 +28,12 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
       {(series.banner || series.poster) && (
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div
-            className="absolute inset-[-14%] bg-cover bg-center opacity-42 blur-[132px] scale-[1.32] saturate-[1.28]"
+            className="absolute inset-[-14%] bg-cover bg-center opacity-30 blur-[80px] scale-[1.32] saturate-[1.1]"
             style={{ backgroundImage: `url(${series.banner || series.poster})` }}
           />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.18),transparent_24%),radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.1),transparent_20%),radial-gradient(circle_at_82%_10%,rgba(59,130,246,0.08),transparent_18%),linear-gradient(180deg,rgba(5,5,5,0.08),rgba(5,5,5,0.74)_42%,#050608_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.48),transparent_22%,transparent_78%,rgba(5,5,5,0.48))]" />
-          <div className="absolute inset-0 backdrop-blur-[8px]" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
       )}
       <div className="relative">

@@ -36,7 +36,7 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
           <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300 lg:opacity-0 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
           
           {isHovered && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm lg:flex hidden items-center justify-center gap-3">
+            <div className="absolute inset-0 bg-black/70 lg:flex hidden items-center justify-center gap-3">
               <button className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-colors transform hover:scale-110">
                 <Play className="w-6 h-6 fill-current ml-0.5" />
               </button>

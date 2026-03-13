@@ -97,7 +97,7 @@ export default function SeriesWatchClient({
         >
           <Link
             href={`/series/${String(series._id)}`}
-            className="inline-flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-2 text-white/90 backdrop-blur transition-colors hover:border-white/20 hover:bg-black/45 hover:text-white"
+            className="inline-flex min-w-0 items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-2 text-white/90 transition-colors hover:border-white/20 hover:bg-black/65 hover:text-white"
           >
             <ChevronLeft className="h-5 w-5 flex-shrink-0" />
             <span className="max-w-[140px] truncate text-xs font-medium sm:max-w-none sm:text-sm">
@@ -111,7 +111,7 @@ export default function SeriesWatchClient({
               S{currentSeason}E{currentEpisode?.episodeNumber}
             </span>
             {currentEpisode?.quality && (
-              <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+              <span className="rounded-full border border-white/10 bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white">
                 {currentEpisode.quality}
               </span>
             )}

@@ -134,7 +134,7 @@ export default function MobileNavbar() {
   if (isSearchActive) {
     return (
       <div ref={searchRef} className="glass-surface-strong fixed inset-0 z-[100] overflow-y-auto">
-        <div className="sticky top-0 border-b border-white/10 bg-[linear-gradient(180deg,rgba(8,8,10,0.88),rgba(8,8,10,0.62))] px-4 pt-4 pb-2 backdrop-blur-2xl">
+        <div className="sticky top-0 border-b border-white/10 bg-[linear-gradient(180deg,rgba(8,8,10,0.95),rgba(8,8,10,0.85))] px-4 pt-4 pb-2">
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
             <button
               type="button"

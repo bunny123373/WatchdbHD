@@ -365,7 +365,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
           <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_28%),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.18))]" />
           <div className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 bg-gradient-to-b from-black/72 via-black/28 to-transparent" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-32 bg-gradient-to-t from-black via-black/78 to-transparent" />
-          <div className="pointer-events-none absolute left-3 top-3 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] font-medium tracking-[0.18em] text-white/80 backdrop-blur sm:left-4 sm:top-4 sm:px-3 sm:text-[11px] sm:tracking-[0.2em]">
+          <div className="pointer-events-none absolute left-3 top-3 z-[2] flex items-center gap-2 rounded-full border border-white/10 bg-black/55 px-2.5 py-1 text-[10px] font-medium tracking-[0.18em] text-white/80 sm:left-4 sm:top-4 sm:px-3 sm:text-[11px] sm:tracking-[0.2em]">
             {isHlsSource(src) ? "HLS STREAM" : "VIDEO STREAM"}
           </div>
           <div className="pointer-events-none absolute inset-x-0 top-0 z-[2] flex items-start justify-between p-3 sm:p-4">
