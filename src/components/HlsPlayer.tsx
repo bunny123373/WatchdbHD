@@ -379,16 +379,16 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
 
       <Player.Provider 
         key={`${src}-${reloadKey}`}
-        onPlay={enterFullscreen}
       >
         <VideoSkin className="h-full w-full">
           <MediaComponent
             src={src}
             poster={poster}
-            playsInline={!isFullscreen}
+            playsInline
             preload="auto"
             aria-label={title}
             className="h-full w-full object-cover"
+            onPlay={enterFullscreen}
           />
         </VideoSkin>
       </Player.Provider>
