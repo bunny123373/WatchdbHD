@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { Play, Share2, Plus, Info, Star, Calendar, Download, Clapperboard, Users, Youtube } from "lucide-react";
+import { Play, Plus, Info, Download, Star, Clock, Users, Film, Calendar, Globe } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
@@ -165,48 +165,34 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
 
   const similarMovies = await getSimilarMovies(movie.language || "Telugu", movie._id);
   const downloadUrl = normalizeExternalUrl(movie.downloadLink);
+  const director = movie.crew?.find((c: { job?: string }) => c.job === "Director");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#141414]">
-      {(movie.banner || movie.poster) && (
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div
-            className="absolute inset-[-14%] bg-cover bg-center opacity-30 blur-[80px] scale-[1.32] saturate-[1.1]"
-            style={{ backgroundImage: `url(${movie.banner || movie.poster})` }}
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(229,9,20,0.18),transparent_24%),radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.1),transparent_20%),radial-gradient(circle_at_82%_10%,rgba(59,130,246,0.08),transparent_18%),linear-gradient(180deg,rgba(5,5,5,0.08),rgba(5,5,5,0.74)_42%,#050608_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.48),transparent_22%,transparent_78%,rgba(5,5,5,0.48))]" />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-      )}
+      {/* Hero Section */}
       <div className="relative">
-        <div className="absolute inset-0 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
-          {movie.banner ? (
-            <Image
-              src={movie.banner}
-              alt={movie.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : movie.poster ? (
-            <Image
-              src={movie.poster}
-              alt={movie.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/70 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/90 via-transparent to-transparent" />
+        {/* Banner Image with Netflix-style gradient */}
+        <div className="absolute inset-0 h-[85vh] lg:h-[90vh]">
+          {(movie.banner || movie.poster) && (
+            <>
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${movie.banner || movie.poster})` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#141414]" />
+            </>
+          )}
         </div>
 
-        <div className="relative pt-[30vh] sm:pt-[40vh] md:pt-[50vh] lg:pt-[60vh] px-4 sm:px-6 md:px-8 pb-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
-              <div className="flex-shrink-0 hidden lg:block">
-                <div className="relative w-64 xl:w-72 aspect-[2/3] rounded-lg overflow-hidden shadow-2xl border border-white/10">
+        {/* Content */}
+        <div className="relative pt-[45vh] lg:pt-[35vh]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+              {/* Left: Poster (hidden on large screens - show in right column) */}
+              <div className="flex-shrink-0 lg:order-2 lg:ml-auto mb-[-80px] lg:mb-0 relative z-10">
+                <div className="relative w-40 sm:w-48 md:w-56 lg:w-48 xl:w-56 aspect-[2/3] rounded-md overflow-hidden shadow-2xl ring-1 ring-white/20 hidden lg:block">
                   {movie.poster ? (
                     <Image
                       src={movie.poster}
@@ -217,52 +203,46 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <span className="text-gray-500">No Poster</span>
+                      <Film className="w-12 h-12 text-gray-600" />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex-1">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg">
+              {/* Right: Details */}
+              <div className="flex-1 lg:order-1 lg:pr-8 max-w-2xl">
+                {/* Title */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
                   {movie.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-sm text-gray-300 mb-5 sm:mb-6">
-                  {movie.rating && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span className="font-semibold text-white">{movie.rating}</span>
-                    </div>
-                  )}
+                {/* Meta Info Row */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 mb-6">
                   {movie.year && (
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {movie.year}
-                    </span>
+                    <span className="text-white font-medium">{movie.year}</span>
                   )}
                   {movie.quality && (
-                    <span className="px-2 py-0.5 text-xs font-bold bg-red-600 text-white rounded-sm">
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded-sm">
                       {movie.quality}
                     </span>
                   )}
-                  {movie.language && (
-                    <span className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white rounded-sm">
-                      {movie.language}
-                    </span>
-                  )}
+                  <span className="px-1.5 py-0.5 text-[10px] font-medium bg-white/20 text-white rounded-sm">
+                    {movie.language || "HD"}
+                  </span>
                 </div>
 
-                <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed line-clamp-3 sm:line-clamp-4 lg:line-clamp-6 max-w-3xl">
+                {/* Description */}
+                <p className="text-gray-300 text-base md:text-lg mb-6 leading-relaxed line-clamp-3">
                   {movie.description}
                 </p>
 
+                {/* Genres */}
                 {movie.tmdbGenres && movie.tmdbGenres.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {movie.tmdbGenres.slice(0, 4).map((genre: string) => (
                       <span
                         key={genre}
-                        className="px-3 py-1.5 text-xs sm:text-sm bg-white/10 text-white rounded-full border border-white/20"
+                        className="px-3 py-1 text-xs bg-white/10 text-white/80 rounded-full border border-white/10"
                       >
                         {genre}
                       </span>
@@ -270,18 +250,19 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3 sm:gap-4 mb-8">
+                {/* Action Buttons - Netflix Style */}
+                <div className="flex flex-wrap gap-3 mb-8">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 bg-[#e50914] hover:bg-[#f40612] text-white font-bold rounded-md transition-all transform hover:scale-105 text-sm sm:text-base"
+                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-medium rounded-sm transition-colors shadow-lg shadow-[#e50914]/30"
                   >
                     <Play className="w-5 h-5 fill-current" />
-                    <span>Play</span>
+                    <span className="text-base">Play</span>
                   </Link>
                   
-                  <button className="flex items-center gap-2.5 px-5 sm:px-6 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-all text-sm">
+                  <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors">
                     <Plus className="w-5 h-5" />
-                    <span className="hidden sm:inline">My List</span>
+                    <span className="text-base hidden sm:inline">My List</span>
                   </button>
                   
                   <ShareButton title={movie.title} />
@@ -291,93 +272,66 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                       href={downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 px-5 sm:px-6 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-md transition-all text-sm"
+                      className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors"
                     >
                       <Download className="w-5 h-5" />
-                      <span className="hidden sm:inline">Download</span>
+                      <span className="text-base hidden sm:inline">Download</span>
                     </a>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-4 border-t border-b border-white/10">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase mb-1">Director</p>
-                    <p className="text-white text-sm font-medium">
-                      {movie.crew?.find((c: { job?: string }) => c.job === "Director")?.name || "N/A"}
-                    </p>
+                {/* Rating Badge */}
+                {movie.rating && (
+                  <div className="flex items-center gap-2 mb-8">
+                    <div className="flex items-center gap-1 bg-yellow-500/20 px-2 py-1 rounded-sm">
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <span className="text-yellow-500 font-bold">{movie.rating}</span>
+                    </div>
+                    <span className="text-gray-400 text-sm">from users</span>
                   </div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase mb-1">Cast</p>
-                    <p className="text-white text-sm font-medium line-clamp-1">
-                      {movie.cast?.slice(0, 3).map((c: { name?: string }) => c.name).join(", ") || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase mb-1">Genre</p>
-                    <p className="text-white text-sm font-medium">
-                      {movie.tmdbGenres?.slice(0, 2).join(", ") || movie.tags?.slice(0, 2).join(", ") || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase mb-1">Audio</p>
-                    <p className="text-white text-sm font-medium">
-                      {movie.audioLanguages?.join(", ") || movie.language || "N/A"}
-                    </p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* About Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6 border-t border-white/10">
+          {director && (
+            <div>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Director</p>
+              <p className="text-white text-sm font-medium">{director.name || "N/A"}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Cast</p>
+            <p className="text-white text-sm font-medium line-clamp-2">
+              {movie.cast?.slice(0, 3).map((c: { name?: string }) => c.name).join(", ") || "N/A"}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Genres</p>
+            <p className="text-white text-sm font-medium">
+              {movie.tmdbGenres?.slice(0, 2).join(", ") || movie.tags?.slice(0, 2).join(", ") || "N/A"}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Audio</p>
+            <p className="text-white text-sm font-medium flex items-center gap-1">
+              <Globe className="w-3.5 h-3.5" />
+              {movie.audioLanguages?.slice(0, 2).join(", ") || movie.language || "N/A"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Similar Movies */}
       {similarMovies.length > 0 && (
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">More Like This</h2>
             <ContentGrid title="" items={similarMovies} isNetflixStyle />
-        </div>
-      )}
-
-      {movie.trailerUrl && (
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-            <Youtube className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
-            Trailer
-          </h2>
-          <div className="aspect-video rounded-lg overflow-hidden bg-black">
-            <iframe
-              src={movie.trailerUrl.replace("watch?v=", "embed/")}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      )}
-
-      {movie.cast && movie.cast.length > 0 && (
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
-            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-            Cast
-          </h2>
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-3 px-3 sm:-mx-4 sm:px-4">
-            {movie.cast.map((cast: { name: string; character?: string; image?: string }, idx: number) => (
-              <div key={idx} className="flex-shrink-0 w-20 sm:w-24 text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full overflow-hidden bg-gray-800 mb-2">
-                  {cast.image ? (
-                    <img src={cast.image} alt={cast.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Users className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
-                    </div>
-                  )}
-                </div>
-                <p className="text-white text-xs sm:text-sm font-medium truncate px-1">{cast.name}</p>
-                {cast.character && <p className="text-gray-400 text-xs truncate px-1">{cast.character}</p>}
-              </div>
-            ))}
-          </div>
         </div>
       )}
 
