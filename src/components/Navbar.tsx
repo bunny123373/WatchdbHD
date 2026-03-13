@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Home, Star, Calendar, Loader2 } from "lucide-react";
+import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Bell } from "lucide-react";
 import { cn } from "@/utils/cn";
 import LanguageSelector from "@/components/LanguageSelector";
 
@@ -27,7 +27,8 @@ const navLinks = [
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -61,7 +62,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsSearchActive(false);
+        setIsSearchOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -69,14 +70,15 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setIsSearchActive(false);
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
   }, [pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchInput.trim()) {
       router.push(`/?q=${encodeURIComponent(searchInput.trim())}`);
-      setIsSearchActive(false);
+      setIsSearchOpen(false);
       setSearchResults([]);
     }
   };
@@ -107,12 +109,10 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled || isSearchActive ? "bg-black/95 border-b border-white/10" : "bg-gradient-to-b from-black/90 to-transparent"
-      )}
-    >
+    <nav className={cn(
+      "fixed top-0 left-0 right-0 z-50 transition-colors",
+      isScrolled ? "bg-black" : "bg-gradient-to-b from-black/90 to-transparent"
+    )}>
       <div className="flex items-center justify-between px-4 h-14">
         {/* Logo */}
         <div className="flex items-center gap-6">
@@ -140,24 +140,24 @@ export default function Navbar() {
         </div>
 
         {/* Right Side */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {/* Search */}
           <div ref={searchRef} className="relative">
             <div
               className={cn(
                 "flex items-center transition-all rounded",
-                isSearchActive ? "bg-[#222] border border-white/20" : "hover:bg-white/10"
+                isSearchOpen ? "bg-[#222] border border-white/20" : "hover:bg-white/10"
               )}
             >
               <button
-                onClick={() => setIsSearchActive(true)}
+                onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
                 className="p-2 hover:bg-white/10 rounded transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-white" />
               </button>
 
-              {isSearchActive && (
+              {isSearchOpen && (
                 <>
                   <form onSubmit={handleSearch} className="flex items-center">
                     <input
@@ -169,8 +169,12 @@ export default function Navbar() {
                       autoFocus
                     />
                   </form>
-                  {searchInput && (
+                  {searchInput ? (
                     <button onClick={() => setSearchInput("")} className="p-1 mr-1">
+                      <X className="w-4 h-4 text-gray-500" />
+                    </button>
+                  ) : (
+                    <button onClick={() => setIsSearchOpen(false)} className="p-1 mr-1">
                       <X className="w-4 h-4 text-gray-500" />
                     </button>
                   )}
@@ -178,7 +182,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {isSearchActive && searchInput.length >= 2 && (
+            {isSearchOpen && searchInput.length >= 2 && (
               <div className="absolute top-full right-0 mt-2 w-72 max-h-80 overflow-y-auto bg-[#1a1a1a] rounded border border-white/10">
                 {searching ? (
                   <div className="p-4 flex justify-center">
@@ -191,7 +195,7 @@ export default function Navbar() {
                         key={result._id}
                         href={result.type === "series" ? `/series/${result._id}` : `/movie/${result._id}`}
                         onClick={() => {
-                          setIsSearchActive(false);
+                          setIsSearchOpen(false);
                           setSearchInput("");
                         }}
                         className="flex items-center gap-3 px-3 py-2 hover:bg-white/5 transition-colors"
@@ -213,32 +217,32 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Language */}
+          {/* Language - Desktop */}
           <div className="hidden sm:block">
             <LanguageSelector />
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsSearchActive(!isSearchActive)}
+            onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setIsSearchOpen(false); }}
             className="p-2 hover:bg-white/10 rounded md:hidden"
             aria-label="Menu"
           >
-            <Search className="w-4 h-4 text-white" />
+            <Menu className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isSearchActive && (
+      {isMobileMenuOpen && (
         <div className="md:hidden border-t border-white/10 bg-black px-4 py-4">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-3 py-2 text-sm font-medium rounded transition-colors",
+                  "px-3 py-2.5 text-sm font-medium rounded transition-colors",
                   pathname === link.href || (pathname === "/" && link.href === "/")
                     ? "bg-white/10 text-white"
                     : "text-gray-400 hover:bg-white/5"
@@ -247,7 +251,7 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-2 border-t border-white/10">
+            <div className="pt-3 mt-1 border-t border-white/10">
               <LanguageSelector />
             </div>
           </div>
