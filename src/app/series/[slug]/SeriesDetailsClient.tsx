@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Plus, Star, Clock, Tv, Download, ChevronDown, ChevronUp } from "lucide-react";
+import { Play, Star, Tv, Download } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import Footer from "@/components/Footer";
 import EpisodeList from "@/components/EpisodeList";
 import ContentGrid from "@/components/ContentGrid";
-import ShareButton from "@/components/ShareButton";
 
 interface SeriesDetailsClientProps {
   series: IContent;
@@ -121,18 +120,11 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                 <div className="flex flex-wrap gap-3 mb-8">
                   <Link
                     href={`/verify?id=${series._id}&type=series`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-medium rounded-sm shadow-lg shadow-[#e50914]/30"
+                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-black hover:bg-gray-200 font-medium rounded-sm transition-colors"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span className="text-base">Play</span>
                   </Link>
-                  
-                  <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors">
-                    <Plus className="w-5 h-5" />
-                    <span className="text-base hidden sm:inline">My List</span>
-                  </button>
-                  
-                  <ShareButton title={series.title} />
                 </div>
 
                 {/* Rating Badge */}

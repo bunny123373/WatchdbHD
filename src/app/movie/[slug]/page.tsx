@@ -7,7 +7,6 @@ import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
-import ShareButton from "@/components/ShareButton";
 import { SITE_CONFIG } from "@/utils/constants";
 import { normalizeExternalUrl } from "@/utils/url";
 
@@ -254,18 +253,11 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                 <div className="flex flex-wrap gap-3 mb-8">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e50914] hover:bg-[#f40612] text-white font-medium rounded-sm transition-colors shadow-lg shadow-[#e50914]/30"
+                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-black hover:bg-gray-200 font-medium rounded-sm transition-colors"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span className="text-base">Play</span>
                   </Link>
-                  
-                  <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white rounded-sm transition-colors">
-                    <Plus className="w-5 h-5" />
-                    <span className="text-base hidden sm:inline">My List</span>
-                  </button>
-                  
-                  <ShareButton title={movie.title} />
                   
                   {downloadUrl && (
                     <a
