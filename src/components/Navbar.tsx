@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Bell } from "lucide-react";
+import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu } from "lucide-react";
 import { cn } from "@/utils/cn";
-import LanguageSelector from "@/components/LanguageSelector";
 
 interface SearchResult {
   _id: string;
@@ -217,11 +216,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Language - Desktop */}
-          <div className="hidden sm:block">
-            <LanguageSelector />
-          </div>
-
           {/* Mobile Menu Button */}
           <button
             onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setIsSearchOpen(false); }}
@@ -251,9 +245,6 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 mt-1 border-t border-white/10">
-              <LanguageSelector />
-            </div>
           </div>
         </div>
       )}
