@@ -253,7 +253,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
                 <div className="flex flex-wrap gap-3 mb-8">
                   <Link
                     href={`/verify?id=${movie._id}&type=movie`}
-                    className="flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-black hover:bg-gray-200 font-medium rounded-sm transition-colors"
+                    className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3 bg-white text-black hover:bg-gray-200 font-medium rounded-sm transition-colors w-full sm:w-auto"
                   >
                     <Play className="w-5 h-5 fill-current" />
                     <span className="text-base">Play</span>
