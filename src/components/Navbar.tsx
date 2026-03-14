@@ -108,10 +108,7 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-colors",
-      isScrolled ? "bg-black" : "bg-gradient-to-b from-black/90 to-transparent"
-    )}>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black">
       <div className="flex items-center justify-between px-4 h-14">
         {/* Logo */}
         <div className="flex items-center gap-6">
