@@ -118,16 +118,16 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-white/[0.02]">
             <tr>
               <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Content</th>
               <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Language</th>
-              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Category</th>
-              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Date</th>
+              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Language</th>
+              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Category</th>
+              <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Date</th>
               <th className="px-4 sm:px-6 py-4 text-right text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -159,12 +159,12 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
                     {item.type === "movie" ? "Movie" : "Series"}
                   </Badge>
                 </td>
-                <td className="px-6 py-4 text-gray-500">{item.language || "-"}</td>
-                <td className="px-6 py-4 text-gray-500">{item.category || "-"}</td>
-                <td className="px-6 py-4 text-gray-500 text-sm">
+                <td className="px-4 sm:px-6 py-4 text-gray-400">{item.language || "-"}</td>
+                <td className="px-4 sm:px-6 py-4 text-gray-400">{item.category || "-"}</td>
+                <td className="px-4 sm:px-6 py-4 text-gray-400 text-sm">
                   {formatDate(item.createdAt)}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 sm:px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <button
                       onClick={() => setEditingItem(item)}
@@ -184,6 +184,54 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden divide-y divide-white/5">
+        {filteredContent.map((item) => (
+          <div
+            key={String(item._id)}
+            className="p-4 hover:bg-white/[0.02] transition-colors"
+          >
+            <div className="flex gap-3">
+              <div className="relative w-16 h-24 rounded overflow-hidden flex-shrink-0 bg-gray-800">
+                <Image
+                  src={item.poster}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-white line-clamp-2">{item.title}</h4>
+                {item.year && <p className="text-sm text-gray-500 mt-0.5">{item.year}</p>}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Badge variant={item.type === "movie" ? "gold" : "purple"} className="flex items-center gap-1 text-xs">
+                    {item.type === "movie" ? <Film className="w-3 h-3" /> : <Tv className="w-3 h-3" />}
+                    {item.type === "movie" ? "Movie" : "Series"}
+                  </Badge>
+                  <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded">{item.language || "-"}</span>
+                  <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded">{item.category || "-"}</span>
+                </div>
+                <p className="text-xs text-gray-600 mt-2">{formatDate(item.createdAt)}</p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <button
+                  onClick={() => setEditingItem(item)}
+                  className="p-2 rounded hover:bg-[#e50914]/10 text-gray-500 hover:text-[#e50914] transition-colors"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setDeletingItem(item)}
+                  className="p-2 rounded hover:bg-red-500/10 text-gray-500 hover:text-red-500 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {filteredContent.length === 0 && (
