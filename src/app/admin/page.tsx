@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { BellRing, Boxes, ClipboardList, Film, LayoutDashboard, ShieldCheck, Sparkles, Tv, TriangleAlert } from "lucide-react";
+import { Film, Tv, Boxes, ClipboardList, TriangleAlert, Sparkles, BellRing, LayoutDashboard, Search, Plus, X } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminStats from "@/components/admin/AdminStats";
 import UploadMovieForm from "@/components/admin/UploadMovieForm";
@@ -14,14 +14,14 @@ import AdminCollections from "@/components/admin/AdminCollections";
 import AdminReports from "@/components/admin/AdminReports";
 
 const tabs = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, blurb: "Overview and stats" },
-  { id: "upload-movie", label: "Upload Movie", icon: Film, blurb: "Add new movies" },
-  { id: "upload-series", label: "Upload Series", icon: Tv, blurb: "Publish seasons and episodes" },
-  { id: "manage", label: "Manage Content", icon: Boxes, blurb: "Edit existing entries" },
-  { id: "requests", label: "Requests", icon: ClipboardList, blurb: "Review user asks" },
-  { id: "reports", label: "Reports", icon: TriangleAlert, blurb: "Moderation queue" },
-  { id: "collections", label: "Collections", icon: Sparkles, blurb: "Curated rows" },
-  { id: "notification", label: "Send Notification", icon: BellRing, blurb: "Broadcast updates" },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "upload-movie", label: "Add Movie", icon: Film },
+  { id: "upload-series", label: "Add Series", icon: Tv },
+  { id: "manage", label: "Manage", icon: Boxes },
+  { id: "requests", label: "Requests", icon: ClipboardList },
+  { id: "reports", label: "Reports", icon: TriangleAlert },
+  { id: "collections", label: "Collections", icon: Sparkles },
+  { id: "notification", label: "Notify", icon: BellRing },
 ];
 
 function AdminPageContent() {
@@ -29,6 +29,8 @@ function AdminPageContent() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -39,6 +41,7 @@ function AdminPageContent() {
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
+    setMobileMenuOpen(false);
     router.push(`/admin?tab=${tabId}`);
   };
 
@@ -51,146 +54,193 @@ function AdminPageContent() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <section className="glass-surface relative overflow-hidden rounded-[32px] p-5 sm:p-6 lg:p-8">
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent" />
-          <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-            <div className="max-w-3xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-red-300">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Admin Workspace
-              </div>
-              <h1 className="text-3xl font-bold text-white sm:text-4xl">Control content operations from one responsive dashboard.</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-300 sm:text-base">
-                Switch between uploads, moderation, collections, and platform updates without losing context on smaller screens.
-              </p>
+      <div className="min-h-screen bg-black">
+        {/* Top Bar */}
+        <div className="sticky top-0 z-40 bg-black/95 border-b border-white/10 backdrop-blur-sm">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+            {/* Logo */}
+            <div className="flex items-center gap-4">
+              <h1 className="text-lg sm:text-xl font-bold text-white">
+                {activeTabMeta.label}
+              </h1>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:w-[420px]">
-              <div className="glass-surface rounded-2xl p-4">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Current View</p>
-                <p className="mt-2 text-sm font-semibold text-white">{activeTabMeta.label}</p>
+            {/* Search - Desktop */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-white/5 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20 w-48 lg:w-64"
+                />
               </div>
-              <div className="glass-surface rounded-2xl p-4">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Focus</p>
-                <p className="mt-2 text-sm font-semibold text-white">Fast mobile access</p>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-400 hover:text-white"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+            </button>
+          </div>
+
+          {/* Tab Navigation - Desktop */}
+          <div className="hidden md:flex items-center gap-1 px-4 sm:px-6 pb-2 overflow-x-auto">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    activeTab === tab.id
+                      ? "bg-white text-black"
+                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-black border-b border-white/10">
+            <div className="p-3 space-y-1">
+              {/* Mobile Search */}
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none"
+                />
               </div>
-              <div className="glass-surface col-span-2 rounded-2xl p-4 sm:col-span-1">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">Workflow</p>
-                <p className="mt-2 text-sm font-semibold text-white">Publish, review, notify</p>
+              
+              {/* Mobile Tabs */}
+              <div className="grid grid-cols-2 gap-2">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => handleTabChange(tab.id)}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                        activeTab === tab.id
+                          ? "bg-white text-black"
+                          : "bg-white/5 text-gray-300"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </section>
+        )}
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              className={`group flex min-h-[92px] items-start gap-3 rounded-[24px] border p-4 text-left transition-all ${
-                activeTab === tab.id
-                  ? "border-red-500/30 bg-red-500/10 text-white shadow-[0_16px_40px_rgba(229,9,20,0.12)]"
-                  : "glass-surface text-white hover:border-white/20 hover:bg-white/[0.08]"
-              }`}
-            >
-              <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl ${
-                activeTab === tab.id ? "bg-red-600 text-white" : "glass-surface text-gray-300"
-              }`}>
-                <tab.icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{tab.label}</p>
-                <p className={`mt-1 text-xs ${activeTab === tab.id ? "text-red-100/90" : "text-gray-400"}`}>
-                  {tab.blurb}
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <section className="glass-surface-strong rounded-[32px] p-4 sm:p-5 lg:p-6">
+        {/* Main Content */}
+        <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+          {/* Dashboard */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               <AdminStats />
-              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
-                <div className="glass-surface rounded-[28px] p-5 sm:p-6">
-                  <h2 className="text-xl font-bold text-white">Welcome to Admin Panel</h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-400">
-                    Use the navigation cards above to move between uploads, moderation, requests, and collection management.
-                    The layout is tuned for quick switching on all device sizes.
-                  </p>
-
-                  <div className="mt-6 grid gap-4 md:grid-cols-3">
-                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
-                      <h3 className="mb-2 font-semibold text-white">Upload Movie</h3>
-                      <p className="text-sm text-gray-400">Add new movies with streaming and download links.</p>
-                    </div>
-                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
-                      <h3 className="mb-2 font-semibold text-white">Upload Series</h3>
-                      <p className="text-sm text-gray-400">Add full season structures with episode links.</p>
-                    </div>
-                    <div className="glass-surface rounded-2xl p-4 transition-colors hover:bg-white/10">
-                      <h3 className="mb-2 font-semibold text-white">Manage Content</h3>
-                      <p className="text-sm text-gray-400">Review and update existing movies or series.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="glass-surface rounded-[28px] bg-[linear-gradient(180deg,rgba(229,9,20,0.14),rgba(255,255,255,0.04))] p-5 sm:p-6">
-                  <h2 className="text-lg font-bold text-white">Quick Guidance</h2>
-                  <div className="mt-4 space-y-4 text-sm text-gray-200">
-                    <div className="glass-surface rounded-2xl p-4">
-                      <p className="font-medium text-white">1. Publish</p>
-                      <p className="mt-1 text-gray-300">Add movies or series first, then jump to Manage Content for verification.</p>
-                    </div>
-                    <div className="glass-surface rounded-2xl p-4">
-                      <p className="font-medium text-white">2. Moderate</p>
-                      <p className="mt-1 text-gray-300">Check Requests and Reports regularly to keep the catalog healthy.</p>
-                    </div>
-                    <div className="glass-surface rounded-2xl p-4">
-                      <p className="font-medium text-white">3. Notify</p>
-                      <p className="mt-1 text-gray-300">Use notifications after major uploads or collection refreshes.</p>
-                    </div>
-                  </div>
+              
+              {/* Quick Actions */}
+              <div>
+                <h2 className="text-lg font-semibold text-white mb-3">Quick Actions</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {tabs.slice(1).map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className="flex items-center gap-3 p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                      >
+                        <Icon className="w-5 h-5 text-gray-400" />
+                        <span className="text-sm font-medium text-white">{tab.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           )}
 
+          {/* Upload Movie */}
           {activeTab === "upload-movie" && (
-            <UploadMovieForm onSuccess={handleUploadSuccess} />
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Add New Movie</h2>
+                <UploadMovieForm onSuccess={handleUploadSuccess} />
+              </div>
+            </div>
           )}
 
+          {/* Upload Series */}
           {activeTab === "upload-series" && (
-            <UploadSeriesForm onSuccess={handleUploadSuccess} />
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Add New Series</h2>
+                <UploadSeriesForm onSuccess={handleUploadSuccess} />
+              </div>
+            </div>
           )}
 
+          {/* Manage Content */}
           {activeTab === "manage" && (
-            <AdminContentTable refreshTrigger={refreshTrigger} />
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+              <h2 className="text-lg font-semibold text-white mb-4">Manage Content</h2>
+              <AdminContentTable refreshTrigger={refreshTrigger} />
+            </div>
           )}
 
+          {/* Requests */}
           {activeTab === "requests" && (
-            <AdminRequests />
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+              <h2 className="text-lg font-semibold text-white mb-4">User Requests</h2>
+              <AdminRequests />
+            </div>
           )}
 
+          {/* Reports */}
           {activeTab === "reports" && (
-            <AdminReports />
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+              <h2 className="text-lg font-semibold text-white mb-4">Reports</h2>
+              <AdminReports />
+            </div>
           )}
 
+          {/* Collections */}
           {activeTab === "collections" && (
-            <AdminCollections />
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+              <h2 className="text-lg font-semibold text-white mb-4">Collections</h2>
+              <AdminCollections />
+            </div>
           )}
 
+          {/* Notification */}
           {activeTab === "notification" && (
-            <div className="max-w-3xl">
-              <div className="glass-surface rounded-[28px] p-5 sm:p-6">
-                <h2 className="mb-4 text-xl font-bold text-white">Send Notification</h2>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Send Notification</h2>
                 <NotificationForm />
               </div>
             </div>
           )}
-        </section>
+        </div>
       </div>
     </AdminLayout>
   );
@@ -198,7 +248,7 @@ function AdminPageContent() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#141414] flex items-center justify-center text-white">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white">Loading...</div>}>
       <AdminPageContent />
     </Suspense>
   );
