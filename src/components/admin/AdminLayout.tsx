@@ -203,8 +203,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.14),_transparent_20%),radial-gradient(circle_at_16%_18%,_rgba(255,255,255,0.04),_transparent_24%),linear-gradient(180deg,_#0a0a0a_0%,_#121212_52%,_#141414_100%)]">
-      <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</main>
+    <div className="min-h-screen w-full bg-black">
+      <main className="w-full p-0">{children}</main>
     </div>
   );
 }

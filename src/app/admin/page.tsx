@@ -151,7 +151,7 @@ function AdminPageContent() {
         )}
 
         {/* Main Content */}
-        <div className="p-4 sm:p-6 w-full">
+        <div className="w-full min-h-screen">
           {/* Dashboard */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
@@ -181,63 +181,50 @@ function AdminPageContent() {
 
           {/* Upload Movie */}
           {activeTab === "upload-movie" && (
-            <div className="w-full">
-              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Add New Movie</h2>
-                <UploadMovieForm onSuccess={handleUploadSuccess} />
-              </div>
+            <div className="w-full p-4">
+              <UploadMovieForm onSuccess={handleUploadSuccess} />
             </div>
           )}
 
           {/* Upload Series */}
           {activeTab === "upload-series" && (
-            <div className="w-full">
-              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Add New Series</h2>
-                <UploadSeriesForm onSuccess={handleUploadSuccess} />
-              </div>
+            <div className="w-full p-4">
+              <UploadSeriesForm onSuccess={handleUploadSuccess} />
             </div>
           )}
 
           {/* Manage Content */}
           {activeTab === "manage" && (
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Manage Content</h2>
+            <div className="w-full p-4">
               <AdminContentTable refreshTrigger={refreshTrigger} />
             </div>
           )}
 
           {/* Requests */}
           {activeTab === "requests" && (
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">User Requests</h2>
+            <div className="w-full p-4">
               <AdminRequests />
             </div>
           )}
 
           {/* Reports */}
           {activeTab === "reports" && (
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Reports</h2>
+            <div className="w-full p-4">
               <AdminReports />
             </div>
           )}
 
           {/* Collections */}
           {activeTab === "collections" && (
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Collections</h2>
+            <div className="w-full p-4">
               <AdminCollections />
             </div>
           )}
 
           {/* Notification */}
           {activeTab === "notification" && (
-            <div className="w-full">
-              <div className="bg-white/5 rounded-lg p-4 sm:p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Send Notification</h2>
-                <NotificationForm />
-              </div>
+            <div className="w-full p-4">
+              <NotificationForm />
             </div>
           )}
         </div>
