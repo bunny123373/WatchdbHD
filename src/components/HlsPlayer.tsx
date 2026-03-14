@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import MuxPlayer from "@mux/mux-player-react";
+import { useState, useRef, useEffect } from "react";
 
 interface HlsPlayerProps {
   src?: string;
@@ -11,6 +10,16 @@ interface HlsPlayerProps {
 
 export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+      setLoading(true);
+      setError(false);
+    }
+  }, [src]);
 
   if (!src) {
     return (
@@ -29,7 +38,10 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
           <div className="text-center">
             <p className="text-gray-400 mb-3">Failed to load video</p>
             <button
-              onClick={() => setError(false)}
+              onClick={() => {
+                setError(false);
+                if (videoRef.current) videoRef.current.load();
+              }}
               className="px-4 py-2 bg-white/10 text-white text-sm rounded hover:bg-white/20"
             >
               Retry
@@ -37,17 +49,19 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
           </div>
         </div>
       ) : (
-        <MuxPlayer
+        <video
+          ref={videoRef}
           src={src}
           poster={poster}
-          metadata={{
-            video_title: title,
-          }}
-          streamType="on-demand"
+          controls
+          playsInline
+          preload="metadata"
           className="w-full h-full"
+          onLoadedData={() => setLoading(false)}
           onError={() => setError(true)}
-          accentColor="#e50914"
-        />
+        >
+          Your browser does not support the video tag.
+        </video>
       )}
     </div>
   );
