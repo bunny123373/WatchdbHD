@@ -342,11 +342,44 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     setSelectedContent(null);
   };
 
+  // Skeleton component
+  const Skeleton = ({ className }: { className?: string }) => (
+    <div className={`bg-white/5 animate-pulse rounded ${className}`} />
+  );
+
+  const SkeletonRow = () => (
+    <div className="py-4">
+      <Skeleton className="h-6 w-32 mb-3" />
+      <div className="flex gap-3 overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="flex-shrink-0 w-36">
+            <Skeleton className="aspect-[2/3] w-full rounded-md" />
+            <Skeleton className="h-4 w-24 mt-2" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const SkeletonHero = () => (
+    <div className="relative w-full h-[50vh]">
+      <Skeleton className="absolute inset-0" />
+      <div className="absolute bottom-20 left-4 md:left-8 space-y-3">
+        <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-12 w-32 rounded" />
+      </div>
+    </div>
+  );
+
   if (content.length === 0) {
     return (
       <div className="min-h-screen bg-[#141414]">
-        <div className="pt-20 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-[#e50914] border-t-transparent rounded-full animate-spin" />
+        <SkeletonHero />
+        <div className="px-4 md:px-6 lg:px-8 py-6 space-y-6">
+          <SkeletonRow />
+          <SkeletonRow />
+          <SkeletonRow />
         </div>
         <Footer />
       </div>
