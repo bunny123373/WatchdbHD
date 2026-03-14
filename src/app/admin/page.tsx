@@ -54,9 +54,9 @@ function AdminPageContent() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[#141414]">
         {/* Top Bar */}
-        <div className="sticky top-0 z-40 bg-black/95 border-b border-white/10 backdrop-blur-sm">
+        <div className="sticky top-0 z-40 bg-[#141414]/95 border-b border-white/10 backdrop-blur-sm">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3">
             {/* Logo */}
             <div className="flex items-center gap-4">
