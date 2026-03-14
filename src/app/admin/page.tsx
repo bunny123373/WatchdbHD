@@ -151,7 +151,7 @@ function AdminPageContent() {
         )}
 
         {/* Main Content */}
-        <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+        <div className="p-4 sm:p-6 w-full">
           {/* Dashboard */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
@@ -181,7 +181,7 @@ function AdminPageContent() {
 
           {/* Upload Movie */}
           {activeTab === "upload-movie" && (
-            <div className="max-w-4xl mx-auto">
+            <div className="w-full">
               <div className="bg-white/5 rounded-lg p-4 sm:p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Add New Movie</h2>
                 <UploadMovieForm onSuccess={handleUploadSuccess} />
@@ -191,7 +191,7 @@ function AdminPageContent() {
 
           {/* Upload Series */}
           {activeTab === "upload-series" && (
-            <div className="max-w-4xl mx-auto">
+            <div className="w-full">
               <div className="bg-white/5 rounded-lg p-4 sm:p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Add New Series</h2>
                 <UploadSeriesForm onSuccess={handleUploadSuccess} />
@@ -233,7 +233,7 @@ function AdminPageContent() {
 
           {/* Notification */}
           {activeTab === "notification" && (
-            <div className="max-w-2xl mx-auto">
+            <div className="w-full">
               <div className="bg-white/5 rounded-lg p-4 sm:p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Send Notification</h2>
                 <NotificationForm />
