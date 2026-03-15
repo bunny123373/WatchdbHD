@@ -19,19 +19,21 @@ export interface LulustreamAccountInfo {
 }
 
 export interface LulustreamFile {
-  id: string;
-  filename: string;
-  title: string;
-  description: string;
-  size: number;
-  download_count: number;
-  linked: number;
-  created: string;
-  modified: string;
-  status: string;
-  embed_code: string;
-  thumb: string;
   file_code: string;
+  title: string;
+  link: string;
+  thumbnail: string;
+  length: number;
+  uploaded: string;
+  views: number;
+  canplay: number;
+}
+
+export interface LulustreamFileList {
+  pages: number;
+  files: LulustreamFile[];
+  results: number;
+  results_total: number;
 }
 
 export interface LulustreamUploadResponse {
@@ -40,17 +42,9 @@ export interface LulustreamUploadResponse {
   result: {
     id: string;
     title: string;
-    description: string;
-    size: number;
-    download_count: number;
-    created: string;
-    modified: string;
-    status: string;
-    embed_code: string;
-    thumb: string;
     file_code: string;
+    embed_code: string;
     download_url: string;
-    streaming_url: string;
   };
 }
 
@@ -74,24 +68,10 @@ export async function getFileList(): Promise<LulustreamFile[]> {
     );
     if (!response.ok) return [];
     const data = await response.json();
-    return data.result || [];
+    return data.result?.files || [];
   } catch (error) {
     console.error("Lulustream getFileList error:", error);
     return [];
-  }
-}
-
-export async function getFileInfo(fileCode: string): Promise<LulustreamFile | null> {
-  try {
-    const response = await fetch(
-      `${LULUSTREAM_API_URL}/file/info?key=${LULUSTREAM_API_KEY}&file_code=${fileCode}`
-    );
-    if (!response.ok) return null;
-    const data = await response.json();
-    return data.result || null;
-  } catch (error) {
-    console.error("Lulustream getFileInfo error:", error);
-    return null;
   }
 }
 

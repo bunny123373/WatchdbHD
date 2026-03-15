@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAccountInfo, getFileList, getFileInfo, remoteUpload, deleteFile } from "@/lib/lulustream";
+import { getAccountInfo, getFileList, remoteUpload, deleteFile } from "@/lib/lulustream";
 
 const API_KEY = process.env.LULUSTREAM_API_KEY;
 
@@ -13,7 +13,6 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const action = searchParams.get("action");
-  const fileCode = searchParams.get("fileCode");
 
   try {
     switch (action) {
@@ -30,22 +29,6 @@ export async function GET(request: Request) {
       case "files":
         const files = await getFileList();
         return NextResponse.json({ success: true, data: files });
-
-      case "info":
-        if (!fileCode) {
-          return NextResponse.json(
-            { success: false, error: "File code required" },
-            { status: 400 }
-          );
-        }
-        const fileInfo = await getFileInfo(fileCode);
-        if (!fileInfo) {
-          return NextResponse.json(
-            { success: false, error: "File not found" },
-            { status: 404 }
-          );
-        }
-        return NextResponse.json({ success: true, data: fileInfo });
 
       default:
         return NextResponse.json(

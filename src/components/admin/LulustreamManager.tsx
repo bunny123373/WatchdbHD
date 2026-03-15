@@ -4,19 +4,14 @@ import { useState, useEffect } from "react";
 import { Upload, FileVideo, Trash2, RefreshCw, ExternalLink, Search } from "lucide-react";
 
 interface LulustreamFile {
-  id: string;
-  filename: string;
-  title: string;
-  description: string;
-  size: number;
-  download_count: number;
-  linked: number;
-  created: string;
-  modified: string;
-  status: string;
-  embed_code: string;
-  thumb: string;
   file_code: string;
+  title: string;
+  link: string;
+  thumbnail: string;
+  length: number;
+  uploaded: string;
+  views: number;
+  canplay: number;
 }
 
 interface LulustreamAccountInfo {
@@ -121,8 +116,7 @@ export default function LulustreamManager() {
 
   const filteredFiles = files.filter(
     (f) =>
-      f.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      f.filename?.toLowerCase().includes(searchQuery.toLowerCase())
+      f.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatSize = (bytes: number) => {
@@ -130,6 +124,16 @@ export default function LulustreamManager() {
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
     if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + " MB";
     return (bytes / (1024 * 1024 * 1024)).toFixed(1) + " GB";
+  };
+
+  const formatLength = (seconds: number) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hrs > 0) {
+      return `${hrs}h ${mins}m`;
+    }
+    return `${mins}m ${secs}s`;
   };
 
   const formatDate = (dateStr: string) => {
@@ -256,12 +260,12 @@ export default function LulustreamManager() {
           <div className="divide-y divide-white/5">
             {filteredFiles.map((file) => (
               <div
-                key={file.id}
+                key={file.file_code}
                 className="p-4 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
               >
                 <div className="relative w-20 h-14 rounded overflow-hidden bg-gray-800 flex-shrink-0">
-                  {file.thumb ? (
-                    <img src={file.thumb} alt={file.title} className="w-full h-full object-cover" />
+                  {file.thumbnail ? (
+                    <img src={file.thumbnail} alt={file.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-600">
                       <FileVideo className="w-6 h-6" />
@@ -269,12 +273,12 @@ export default function LulustreamManager() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-white font-medium truncate">{file.title || file.filename}</h4>
+                  <h4 className="text-white font-medium truncate">{file.title}</h4>
                   <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
-                    <span>{formatSize(file.size)}</span>
-                    <span>{formatDate(file.created)}</span>
-                    <span className={file.status === "completed" ? "text-green-400" : "text-yellow-400"}>
-                      {file.status}
+                    <span>{formatLength(file.length)}</span>
+                    <span>{formatDate(file.uploaded)}</span>
+                    <span className={file.canplay ? "text-green-400" : "text-yellow-400"}>
+                      {file.canplay ? "Ready" : "Processing"}
                     </span>
                   </div>
                 </div>
