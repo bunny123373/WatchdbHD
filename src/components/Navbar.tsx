@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu } from "lucide-react";
+import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Settings } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 interface SearchResult {
@@ -21,6 +21,7 @@ const navLinks = [
   { href: "/movies", label: "Movies", icon: Film },
   { href: "/collections", label: "Collections", icon: Star },
   { href: "/request", label: "Request", icon: Calendar },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Navbar() {
