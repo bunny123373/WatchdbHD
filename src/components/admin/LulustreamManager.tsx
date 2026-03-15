@@ -52,10 +52,15 @@ export default function LulustreamManager() {
       ]);
       const accountData = await accountRes.json();
       const filesData = await filesRes.json();
+      
+      if (!accountData.success) {
+        setMessage(accountData.error || "Failed to connect to Lulustream");
+      }
       if (accountData.success) setAccountInfo(accountData.data);
       if (filesData.success) setFiles(filesData.data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+      setMessage("Failed to connect to Lulustream");
     } finally {
       setLoading(false);
     }

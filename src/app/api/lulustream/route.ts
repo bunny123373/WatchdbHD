@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 import { getAccountInfo, getFileList, getFileInfo, remoteUpload, deleteFile } from "@/lib/lulustream";
 
+const API_KEY = process.env.LULUSTREAM_API_KEY;
+
 export async function GET(request: Request) {
+  if (!API_KEY) {
+    return NextResponse.json(
+      { success: false, error: "Lulustream API key not configured" },
+      { status: 500 }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const action = searchParams.get("action");
   const fileCode = searchParams.get("fileCode");
@@ -54,6 +63,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!API_KEY) {
+    return NextResponse.json(
+      { success: false, error: "Lulustream API key not configured" },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { action, url, title, fileCode } = body;
