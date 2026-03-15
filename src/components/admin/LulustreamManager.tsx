@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Upload, FileVideo, Trash2, RefreshCw, ExternalLink, Search } from "lucide-react";
+import { Upload, FileVideo, Trash2, RefreshCw, ExternalLink, Search, Copy, Check } from "lucide-react";
 
 interface LulustreamFile {
   file_code: string;
@@ -33,6 +33,7 @@ export default function LulustreamManager() {
   const [videoTitle, setVideoTitle] = useState("");
   const [message, setMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -111,6 +112,18 @@ export default function LulustreamManager() {
       }
     } catch (error) {
       setMessage("Delete failed");
+    }
+  };
+
+  const copyEmbedLink = async (fileCode: string) => {
+    const embedUrl = `https://lulustream.com/embed/${fileCode}`;
+    try {
+      await navigator.clipboard.writeText(embedUrl);
+      setCopiedId(fileCode);
+      setMessage("Embed link copied!");
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      setMessage("Failed to copy");
     }
   };
 
@@ -283,6 +296,17 @@ export default function LulustreamManager() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => copyEmbedLink(file.file_code)}
+                    className="p-2 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                    title="Copy embed link"
+                  >
+                    {copiedId === file.file_code ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
                   <a
                     href={`https://lulustream.com/embed/${file.file_code}`}
                     target="_blank"
