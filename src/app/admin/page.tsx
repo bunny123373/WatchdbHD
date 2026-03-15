@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Film, Tv, Boxes, ClipboardList, TriangleAlert, Sparkles, BellRing, LayoutDashboard, Search, Plus, X } from "lucide-react";
+import { Film, Tv, Boxes, ClipboardList, TriangleAlert, Sparkles, BellRing, LayoutDashboard, Search, Plus, X, CloudUpload } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminStats from "@/components/admin/AdminStats";
 import UploadMovieForm from "@/components/admin/UploadMovieForm";
@@ -12,12 +12,14 @@ import NotificationForm from "@/components/admin/NotificationForm";
 import AdminRequests from "@/components/admin/AdminRequests";
 import AdminCollections from "@/components/admin/AdminCollections";
 import AdminReports from "@/components/admin/AdminReports";
+import LulustreamManager from "@/components/admin/LulustreamManager";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "upload-movie", label: "Add Movie", icon: Film },
   { id: "upload-series", label: "Add Series", icon: Tv },
   { id: "manage", label: "Manage", icon: Boxes },
+  { id: "lulustream", label: "Lulustream", icon: CloudUpload },
   { id: "requests", label: "Requests", icon: ClipboardList },
   { id: "reports", label: "Reports", icon: TriangleAlert },
   { id: "collections", label: "Collections", icon: Sparkles },
@@ -197,6 +199,13 @@ function AdminPageContent() {
           {activeTab === "manage" && (
             <div className="w-full p-4">
               <AdminContentTable refreshTrigger={refreshTrigger} />
+            </div>
+          )}
+
+          {/* Lulustream */}
+          {activeTab === "lulustream" && (
+            <div className="w-full p-4">
+              <LulustreamManager />
             </div>
           )}
 
