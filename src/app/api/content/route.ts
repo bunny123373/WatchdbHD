@@ -84,13 +84,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For movies, downloadLink is required
-    if (body.type === "movie" && !body.downloadLink) {
-      return NextResponse.json(
-        { success: false, error: "Download link is required for movies" },
-        { status: 400 }
-      );
-    }
+    // For movies, downloadLink is optional
+    // if (body.type === "movie" && !body.downloadLink) {
+    //   return NextResponse.json(
+    //     { success: false, error: "Download link is required for movies" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // For series, seasons with episodes are required
     if (body.type === "series") {
@@ -109,14 +109,15 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        for (const episode of season.episodes) {
-          if (!episode.downloadLink) {
-            return NextResponse.json(
-              { success: false, error: "Each episode must have a download link" },
-              { status: 400 }
-            );
-          }
-        }
+        // Download links are now optional for episodes
+        // for (const episode of season.episodes) {
+        //   if (!episode.downloadLink) {
+        //     return NextResponse.json(
+        //       { success: false, error: "Each episode must have a download link" },
+        //       { status: 400 }
+        //     );
+        //   }
+        // }
       }
     }
 
