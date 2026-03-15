@@ -1,5 +1,5 @@
 const LULUSTREAM_API_KEY = process.env.LULUSTREAM_API_KEY;
-const LULUSTREAM_API_URL = "https://api.lulustream.com";
+const LULUSTREAM_API_URL = "https://lulustream.com/api";
 
 export interface LulustreamAccountInfo {
   msg: string;
@@ -100,19 +100,9 @@ export async function remoteUpload(
   title?: string
 ): Promise<LulustreamUploadResponse | null> {
   try {
-    const formData = new URLSearchParams();
-    formData.append("key", LULUSTREAM_API_KEY || "");
-    formData.append("url", url);
-    if (title) formData.append("title", title);
-
-    const response = await fetch(`${LULUSTREAM_API_URL}/upload`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.toString(),
-    });
-
+    const uploadUrl = `${LULUSTREAM_API_URL}/upload/url?key=${LULUSTREAM_API_KEY}&url=${encodeURIComponent(url)}`;
+    const response = await fetch(uploadUrl);
+    
     if (!response.ok) return null;
     const data = await response.json();
     return data.status === 200 ? data : null;
@@ -124,18 +114,9 @@ export async function remoteUpload(
 
 export async function deleteFile(fileCode: string): Promise<boolean> {
   try {
-    const formData = new URLSearchParams();
-    formData.append("key", LULUSTREAM_API_KEY || "");
-    formData.append("file_code", fileCode);
-
-    const response = await fetch(`${LULUSTREAM_API_URL}/file/delete`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.toString(),
-    });
-
+    const response = await fetch(
+      `${LULUSTREAM_API_URL}/file/delete?key=${LULUSTREAM_API_KEY}&file_code=${fileCode}`
+    );
     if (!response.ok) return false;
     const data = await response.json();
     return data.status === 200;
