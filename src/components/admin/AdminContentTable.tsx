@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Edit2, Trash2, Film, Tv, Search } from "lucide-react";
+import { Edit2, Trash2, Film, Tv, Search, Check, X } from "lucide-react";
 import { IContent } from "@/models/Content";
 import { formatDate } from "@/utils/formatDate";
 import Badge from "@/components/ui/Badge";
@@ -20,6 +20,9 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
   const [typeFilter, setTypeFilter] = useState<"all" | "movie" | "series">("all");
   const [editingItem, setEditingItem] = useState<IContent | null>(null);
   const [deletingItem, setDeletingItem] = useState<IContent | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -65,6 +68,56 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
     }
   };
 
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredContent.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredContent.map((c) => String(c._id))));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setShowBulkDeleteConfirm(true);
+  };
+
+  const confirmBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+
+    setIsBulkDeleting(true);
+    setShowBulkDeleteConfirm(false);
+    try {
+      const adminKey = sessionStorage.getItem("adminKey");
+      const response = await fetch("/api/content/bulk-delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": adminKey || "",
+        },
+        body: JSON.stringify({ ids: Array.from(selectedIds) }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setContent(content.filter((c) => !selectedIds.has(String(c._id))));
+        setSelectedIds(new Set());
+      }
+    } catch (error) {
+      console.error("Failed to bulk delete:", error);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="bg-white/5 rounded-lg p-8">
@@ -82,7 +135,19 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
       {/* Header */}
       <div className="p-4 sm:p-6 border-b border-white/5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h2 className="text-xl font-bold text-white">Manage Content</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-bold text-white">Manage Content</h2>
+            {selectedIds.size > 0 && (
+              <button
+                onClick={handleBulkDelete}
+                disabled={isBulkDeleting}
+                className="px-3 py-1.5 bg-red-500/20 text-red-400 text-sm rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete ({selectedIds.size})
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <span>{filteredContent.length} items</span>
           </div>
@@ -123,6 +188,22 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
         <table className="w-full">
           <thead className="bg-white/[0.02]">
             <tr>
+              <th className="px-4 sm:px-6 py-4 text-left">
+                <button
+                  onClick={toggleSelectAll}
+                  className={`p-1 rounded transition-colors ${
+                    selectedIds.size === filteredContent.length && filteredContent.length > 0
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-gray-400 hover:bg-white/20"
+                  }`}
+                >
+                  {selectedIds.size === filteredContent.length && filteredContent.length > 0 ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <div className="w-4 h-4" />
+                  )}
+                </button>
+              </th>
               <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Content</th>
               <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Type</th>
               <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Language</th>
@@ -135,8 +216,26 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
             {filteredContent.map((item) => (
               <tr
                 key={String(item._id)}
-                className="hover:bg-white/[0.02] transition-colors"
+                className={`hover:bg-white/[0.02] transition-colors ${
+                  selectedIds.has(String(item._id)) ? "bg-[#e50914]/5" : ""
+                }`}
               >
+                <td className="px-4 sm:px-6 py-4">
+                  <button
+                    onClick={() => toggleSelect(String(item._id))}
+                    className={`p-1 rounded transition-colors ${
+                      selectedIds.has(String(item._id))
+                        ? "bg-[#e50914] text-white"
+                        : "bg-white/10 text-gray-400 hover:bg-white/20"
+                    }`}
+                  >
+                    {selectedIds.has(String(item._id)) ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      <div className="w-4 h-4" />
+                    )}
+                  </button>
+                </td>
                 <td className="px-4 sm:px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="relative w-12 h-16 rounded overflow-hidden flex-shrink-0 bg-gray-800">
@@ -191,9 +290,25 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
         {filteredContent.map((item) => (
           <div
             key={String(item._id)}
-            className="p-4 hover:bg-white/[0.02] transition-colors"
+            className={`p-4 hover:bg-white/[0.02] transition-colors ${
+              selectedIds.has(String(item._id)) ? "bg-[#e50914]/5" : ""
+            }`}
           >
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-start">
+              <button
+                onClick={() => toggleSelect(String(item._id))}
+                className={`mt-1 p-1 rounded transition-colors flex-shrink-0 ${
+                  selectedIds.has(String(item._id))
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-gray-400 hover:bg-white/20"
+                }`}
+              >
+                {selectedIds.has(String(item._id)) ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  <div className="w-4 h-4" />
+                )}
+              </button>
               <div className="relative w-16 h-24 rounded overflow-hidden flex-shrink-0 bg-gray-800">
                 <Image
                   src={item.poster}
@@ -260,6 +375,32 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
           onConfirm={handleDelete}
           title={deletingItem.title}
         />
+      )}
+
+      {showBulkDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 max-w-md w-full">
+            <h3 className="text-lg font-bold text-white mb-2">Confirm Bulk Delete</h3>
+            <p className="text-gray-400 mb-6">
+              Are you sure you want to delete {selectedIds.size} item{selectedIds.size > 1 ? "s" : ""}? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowBulkDeleteConfirm(false)}
+                className="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmBulkDelete}
+                disabled={isBulkDeleting}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50"
+              >
+                {isBulkDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
