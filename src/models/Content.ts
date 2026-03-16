@@ -75,6 +75,7 @@ export interface IContent {
   hlsUrl?: string;
   views?: number;
   autoPlay?: boolean;
+  languageEmbeds?: { language: string; embedLink: string }[];
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -163,6 +164,10 @@ const ContentSchema = new Schema<IContent>(
     trailerUrl: { type: String },
     views: { type: Number, default: 0 },
     autoPlay: { type: Boolean, default: false },
+    languageEmbeds: [{
+      language: { type: String },
+      embedLink: { type: String }
+    }],
   },
   { timestamps: true }
 );

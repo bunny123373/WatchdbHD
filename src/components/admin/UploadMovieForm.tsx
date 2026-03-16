@@ -99,6 +99,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
   const [crewInput, setCrewInput] = useState("");
   const [crew, setCrew] = useState<{ name: string; job: string }[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [languageEmbeds, setLanguageEmbeds] = useState<{ language: string; embedLink: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isAutoFilling, setIsAutoFilling] = useState(false);
@@ -232,6 +233,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           tmdbGenres: selectedGenres.length > 0 ? selectedGenres.map(g => g.name) : (tmdbData.genres.length > 0 ? tmdbData.genres : undefined),
           cast: cast.length > 0 ? cast : undefined,
           crew: crew.length > 0 ? crew : undefined,
+          languageEmbeds: languageEmbeds.filter(le => le.language && le.embedLink),
         }),
       });
 
@@ -267,6 +269,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
         setCast([]);
         setCrew([]);
+        setLanguageEmbeds([]);
         
         const notification = {
           id: Date.now().toString(),
@@ -643,6 +646,59 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           <label htmlFor="autoPlay" className="text-sm text-gray-400">
             Auto-play video when opened
           </label>
+        </div>
+
+        {/* Language-specific Embed Links */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-400">
+            Language-specific Embed Links (Optional)
+          </label>
+          {languageEmbeds.map((langEmbed, index) => (
+            <div key={index} className="flex gap-2 items-center">
+              <select
+                value={langEmbed.language}
+                onChange={(e) => {
+                  const updated = [...languageEmbeds];
+                  updated[index].language = e.target.value;
+                  setLanguageEmbeds(updated);
+                }}
+                className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914]"
+              >
+                <option value="">Select Language</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Malayalam">Malayalam</option>
+                <option value="Kannada">Kannada</option>
+                <option value="English">English</option>
+              </select>
+              <input
+                type="text"
+                value={langEmbed.embedLink}
+                onChange={(e) => {
+                  const updated = [...languageEmbeds];
+                  updated[index].embedLink = e.target.value;
+                  setLanguageEmbeds(updated);
+                }}
+                placeholder="https://lulustream.com/embed/..."
+                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+              />
+              <button
+                type="button"
+                onClick={() => setLanguageEmbeds(languageEmbeds.filter((_, i) => i !== index))}
+                className="p-2 text-gray-500 hover:text-red-400 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setLanguageEmbeds([...languageEmbeds, { language: "", embedLink: "" }])}
+            className="text-sm text-[#e50914] hover:text-[#d40812] transition-colors flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" /> Add Language Embed
+          </button>
         </div>
       </div>
 

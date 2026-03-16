@@ -44,6 +44,8 @@ export async function getContentById(id: string) {
       crew: Array.isArray(content.crew) ? content.crew : [],
       trailerUrl: content.trailerUrl ? String(content.trailerUrl) : undefined,
       views: content.views != undefined ? Number(content.views) : 0,
+      autoPlay: content.autoPlay || false,
+      languageEmbeds: Array.isArray(content.languageEmbeds) ? content.languageEmbeds : [],
       createdAt: content.createdAt ? new Date(content.createdAt as string) : new Date(),
       updatedAt: content.updatedAt ? new Date(content.updatedAt as string) : new Date(),
     } as unknown as IContent;

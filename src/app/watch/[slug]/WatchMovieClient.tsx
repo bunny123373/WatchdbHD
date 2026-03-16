@@ -14,6 +14,7 @@ interface WatchMovieClientProps {
 
 export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
 
   useEffect(() => {
     setActiveServer(1);
@@ -22,6 +23,11 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
   const hasVideo = movie.hlsUrl || movie.embedIframeLink;
+  
+  const languageEmbeds = movie.languageEmbeds || [];
+  const availableLanguages = languageEmbeds.filter(le => le.embedLink);
+  const selectedEmbed = availableLanguages.find(le => le.language === selectedLanguage);
+  const currentEmbedLink = selectedEmbed?.embedLink || primaryEmbedLink;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -52,8 +58,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
       <div className="pt-14">
         {movie.hlsUrl ? (
           <HlsPlayer src={movie.hlsUrl} title={movie.title} poster={movie.poster} />
-        ) : movie.embedIframeLink ? (
-          <IframePlayer src={primaryEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
+        ) : movie.embedIframeLink || currentEmbedLink ? (
+          <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
         ) : (
           <div className="w-full aspect-video bg-black flex items-center justify-center">
             <div className="text-center">
@@ -133,6 +139,36 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 Download
               </a>
             )}
+          </div>
+        )}
+
+        {/* Language Selection */}
+        {availableLanguages.length > 0 && (
+          <div className="flex flex-wrap gap-3 mb-6">
+            <span className="text-white/50 text-sm py-2">Audio:</span>
+            <button
+              onClick={() => setSelectedLanguage("")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                !selectedLanguage
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              Default
+            </button>
+            {availableLanguages.map((lang) => (
+              <button
+                key={lang.language}
+                onClick={() => setSelectedLanguage(lang.language)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  selectedLanguage === lang.language
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                {lang.language}
+              </button>
+            ))}
           </div>
         )}
 
