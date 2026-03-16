@@ -108,70 +108,72 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           <div className="max-w-7xl mx-auto px-4">
             {/* Server Selection */}
             {movie.embedIframeLink && (
-              <div className="flex flex-wrap gap-3 mb-6">
-            <button
-              onClick={() => setActiveServer(1)}
-              className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
-                activeServer === 1
-                  ? "bg-[#e50914] text-white"
-                  : "bg-white/10 text-white/70 hover:bg-white/20"
-              }`}
-            >
-              Server 1
-            </button>
-            {movie.embedIframeLink2 && (
-              <button
-                onClick={() => setActiveServer(2)}
-                className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
-                  activeServer === 2
-                    ? "bg-[#e50914] text-white"
-                    : "bg-white/10 text-white/70 hover:bg-white/20"
-                }`}
-              >
-                Server 2
-              </button>
+              <div className="flex flex-wrap gap-3 mb-4">
+                <button
+                  onClick={() => setActiveServer(1)}
+                  className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                    activeServer === 1
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  Server 1
+                </button>
+                {movie.embedIframeLink2 && (
+                  <button
+                    onClick={() => setActiveServer(2)}
+                    className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                      activeServer === 2
+                        ? "bg-[#e50914] text-white"
+                        : "bg-white/10 text-white/70 hover:bg-white/20"
+                    }`}
+                  >
+                    Server 2
+                  </button>
+                )}
+                {movieDownloadUrl && (
+                  <a
+                    href={movieDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </a>
+                )}
+              </div>
             )}
-            {movieDownloadUrl && (
-              <a
-                href={movieDownloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
-              >
-                <Download className="w-4 h-4" />
-                Download
-              </a>
-            )}
-          </div>
-        )}
 
-        {/* Language Selection */}
-        {availableLanguages.length > 0 && (
-          <div className="flex flex-wrap gap-3 mb-6">
-            <span className="text-white/50 text-sm py-2">Audio:</span>
-            <button
-              onClick={() => setSelectedLanguage("")}
-              className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
-                !selectedLanguage
-                  ? "bg-[#e50914] text-white"
-                  : "bg-white/10 text-white/70 hover:bg-white/20"
-              }`}
-            >
-              Default
-            </button>
-            {availableLanguages.map((lang) => (
-              <button
-                key={lang.language}
-                onClick={() => setSelectedLanguage(lang.language)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
-                  selectedLanguage === lang.language
-                    ? "bg-[#e50914] text-white"
-                    : "bg-white/10 text-white/70 hover:bg-white/20"
-                }`}
-              >
-                {lang.language}
-              </button>
-            ))}
+            {/* Language Selection */}
+            {availableLanguages.length > 0 && (
+              <div className="flex flex-wrap gap-3 mb-6">
+                <span className="text-white/50 text-sm py-2">Audio:</span>
+                <button
+                  onClick={() => setSelectedLanguage("")}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                    !selectedLanguage
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  Default
+                </button>
+                {availableLanguages.map((lang) => (
+                  <button
+                    key={lang.language}
+                    onClick={() => setSelectedLanguage(lang.language)}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                      selectedLanguage === lang.language
+                        ? "bg-[#e50914] text-white"
+                        : "bg-white/10 text-white/70 hover:bg-white/20"
+                    }`}
+                  >
+                    {lang.language}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

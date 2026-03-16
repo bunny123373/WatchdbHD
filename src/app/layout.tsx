@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   creator: SITE_CONFIG.brandName,
   metadataBase: new URL(SITE_CONFIG.url),
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
   manifest: "/manifest.json",
   openGraph: {
