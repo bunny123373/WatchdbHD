@@ -53,7 +53,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         {movie.hlsUrl ? (
           <HlsPlayer src={movie.hlsUrl} title={movie.title} poster={movie.poster} />
         ) : movie.embedIframeLink ? (
-          <IframePlayer src={primaryEmbedLink} title={movie.title} />
+          <IframePlayer src={primaryEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
         ) : (
           <div className="w-full aspect-video bg-black flex items-center justify-center">
             <div className="text-center">

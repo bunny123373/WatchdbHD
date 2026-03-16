@@ -96,6 +96,7 @@ export default function SeriesWatchClient({
         <IframePlayer
           src={currentEpisodeEmbedLink}
           title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
+          autoPlay={series.autoPlay}
         />
       </div>
 

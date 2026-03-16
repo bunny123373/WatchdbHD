@@ -91,6 +91,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     downloadLink: "",
     hlsUrl: "",
     trailerUrl: "",
+    autoPlay: false,
   });
   const [selectedAudioLanguages, setSelectedAudioLanguages] = useState<string[]>([]);
   const [castInput, setCastInput] = useState("");
@@ -259,6 +260,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           downloadLink: "",
           hlsUrl: "",
           trailerUrl: "",
+          autoPlay: false,
         });
         setSelectedGenres([]);
         setSelectedAudioLanguages([]);
@@ -628,6 +630,19 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
             onChange={handleChange}
             placeholder="https://drive.google.com/..."
           />
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="autoPlay"
+            name="autoPlay"
+            checked={formData.autoPlay}
+            onChange={(e) => setFormData({ ...formData, autoPlay: e.target.checked })}
+            className="w-4 h-4 rounded bg-white/10 border-white/20 text-[#e50914] focus:ring-[#e50914]"
+          />
+          <label htmlFor="autoPlay" className="text-sm text-gray-400">
+            Auto-play video when opened
+          </label>
         </div>
       </div>
 

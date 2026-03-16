@@ -6,10 +6,17 @@ import { AlertCircle } from "lucide-react";
 interface IframePlayerProps {
   src?: string;
   title: string;
+  autoPlay?: boolean;
 }
 
-export default function IframePlayer({ src, title }: IframePlayerProps) {
+export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
   const [hasError, setHasError] = useState(false);
+
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    const separator = url.includes("?") ? "&" : "?";
+    return autoPlay ? `${url}${separator}autoplay=1` : url;
+  };
 
   if (!src) {
     return (
@@ -39,7 +46,7 @@ export default function IframePlayer({ src, title }: IframePlayerProps) {
         </div>
       ) : (
         <iframe
-          src={src}
+          src={getEmbedUrl(src)}
           title={title}
           className="w-full h-full"
           allowFullScreen
