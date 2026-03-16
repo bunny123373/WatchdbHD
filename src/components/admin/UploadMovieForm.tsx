@@ -654,7 +654,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
             Language-specific Embed Links (Optional)
           </label>
           {languageEmbeds.map((langEmbed, index) => (
-            <div key={index} className="flex gap-2 items-center">
+            <div key={index} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <select
                 value={langEmbed.language}
                 onChange={(e) => {
@@ -662,9 +662,9 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
                   updated[index].language = e.target.value;
                   setLanguageEmbeds(updated);
                 }}
-                className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914]"
+                className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914] min-w-[140px]"
               >
-                <option value="">Select Language</option>
+                <option value="">Select</option>
                 <option value="Telugu">Telugu</option>
                 <option value="Hindi">Hindi</option>
                 <option value="Tamil">Tamil</option>
@@ -681,7 +681,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
                   setLanguageEmbeds(updated);
                 }}
                 placeholder="https://lulustream.com/embed/..."
-                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914] w-full"
               />
               <button
                 type="button"

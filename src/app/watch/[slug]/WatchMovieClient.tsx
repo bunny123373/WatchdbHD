@@ -33,7 +33,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent">
-        <div className="flex items-center justify-between px-4 py-4">
+        <div className="flex items-center justify-between px-4 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
             <Link
               href={`/movie/${String(movie._id)}`}
@@ -54,14 +54,14 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         </div>
       </div>
 
-      {/* Player Section */}
-      <div className="pt-14">
+      {/* Player Section - Full Width */}
+      <div className="pt-14 w-full">
         {movie.hlsUrl ? (
           <HlsPlayer src={movie.hlsUrl} title={movie.title} poster={movie.poster} />
         ) : movie.embedIframeLink || currentEmbedLink ? (
           <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
         ) : (
-          <div className="w-full aspect-video bg-black flex items-center justify-center">
+          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
             <div className="text-center">
               <p className="text-white/50 mb-4">No stream available</p>
               {movieDownloadUrl && (
@@ -103,9 +103,12 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           </div>
         </div>
 
-        {/* Server Selection */}
-        {movie.embedIframeLink && (
-          <div className="flex flex-wrap gap-3 mb-8">
+        {/* Server & Language Selection - Full Width */}
+        {(movie.embedIframeLink || availableLanguages.length > 0) && (
+          <div className="max-w-7xl mx-auto px-4">
+            {/* Server Selection */}
+            {movie.embedIframeLink && (
+              <div className="flex flex-wrap gap-3 mb-6">
             <button
               onClick={() => setActiveServer(1)}
               className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
