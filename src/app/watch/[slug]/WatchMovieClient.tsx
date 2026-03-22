@@ -22,12 +22,11 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
-  const hasVideo = movie.hlsUrl || movie.embedIframeLink;
-  
   const languageEmbeds = movie.languageEmbeds || [];
   const availableLanguages = languageEmbeds.filter(le => le.embedLink);
-  const selectedEmbed = availableLanguages.find(le => le.language === selectedLanguage);
-  const currentEmbedLink = selectedEmbed?.embedLink || primaryEmbedLink;
+  const selectedEmbed = selectedLanguage ? availableLanguages.find(le => le.language === selectedLanguage) : null;
+  const currentEmbedLink = selectedEmbed?.embedLink || primaryEmbedLink || availableLanguages[0]?.embedLink || "";
+  const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
