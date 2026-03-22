@@ -21,16 +21,8 @@ export function isDirectFileUrl(url: string): boolean {
 
 export async function downloadFile(url: string, filename?: string): Promise<void> {
   try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = filename || url.split("/").pop() || "download";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(blobUrl);
+    const proxyUrl = `/api/proxy-download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename || url.split("/").pop() || "download")}`;
+    window.open(proxyUrl, "_blank");
   } catch (error) {
     window.open(url, "_blank");
   }
