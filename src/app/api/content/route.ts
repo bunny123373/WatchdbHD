@@ -40,7 +40,8 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const content = await Content.find(query).sort({ createdAt: -1 }).limit(50);
+    const noLimit = searchParams.get("noLimit") === "true";
+    const content = await Content.find(query).sort({ createdAt: -1 }).limit(noLimit ? undefined : 50);
 
     return NextResponse.json({
       success: true,

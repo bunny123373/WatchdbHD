@@ -30,7 +30,7 @@ export default function AdminContentTable({ refreshTrigger = 0 }: AdminContentTa
 
   const fetchContent = async () => {
     try {
-      const response = await fetch("/api/content");
+      const response = await fetch("/api/content?noLimit=true");
       const data = await response.json();
       if (data.success) {
         setContent(data.data);
