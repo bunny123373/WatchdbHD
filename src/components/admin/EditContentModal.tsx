@@ -143,9 +143,16 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
                     {cat}
                   </option>
                 ))}
-              </select>
-            </div>
-          )}
+                </select>
+              </div>
+            )}
+            <Input
+              label="Quality"
+              name="quality"
+              value={formData.quality || ""}
+              onChange={handleChange}
+              placeholder="e.g. 1080p, 720p"
+            />
           <Input
             label="Rating (0-10)"
             name="rating"
@@ -198,32 +205,101 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
         </div>
 
         {isMovie ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <Input
-              label="Embed Iframe URL"
-              name="embedIframeLink"
-              value={formData.embedIframeLink || ""}
-              onChange={handleChange}
-            />
-            <Input
-              label="Embed Iframe URL 2 (Backup)"
-              name="embedIframeLink2"
-              value={formData.embedIframeLink2 || ""}
-              onChange={handleChange}
-            />
-            <Input
-              label="HLS Stream URL"
-              name="hlsUrl"
-              value={formData.hlsUrl || ""}
-              onChange={handleChange}
-            />
-            <Input
-              label="Download URL"
-              name="downloadLink"
-              value={formData.downloadLink || ""}
-              onChange={handleChange}
-            />
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <Input
+                label="Embed Iframe URL"
+                name="embedIframeLink"
+                value={formData.embedIframeLink || ""}
+                onChange={handleChange}
+              />
+              <Input
+                label="Embed Iframe URL 2 (Backup)"
+                name="embedIframeLink2"
+                value={formData.embedIframeLink2 || ""}
+                onChange={handleChange}
+              />
+              <Input
+                label="HLS Stream URL"
+                name="hlsUrl"
+                value={formData.hlsUrl || ""}
+                onChange={handleChange}
+              />
+              <Input
+                label="Download URL"
+                name="downloadLink"
+                value={formData.downloadLink || ""}
+                onChange={handleChange}
+              />
+              <Input
+                label="Trailer URL"
+                name="trailerUrl"
+                value={formData.trailerUrl || ""}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.autoPlay || false}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, autoPlay: e.target.checked }))}
+                  className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#e50914] focus:ring-[#e50914]"
+                />
+                <span className="text-sm text-gray-400">Auto-play</span>
+              </label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Language Embeds (Audio Tracks)</label>
+              <div className="space-y-2">
+                {formData.languageEmbeds?.map((langEmbed, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <span className="text-sm text-gray-400 w-20">{langEmbed.language}</span>
+                    <Input
+                      value={langEmbed.embedLink || ""}
+                      onChange={(e) => {
+                        const updated = [...(formData.languageEmbeds || [])];
+                        updated[index] = { ...updated[index], embedLink: e.target.value };
+                        setFormData((prev) => ({ ...prev, languageEmbeds: updated }));
+                      }}
+                      className="flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = (formData.languageEmbeds || []).filter((_, i) => i !== index);
+                        setFormData((prev) => ({ ...prev, languageEmbeds: updated }));
+                      }}
+                      className="p-2 text-gray-400 hover:text-red-500"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          languageEmbeds: [...(prev.languageEmbeds || []), { language: e.target.value, embedLink: "" }]
+                        }));
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm"
+                  >
+                    <option value="">Add language embed...</option>
+                    {LANGUAGES.filter(l => !(formData.languageEmbeds || []).some(le => le.language === l)).map(lang => (
+                      <option key={lang} value={lang}>{lang}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </>
         ) : (
           <SeasonEpisodeBuilder
             seasons={formData.seasons || []}
