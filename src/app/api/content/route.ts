@@ -41,7 +41,11 @@ export async function GET(request: NextRequest) {
     }
 
     const noLimit = searchParams.get("noLimit") === "true";
-    const content = await Content.find(query).sort({ createdAt: -1 }).limit(noLimit ? undefined : 50);
+    let queryBuilder = Content.find(query).sort({ createdAt: -1 });
+    if (!noLimit) {
+      queryBuilder = queryBuilder.limit(50);
+    }
+    const content = await queryBuilder;
 
     return NextResponse.json({
       success: true,
