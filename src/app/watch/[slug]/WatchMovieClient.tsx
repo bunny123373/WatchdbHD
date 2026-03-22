@@ -149,6 +149,19 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           </div>
         </div>
 
+        {/* Download Button - Always Visible */}
+        {hasDownload && (
+          <div className="mb-6">
+            <button
+              onClick={() => handleDownload(currentDownloadUrl || currentSourceUrl || "")}
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <Download className="w-5 h-5" />
+              Download Movie
+            </button>
+          </div>
+        )}
+
         {/* Server & Language Selection - Full Width */}
         {hasVideo && (
           <div className="max-w-7xl mx-auto px-4">
@@ -175,15 +188,6 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                     }`}
                   >
                     Server 2
-                  </button>
-                )}
-                {(currentDownloadUrl || currentSourceUrl) && (
-                  <button
-                    onClick={() => handleDownload(currentDownloadUrl || currentSourceUrl || "")}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
                   </button>
                 )}
               </div>
@@ -213,15 +217,6 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 >
                   Server 2
                 </button>
-                {(currentDownloadUrl || currentSourceUrl) && (
-                  <button
-                    onClick={() => handleDownload(currentDownloadUrl || currentSourceUrl || "")}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
-                )}
               </div>
             )}
 
