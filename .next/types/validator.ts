@@ -236,28 +236,10 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
-// Validate ../../src/app/api/embed/route.ts
-{
-  type __IsExpected<Specific extends RouteHandlerConfig<"/api/embed">> = Specific
-  const handler = {} as typeof import("../../src/app/api/embed/route.js")
-  type __Check = __IsExpected<typeof handler>
-  // @ts-ignore
-  type __Unused = __Check
-}
-
 // Validate ../../src/app/api/hls/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/hls">> = Specific
   const handler = {} as typeof import("../../src/app/api/hls/route.js")
-  type __Check = __IsExpected<typeof handler>
-  // @ts-ignore
-  type __Unused = __Check
-}
-
-// Validate ../../src/app/api/lulustream/route.ts
-{
-  type __IsExpected<Specific extends RouteHandlerConfig<"/api/lulustream">> = Specific
-  const handler = {} as typeof import("../../src/app/api/lulustream/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
