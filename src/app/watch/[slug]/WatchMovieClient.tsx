@@ -59,8 +59,10 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const currentHlsUrl = selectedLangSource?.hlsUrl || movie.hlsUrl;
   const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
   const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink) || movieDownloadUrl;
+  const currentSourceUrl = currentHlsUrl || currentEmbedLink;
   
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
+  const hasDownload = currentDownloadUrl || currentSourceUrl;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -99,19 +101,26 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               <p className="text-white/50 mb-4">Select a language to play</p>
             </div>
           </div>
+        ) : hasDownload ? (
+          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
+            <div className="text-center">
+              <p className="text-white/50 mb-4">No stream available</p>
+              <button
+                onClick={() => {
+                  const url = currentDownloadUrl || currentSourceUrl || "";
+                  if (url) handleDownload(url);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+            </div>
+          </div>
         ) : (
           <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
             <div className="text-center">
               <p className="text-white/50 mb-4">No stream available</p>
-              {currentDownloadUrl && (
-                <button
-                  onClick={() => handleDownload(currentDownloadUrl)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </button>
-              )}
             </div>
           </div>
         )}
@@ -168,9 +177,9 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                     Server 2
                   </button>
                 )}
-                {currentDownloadUrl && (
+                {(currentDownloadUrl || currentSourceUrl) && (
                   <button
-                    onClick={() => handleDownload(currentDownloadUrl)}
+                    onClick={() => handleDownload(currentDownloadUrl || currentSourceUrl || "")}
                     className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
                   >
                     <Download className="w-4 h-4" />
@@ -204,9 +213,9 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 >
                   Server 2
                 </button>
-                {currentDownloadUrl && (
+                {(currentDownloadUrl || currentSourceUrl) && (
                   <button
-                    onClick={() => handleDownload(currentDownloadUrl)}
+                    onClick={() => handleDownload(currentDownloadUrl || currentSourceUrl || "")}
                     className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
                   >
                     <Download className="w-4 h-4" />
