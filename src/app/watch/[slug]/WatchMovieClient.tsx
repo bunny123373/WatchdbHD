@@ -187,7 +187,6 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                     }`}
                   >
                     {lang.language}
-                    {lang.hlsUrl && <span className="ml-1 text-xs opacity-70">HLS</span>}
                   </button>
                 ))}
               </div>
