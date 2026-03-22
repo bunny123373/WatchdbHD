@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Download, ChevronDown } from "lucide-react";
+import { Play, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ISeason, IEpisode } from "@/models/Content";
 import { normalizeExternalUrl } from "@/utils/url";
+import DownloadButton from "./DownloadButton";
 
 interface EpisodeListProps {
   seasons: ISeason[];
@@ -179,15 +180,11 @@ export default function EpisodeList({
                           Play
                         </Link>
                         {episodeDownloadUrl && (
-                          <a
-                            href={episodeDownloadUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <DownloadButton
+                            url={episodeDownloadUrl}
+                            title={`Episode ${episode.episodeNumber}`}
                             className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded transition-colors"
-                          >
-                            <Download className="w-4 h-4" />
-                            Download
-                          </a>
+                          />
                         )}
                         <p className="text-xs text-gray-400 mt-2 line-clamp-3">
                           {episode.episodeDescription || `Watch Episode ${episode.episodeNumber} of this series online.`}

@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { Play, Download, Star, Globe, ChevronLeft } from "lucide-react";
+import { Play, Star, Globe, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
+import DownloadButton from "@/components/DownloadButton";
 import { SITE_CONFIG } from "@/utils/constants";
 import { normalizeExternalUrl } from "@/utils/url";
 
@@ -164,15 +165,11 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
 
           {/* Download Button */}
           {downloadUrl && (
-            <a
-              href={downloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <DownloadButton
+              url={downloadUrl}
+              title={movie.title}
               className="flex items-center justify-center md:justify-start gap-2 w-full md:w-auto px-6 py-2.5 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors mb-6"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download</span>
-            </a>
+            />
           )}
 
           {/* Description */}

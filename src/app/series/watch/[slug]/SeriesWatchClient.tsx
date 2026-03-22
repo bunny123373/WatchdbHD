@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp } from "lucide-react";
-import { IContent, IEpisode, ILanguageSource } from "@/models/Content";
+import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
-import { normalizeExternalUrl } from "@/utils/url";
+import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
 
 interface SeriesWatchClientProps {
   series: IContent;
@@ -57,6 +57,14 @@ export default function SeriesWatchClient({
     url.searchParams.set("season", seasonNumber.toString());
     url.searchParams.set("episode", episode.episodeNumber.toString());
     window.history.replaceState({}, "", url);
+  };
+
+  const handleDownload = (url: string, filename?: string) => {
+    if (isDirectFileUrl(url)) {
+      downloadFile(url, filename || `${series.title}.mp4`);
+    } else {
+      window.open(url, "_blank");
+    }
   };
 
   const toggleSeason = (seasonNum: number) => {
@@ -128,15 +136,13 @@ export default function SeriesWatchClient({
             <div className="text-center">
               <p className="text-white/50 mb-4">No stream available</p>
               {currentDownloadUrl && (
-                <a
-                  href={currentDownloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleDownload(currentDownloadUrl)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
                 >
                   <Download className="w-4 h-4" />
                   Download
-                </a>
+                </button>
               )}
             </div>
           </div>
@@ -219,15 +225,13 @@ export default function SeriesWatchClient({
           )}
 
           {currentDownloadUrl && (
-            <a
-              href={currentDownloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => handleDownload(currentDownloadUrl)}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
             >
               <Download className="w-4 h-4" />
               Download
-            </a>
+            </button>
           )}
 
           <button

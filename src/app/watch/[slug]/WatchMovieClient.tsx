@@ -6,7 +6,7 @@ import { Download, ChevronLeft, Star } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
-import { normalizeExternalUrl } from "@/utils/url";
+import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -35,6 +35,14 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
       localStorage.removeItem(`watch_lang_${movie._id}`);
     }
   }, [selectedLanguage, movie._id]);
+
+  const handleDownload = (url: string) => {
+    if (isDirectFileUrl(url)) {
+      downloadFile(url, `${movie.title}.mp4`);
+    } else {
+      window.open(url, "_blank");
+    }
+  };
 
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
@@ -96,15 +104,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             <div className="text-center">
               <p className="text-white/50 mb-4">No stream available</p>
               {currentDownloadUrl && (
-                <a
-                  href={currentDownloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleDownload(currentDownloadUrl)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
                 >
                   <Download className="w-4 h-4" />
                   Download
-                </a>
+                </button>
               )}
             </div>
           </div>
@@ -163,15 +169,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                   </button>
                 )}
                 {currentDownloadUrl && (
-                  <a
-                    href={currentDownloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleDownload(currentDownloadUrl)}
                     className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     Download
-                  </a>
+                  </button>
                 )}
               </div>
             )}
@@ -201,15 +205,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                   Server 2
                 </button>
                 {currentDownloadUrl && (
-                  <a
-                    href={currentDownloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleDownload(currentDownloadUrl)}
                     className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     Download
-                  </a>
+                  </button>
                 )}
               </div>
             )}
