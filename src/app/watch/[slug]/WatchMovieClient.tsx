@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft, Play, Star, Calendar, Clock, Tv } from "lucide-react";
-import { IContent } from "@/models/Content";
+import { Download, ChevronLeft, Play, Star } from "lucide-react";
+import { IContent, ILanguageSource } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import { normalizeExternalUrl } from "@/utils/url";
@@ -18,15 +18,25 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
   useEffect(() => {
     setActiveServer(1);
+    setSelectedLanguage("");
   }, [movie._id]);
 
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
-  const languageEmbeds = movie.languageEmbeds || [];
-  const availableLanguages = languageEmbeds.filter(le => le.embedLink);
-  const selectedEmbed = selectedLanguage ? availableLanguages.find(le => le.language === selectedLanguage) : null;
-  const currentEmbedLink = selectedEmbed?.embedLink || primaryEmbedLink || availableLanguages[0]?.embedLink || "";
+  
+  const languageSources = movie.languageSources || [];
+  const availableLanguages = languageSources.filter(ls => ls.hlsUrl || ls.embedLink);
+  
+  const selectedLangSource = selectedLanguage 
+    ? availableLanguages.find(ls => ls.language === selectedLanguage)
+    : null;
+  
+  const currentHlsUrl = selectedLangSource?.hlsUrl || movie.hlsUrl;
+  const currentEmbedLink = selectedLangSource?.embedLink || primaryEmbedLink;
+  const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink) || movieDownloadUrl;
+  
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
+  const showPlayer = currentHlsUrl || currentEmbedLink;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -55,17 +65,23 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
       {/* Player Section - Full Width */}
       <div className="pt-14 w-full">
-        {movie.hlsUrl ? (
-          <HlsPlayer src={movie.hlsUrl} title={movie.title} poster={movie.poster} />
-        ) : movie.embedIframeLink || currentEmbedLink ? (
+        {currentHlsUrl ? (
+          <HlsPlayer src={currentHlsUrl} title={movie.title} poster={movie.poster} />
+        ) : currentEmbedLink ? (
           <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
+        ) : hasVideo ? (
+          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
+            <div className="text-center">
+              <p className="text-white/50 mb-4">Select a language to play</p>
+            </div>
+          </div>
         ) : (
           <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
             <div className="text-center">
               <p className="text-white/50 mb-4">No stream available</p>
-              {movieDownloadUrl && (
+              {currentDownloadUrl && (
                 <a
-                  href={movieDownloadUrl}
+                  href={currentDownloadUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
@@ -103,9 +119,9 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         </div>
 
         {/* Server & Language Selection - Full Width */}
-        {(movie.embedIframeLink || availableLanguages.length > 0) && (
+        {hasVideo && (
           <div className="max-w-7xl mx-auto px-4">
-            {/* Server Selection */}
+            {/* Server Selection (only for main embed) */}
             {movie.embedIframeLink && (
               <div className="flex flex-wrap gap-3 mb-4">
                 <button
@@ -130,9 +146,9 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                     Server 2
                   </button>
                 )}
-                {movieDownloadUrl && (
+                {currentDownloadUrl && (
                   <a
-                    href={movieDownloadUrl}
+                    href={currentDownloadUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
@@ -148,7 +164,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             {availableLanguages.length > 0 && (
               <div className="flex flex-wrap gap-3 mb-6">
                 <span className="text-white/50 text-sm py-2">Audio:</span>
-                {movie.embedIframeLink && (
+                {(movie.hlsUrl || movie.embedIframeLink) && (
                   <button
                     onClick={() => setSelectedLanguage("")}
                     className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
@@ -171,6 +187,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                     }`}
                   >
                     {lang.language}
+                    {lang.hlsUrl && <span className="ml-1 text-xs opacity-70">HLS</span>}
                   </button>
                 ))}
               </div>
@@ -202,7 +219,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Stream</p>
             <p className="text-white text-sm font-medium">
-              {movie.hlsUrl ? "Native HLS" : primaryEmbedLink ? "Embed" : "Download Only"}
+              {currentHlsUrl ? "Native HLS" : currentEmbedLink ? "Embed" : "Download Only"}
             </p>
           </div>
         </div>

@@ -252,51 +252,72 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Language Embeds (Audio Tracks)</label>
-              <div className="space-y-2">
-                {formData.languageEmbeds?.map((langEmbed, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <span className="text-sm text-gray-400 w-20">{langEmbed.language}</span>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Language-wise Video Sources</label>
+              <div className="space-y-3">
+                {formData.languageSources?.map((langSource, index) => (
+                  <div key={index} className="p-3 bg-white/5 rounded-lg space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-400 w-24">{langSource.language}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = (formData.languageSources || []).filter((_, i) => i !== index);
+                          setFormData((prev) => ({ ...prev, languageSources: updated }));
+                        }}
+                        className="p-2 text-gray-400 hover:text-red-500 ml-auto"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                     <Input
-                      value={langEmbed.embedLink || ""}
+                      label="HLS/MP4 URL"
+                      value={langSource.hlsUrl || ""}
                       onChange={(e) => {
-                        const updated = [...(formData.languageEmbeds || [])];
-                        updated[index] = { ...updated[index], embedLink: e.target.value };
-                        setFormData((prev) => ({ ...prev, languageEmbeds: updated }));
+                        const updated = [...(formData.languageSources || [])];
+                        updated[index] = { ...updated[index], hlsUrl: e.target.value };
+                        setFormData((prev) => ({ ...prev, languageSources: updated }));
                       }}
-                      className="flex-1"
+                      placeholder="https://example.com/video.m3u8"
                     />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = (formData.languageEmbeds || []).filter((_, i) => i !== index);
-                        setFormData((prev) => ({ ...prev, languageEmbeds: updated }));
+                    <Input
+                      label="Embed URL"
+                      value={langSource.embedLink || ""}
+                      onChange={(e) => {
+                        const updated = [...(formData.languageSources || [])];
+                        updated[index] = { ...updated[index], embedLink: e.target.value };
+                        setFormData((prev) => ({ ...prev, languageSources: updated }));
                       }}
-                      className="p-2 text-gray-400 hover:text-red-500"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                      placeholder="https://vidsrc.to/embed/..."
+                    />
+                    <Input
+                      label="Download URL"
+                      value={langSource.downloadLink || ""}
+                      onChange={(e) => {
+                        const updated = [...(formData.languageSources || [])];
+                        updated[index] = { ...updated[index], downloadLink: e.target.value };
+                        setFormData((prev) => ({ ...prev, languageSources: updated }));
+                      }}
+                      placeholder="https://drive.google.com/..."
+                    />
                   </div>
                 ))}
-                <div className="flex gap-2">
-                  <select
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          languageEmbeds: [...(prev.languageEmbeds || []), { language: e.target.value, embedLink: "" }]
-                        }));
-                      }
-                    }}
-                    className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm"
-                  >
-                    <option value="">Add language embed...</option>
-                    {LANGUAGES.filter(l => !(formData.languageEmbeds || []).some(le => le.language === l)).map(lang => (
-                      <option key={lang} value={lang}>{lang}</option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        languageSources: [...(prev.languageSources || []), { language: e.target.value, hlsUrl: "", embedLink: "", downloadLink: "" }]
+                      }));
+                    }
+                  }}
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm"
+                >
+                  <option value="">Add language source...</option>
+                  {LANGUAGES.filter(l => !(formData.languageSources || []).some(ls => ls.language === l)).map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </>

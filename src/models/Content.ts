@@ -75,9 +75,16 @@ export interface IContent {
   hlsUrl?: string;
   views?: number;
   autoPlay?: boolean;
-  languageEmbeds?: { language: string; embedLink: string }[];
+  languageSources?: ILanguageSource[];
   createdAt: Date | string;
   updatedAt: Date | string;
+}
+
+export interface ILanguageSource {
+  language: string;
+  embedLink?: string;
+  hlsUrl?: string;
+  downloadLink?: string;
 }
 
 export interface IContentDocument extends Document {
@@ -97,6 +104,7 @@ export interface IContentDocument extends Document {
   embedIframeLink?: string;
   embedIframeLink2?: string;
   downloadLink?: string;
+  hlsUrl?: string;
   seasons?: ISeason[];
   tmdbId?: number;
   tmdbGenreIds?: number[];
@@ -105,6 +113,8 @@ export interface IContentDocument extends Document {
   crew?: ICrew[];
   trailerUrl?: string;
   views?: number;
+  autoPlay?: boolean;
+  languageSources?: ILanguageSource[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -164,9 +174,11 @@ const ContentSchema = new Schema<IContent>(
     trailerUrl: { type: String },
     views: { type: Number, default: 0 },
     autoPlay: { type: Boolean, default: false },
-    languageEmbeds: [{
+    languageSources: [{
       language: { type: String },
-      embedLink: { type: String }
+      embedLink: { type: String },
+      hlsUrl: { type: String },
+      downloadLink: { type: String },
     }],
   },
   { timestamps: true }

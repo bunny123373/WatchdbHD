@@ -99,7 +99,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
   const [crewInput, setCrewInput] = useState("");
   const [crew, setCrew] = useState<{ name: string; job: string }[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [languageEmbeds, setLanguageEmbeds] = useState<{ language: string; embedLink: string }[]>([]);
+  const [languageSources, setLanguageSources] = useState<{ language: string; embedLink?: string; hlsUrl?: string; downloadLink?: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isAutoFilling, setIsAutoFilling] = useState(false);
@@ -198,13 +198,13 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           }));
           setMessage("Default embed URL auto-filled successfully!");
         } else {
-          const existingIndex = languageEmbeds.findIndex(le => le.language === langName);
+          const existingIndex = languageSources.findIndex(le => le.language === langName);
           if (existingIndex >= 0) {
-            const updated = [...languageEmbeds];
+            const updated = [...languageSources];
             updated[existingIndex] = { ...updated[existingIndex], embedLink: data.embedUrl };
-            setLanguageEmbeds(updated);
+            setLanguageSources(updated);
           } else {
-            setLanguageEmbeds([...languageEmbeds, { language: langName, embedLink: data.embedUrl }]);
+            setLanguageSources([...languageSources, { language: langName, embedLink: data.embedUrl }]);
           }
           setMessage(`${langName} embed URL auto-filled successfully!`);
         }
@@ -264,7 +264,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           tmdbGenres: selectedGenres.length > 0 ? selectedGenres.map(g => g.name) : (tmdbData.genres.length > 0 ? tmdbData.genres : undefined),
           cast: cast.length > 0 ? cast : undefined,
           crew: crew.length > 0 ? crew : undefined,
-          languageEmbeds: languageEmbeds.filter(le => le.language && le.embedLink),
+          languageSources: languageSources.filter(ls => ls.language),
         }),
       });
 
@@ -300,7 +300,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         setTmdbData({ tmdbId: 0, genreIds: [], genres: [] });
         setCast([]);
         setCrew([]);
-        setLanguageEmbeds([]);
+        setLanguageSources([]);
         
         const notification = {
           id: Date.now().toString(),
@@ -682,53 +682,77 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         {/* Language-specific Embed Links */}
         <div className="space-y-3">
           <label className="block text-sm font-medium text-gray-400">
-            Language-specific Embed Links (Optional)
+            Language-wise Video Sources (Optional)
           </label>
-          {languageEmbeds.map((langEmbed, index) => (
-            <div key={index} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-              <select
-                value={langEmbed.language}
-                onChange={(e) => {
-                  const updated = [...languageEmbeds];
-                  updated[index].language = e.target.value;
-                  setLanguageEmbeds(updated);
-                }}
-                className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914] min-w-[140px]"
-              >
-                <option value="">Select</option>
-                <option value="Telugu">Telugu</option>
-                <option value="Hindi">Hindi</option>
-                <option value="Tamil">Tamil</option>
-                <option value="Malayalam">Malayalam</option>
-                <option value="Kannada">Kannada</option>
-                <option value="English">English</option>
-              </select>
+          {languageSources.map((langSource, index) => (
+            <div key={index} className="p-3 bg-white/5 rounded-lg space-y-2">
+              <div className="flex items-center gap-2">
+                <select
+                  value={langSource.language}
+                  onChange={(e) => {
+                    const updated = [...languageSources];
+                    updated[index].language = e.target.value;
+                    setLanguageSources(updated);
+                  }}
+                  className="px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914] min-w-[140px]"
+                >
+                  <option value="">Select Language</option>
+                  <option value="Telugu">Telugu</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Malayalam">Malayalam</option>
+                  <option value="Kannada">Kannada</option>
+                  <option value="English">English</option>
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setLanguageSources(languageSources.filter((_, i) => i !== index))}
+                  className="p-2 text-gray-500 hover:text-red-400 transition-colors ml-auto"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
               <input
                 type="text"
-                value={langEmbed.embedLink}
+                value={langSource.hlsUrl || ""}
                 onChange={(e) => {
-                  const updated = [...languageEmbeds];
-                  updated[index].embedLink = e.target.value;
-                  setLanguageEmbeds(updated);
+                  const updated = [...languageSources];
+                  updated[index].hlsUrl = e.target.value;
+                  setLanguageSources(updated);
                 }}
-                placeholder="https://lulustream.com/embed/..."
-                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914] w-full"
+                placeholder="HLS/MP4 URL (e.g., https://example.com/video.m3u8)"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
               />
-              <button
-                type="button"
-                onClick={() => setLanguageEmbeds(languageEmbeds.filter((_, i) => i !== index))}
-                className="p-2 text-gray-500 hover:text-red-400 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <input
+                type="text"
+                value={langSource.embedLink || ""}
+                onChange={(e) => {
+                  const updated = [...languageSources];
+                  updated[index].embedLink = e.target.value;
+                  setLanguageSources(updated);
+                }}
+                placeholder="Embed URL (e.g., https://vidsrc.to/embed/...)"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+              />
+              <input
+                type="text"
+                value={langSource.downloadLink || ""}
+                onChange={(e) => {
+                  const updated = [...languageSources];
+                  updated[index].downloadLink = e.target.value;
+                  setLanguageSources(updated);
+                }}
+                placeholder="Download URL (optional)"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+              />
             </div>
           ))}
           <button
             type="button"
-            onClick={() => setLanguageEmbeds([...languageEmbeds, { language: "", embedLink: "" }])}
+            onClick={() => setLanguageSources([...languageSources, { language: "", hlsUrl: "", embedLink: "", downloadLink: "" }])}
             className="text-sm text-[#e50914] hover:text-[#d40812] transition-colors flex items-center gap-1"
           >
-            <Plus className="w-4 h-4" /> Add Language Embed
+            <Plus className="w-4 h-4" /> Add Language Source
           </button>
         </div>
       </div>
