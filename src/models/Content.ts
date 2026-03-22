@@ -22,6 +22,7 @@ export interface IEpisode {
   hlsUrl?: string;
   downloadLink?: string;
   quality?: string;
+  languageSources?: ILanguageSource[];
 }
 
 export interface ISeason {
@@ -127,6 +128,12 @@ const EpisodeSchema = new Schema<IEpisode>({
   hlsUrl: { type: String },
   downloadLink: { type: String },
   quality: { type: String },
+  languageSources: [{
+    language: { type: String },
+    embedLink: { type: String },
+    hlsUrl: { type: String },
+    downloadLink: { type: String },
+  }],
 });
 
 const SeasonSchema = new Schema<ISeason>({

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft, Play, Star } from "lucide-react";
-import { IContent, ILanguageSource } from "@/models/Content";
+import { Download, ChevronLeft, Star } from "lucide-react";
+import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import { normalizeExternalUrl } from "@/utils/url";
@@ -14,12 +14,27 @@ interface WatchMovieClientProps {
 
 export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
+  const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
 
   useEffect(() => {
+    const savedLang = localStorage.getItem(`watch_lang_${movie._id}`);
+    if (savedLang) {
+      setSelectedLanguage(savedLang);
+    } else {
+      setSelectedLanguage("");
+    }
     setActiveServer(1);
-    setSelectedLanguage("");
+    setLangServer(1);
   }, [movie._id]);
+
+  useEffect(() => {
+    if (selectedLanguage) {
+      localStorage.setItem(`watch_lang_${movie._id}`, selectedLanguage);
+    } else {
+      localStorage.removeItem(`watch_lang_${movie._id}`);
+    }
+  }, [selectedLanguage, movie._id]);
 
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
@@ -31,12 +46,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
     ? availableLanguages.find(ls => ls.language === selectedLanguage)
     : null;
   
+  const langEmbedLink = langServer === 2 ? selectedLangSource?.embedLink?.replace('/embed/', '/embed-2/') : selectedLangSource?.embedLink;
+  
   const currentHlsUrl = selectedLangSource?.hlsUrl || movie.hlsUrl;
-  const currentEmbedLink = selectedLangSource?.embedLink || primaryEmbedLink;
+  const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
   const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink) || movieDownloadUrl;
   
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
-  const showPlayer = currentHlsUrl || currentEmbedLink;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -121,8 +137,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         {/* Server & Language Selection - Full Width */}
         {hasVideo && (
           <div className="max-w-7xl mx-auto px-4">
-            {/* Server Selection (only for main embed) */}
-            {movie.embedIframeLink && (
+            {/* Main Server Selection */}
+            {movie.embedIframeLink && !selectedLanguage && (
               <div className="flex flex-wrap gap-3 mb-4">
                 <button
                   onClick={() => setActiveServer(1)}
@@ -160,6 +176,44 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               </div>
             )}
 
+            {/* Language Source Server Selection */}
+            {selectedLangSource?.embedLink && (
+              <div className="flex flex-wrap gap-3 mb-4">
+                <span className="text-white/50 text-sm py-2">{selectedLanguage}:</span>
+                <button
+                  onClick={() => setLangServer(1)}
+                  className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                    langServer === 1
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  Server 1
+                </button>
+                <button
+                  onClick={() => setLangServer(2)}
+                  className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                    langServer === 2
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  Server 2
+                </button>
+                {currentDownloadUrl && (
+                  <a
+                    href={currentDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </a>
+                )}
+              </div>
+            )}
+
             {/* Language Selection */}
             {availableLanguages.length > 0 && (
               <div className="flex flex-wrap gap-3 mb-6">
@@ -179,7 +233,10 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 {availableLanguages.map((lang) => (
                   <button
                     key={lang.language}
-                    onClick={() => setSelectedLanguage(lang.language)}
+                    onClick={() => {
+                      setSelectedLanguage(lang.language);
+                      setLangServer(1);
+                    }}
                     className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
                       selectedLanguage === lang.language
                         ? "bg-[#e50914] text-white"

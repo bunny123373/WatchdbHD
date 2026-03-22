@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, Play, ChevronLeft, Check, CircleCheck, ListVideo, ChevronDown, ChevronUp } from "lucide-react";
-import { IContent, IEpisode } from "@/models/Content";
+import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp } from "lucide-react";
+import { IContent, IEpisode, ILanguageSource } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
+import HlsPlayer from "@/components/HlsPlayer";
 import { normalizeExternalUrl } from "@/utils/url";
 
 interface SeriesWatchClientProps {
@@ -22,14 +23,14 @@ export default function SeriesWatchClient({
   const [currentEpisode, setCurrentEpisode] = useState<IEpisode | null>(null);
   const [showEpisodeList, setShowEpisodeList] = useState(true);
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
+  const [langServer, setLangServer] = useState<1 | 2>(1);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [expandedSeasons, setExpandedSeasons] = useState<number[]>([initialSeason || 1]);
 
   useEffect(() => {
     setActiveServer(1);
-    const saved = localStorage.getItem(`watched_${series._id}`);
-    if (saved) {
-      // watched episodes loaded
-    }
+    setLangServer(1);
+    setSelectedLanguage("");
   }, [series._id]);
 
   useEffect(() => {
@@ -49,6 +50,8 @@ export default function SeriesWatchClient({
     setCurrentSeason(seasonNumber);
     setCurrentEpisode(episode);
     setActiveServer(1);
+    setLangServer(1);
+    setSelectedLanguage("");
 
     const url = new URL(window.location.href);
     url.searchParams.set("season", seasonNumber.toString());
@@ -65,8 +68,21 @@ export default function SeriesWatchClient({
   };
 
   const currentSeasonData = series.seasons?.find((item) => item.seasonNumber === currentSeason);
-  const currentEpisodeEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
-  const currentEpisodeDownloadUrl = normalizeExternalUrl(currentEpisode?.downloadLink);
+  const episodeLanguageSources = currentEpisode?.languageSources || [];
+  const availableLanguages = episodeLanguageSources.filter(ls => ls.hlsUrl || ls.embedLink);
+  
+  const selectedLangSource = selectedLanguage
+    ? availableLanguages.find(ls => ls.language === selectedLanguage)
+    : null;
+  
+  const langEmbedLink = langServer === 2 ? selectedLangSource?.embedLink?.replace('/embed/', '/embed-2/') : selectedLangSource?.embedLink;
+  
+  const primaryEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
+  const currentHlsUrl = selectedLangSource?.hlsUrl || currentEpisode?.hlsUrl;
+  const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
+  const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink || currentEpisode?.downloadLink);
+
+  const hasVideo = currentEpisode?.hlsUrl || currentEpisode?.embedIframeLink || availableLanguages.length > 0;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -93,11 +109,38 @@ export default function SeriesWatchClient({
 
       {/* Player Section */}
       <div className="pt-14">
-        <IframePlayer
-          src={currentEpisodeEmbedLink}
-          title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
-          autoPlay={series.autoPlay}
-        />
+        {currentHlsUrl ? (
+          <HlsPlayer src={currentHlsUrl} title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} poster={series.poster} />
+        ) : currentEmbedLink ? (
+          <IframePlayer
+            src={currentEmbedLink}
+            title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
+            autoPlay={series.autoPlay}
+          />
+        ) : hasVideo ? (
+          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
+            <div className="text-center">
+              <p className="text-white/50 mb-4">Select a language to play</p>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
+            <div className="text-center">
+              <p className="text-white/50 mb-4">No stream available</p>
+              {currentDownloadUrl && (
+                <a
+                  href={currentDownloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info & Episodes */}
@@ -120,31 +163,64 @@ export default function SeriesWatchClient({
 
         {/* Controls */}
         <div className="flex flex-wrap gap-3 mb-6">
-          <button
-            onClick={() => setActiveServer(1)}
-            className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
-              activeServer === 1
-                ? "bg-[#e50914] text-white"
-                : "bg-white/10 text-white/70 hover:bg-white/20"
-            }`}
-          >
-            Server 1
-          </button>
-          {currentEpisode?.embedIframeLink2 && (
-            <button
-              onClick={() => setActiveServer(2)}
-              className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
-                activeServer === 2
-                  ? "bg-[#e50914] text-white"
-                  : "bg-white/10 text-white/70 hover:bg-white/20"
-              }`}
-            >
-              Server 2
-            </button>
+          {/* Main Server Selection */}
+          {currentEpisode?.embedIframeLink && !selectedLanguage && (
+            <>
+              <button
+                onClick={() => setActiveServer(1)}
+                className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                  activeServer === 1
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                Server 1
+              </button>
+              {currentEpisode?.embedIframeLink2 && (
+                <button
+                  onClick={() => setActiveServer(2)}
+                  className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                    activeServer === 2
+                      ? "bg-[#e50914] text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  Server 2
+                </button>
+              )}
+            </>
           )}
-          {currentEpisodeDownloadUrl && (
+
+          {/* Language Source Server Selection */}
+          {selectedLangSource?.embedLink && (
+            <>
+              <span className="text-white/50 text-sm py-2">{selectedLanguage}:</span>
+              <button
+                onClick={() => setLangServer(1)}
+                className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                  langServer === 1
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                Server 1
+              </button>
+              <button
+                onClick={() => setLangServer(2)}
+                className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
+                  langServer === 2
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                Server 2
+              </button>
+            </>
+          )}
+
+          {currentDownloadUrl && (
             <a
-              href={currentEpisodeDownloadUrl}
+              href={currentDownloadUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/70 hover:bg-white/20 rounded-sm text-sm font-medium transition-colors"
@@ -153,6 +229,7 @@ export default function SeriesWatchClient({
               Download
             </a>
           )}
+
           <button
             onClick={() => setShowEpisodeList(!showEpisodeList)}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-sm transition-colors ${
@@ -165,6 +242,41 @@ export default function SeriesWatchClient({
             {showEpisodeList ? "Hide" : "Episodes"}
           </button>
         </div>
+
+        {/* Language Selection */}
+        {availableLanguages.length > 0 && (
+          <div className="flex flex-wrap gap-3 mb-6">
+            <span className="text-white/50 text-sm py-2">Audio:</span>
+            {(currentEpisode?.hlsUrl || currentEpisode?.embedIframeLink) && (
+              <button
+                onClick={() => setSelectedLanguage("")}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  !selectedLanguage
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                Default
+              </button>
+            )}
+            {availableLanguages.map((lang) => (
+              <button
+                key={lang.language}
+                onClick={() => {
+                  setSelectedLanguage(lang.language);
+                  setLangServer(1);
+                }}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  selectedLanguage === lang.language
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                {lang.language}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Episode List */}
         {showEpisodeList && (
@@ -189,6 +301,7 @@ export default function SeriesWatchClient({
                     <div className="divide-y divide-white/10">
                       {season.episodes.map((episode) => {
                         const isActive = currentEpisode?.episodeNumber === episode.episodeNumber && currentSeason === season.seasonNumber;
+                        const hasLangSources = episode.languageSources && episode.languageSources.some(ls => ls.hlsUrl || ls.embedLink);
                         
                         return (
                           <button
@@ -213,11 +326,18 @@ export default function SeriesWatchClient({
                                 </p>
                               )}
                             </div>
-                            {episode.quality && (
-                              <span className="text-[10px] font-bold bg-white/10 text-white/60 px-1.5 py-0.5 rounded-sm">
-                                {episode.quality}
-                              </span>
-                            )}
+                            <div className="flex items-center gap-2">
+                              {hasLangSources && (
+                                <span className="text-[10px] font-bold bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded-sm">
+                                  MULTI
+                                </span>
+                              )}
+                              {episode.quality && (
+                                <span className="text-[10px] font-bold bg-white/10 text-white/60 px-1.5 py-0.5 rounded-sm">
+                                  {episode.quality}
+                                </span>
+                              )}
+                            </div>
                           </button>
                         );
                       })}
