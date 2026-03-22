@@ -218,6 +218,45 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     }
   };
 
+  const generateDownloadLink = async () => {
+    if (!formData.embedIframeLink && !formData.hlsUrl) {
+      setMessage("Please add embed or HLS link first");
+      return;
+    }
+
+    setIsAutoFilling(true);
+    setMessage("");
+
+    try {
+      const sourceUrl = formData.embedIframeLink || formData.hlsUrl || "";
+      
+      const response = await fetch("/api/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: sourceUrl,
+          type: "movie",
+          title: formData.title || "movie"
+        }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setFormData((prev) => ({
+          ...prev,
+          downloadLink: data.downloadUrl
+        }));
+        setMessage("Download link generated successfully!");
+      } else {
+        setMessage(data.error || "Failed to generate download link");
+      }
+    } catch (error) {
+      setMessage("Error generating download link");
+    } finally {
+      setIsAutoFilling(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -657,13 +696,29 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           />
         </div>
         <div>
-          <Input
-            label="Download URL"
-            name="downloadLink"
-            value={formData.downloadLink}
-            onChange={handleChange}
-            placeholder="https://drive.google.com/..."
-          />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-400">Download URL</label>
+              {(tmdbData.tmdbId || formData.embedIframeLink) && (
+                <button
+                  type="button"
+                  onClick={generateDownloadLink}
+                  className="text-xs px-2 py-1 bg-[#e50914] hover:bg-[#b2070f] text-white rounded transition-colors"
+                >
+                  Auto Generate
+                </button>
+              )}
+            </div>
+            <input
+              type="text"
+              name="downloadLink"
+              value={formData.downloadLink}
+              onChange={handleChange}
+              placeholder="https://drive.google.com/... or direct MP4 URL"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#e50914] text-sm"
+            />
+            <p className="text-xs text-gray-500">Supports: Google Drive, Dropbox, MediaFire, Direct MP4/MKV, Pixeldrain</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <input
