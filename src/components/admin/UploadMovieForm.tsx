@@ -122,6 +122,23 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
     { code: "ru", name: "Russian" },
   ];
 
+  const CODE_TO_LANGUAGE: Record<string, string> = {
+    all: "Default",
+    en: "English",
+    te: "Telugu",
+    hi: "Hindi",
+    ta: "Tamil",
+    ml: "Malayalam",
+    kn: "Kannada",
+    ja: "Japanese",
+    ko: "Korean",
+    zh: "Chinese",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    ru: "Russian",
+  };
+
   const addCast = () => {
     if (castInput.trim()) {
       const [name, character] = castInput.split("|").map(s => s.trim());
@@ -172,11 +189,25 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
       const data = await response.json();
 
       if (data.success) {
-        setFormData((prev) => ({
-          ...prev,
-          embedIframeLink: data.embedUrl,
-        }));
-        setMessage("Embed URL auto-filled successfully!");
+        const langName = CODE_TO_LANGUAGE[selectedEmbedLang] || selectedEmbedLang;
+        
+        if (selectedEmbedLang === "all") {
+          setFormData((prev) => ({
+            ...prev,
+            embedIframeLink: data.embedUrl,
+          }));
+          setMessage("Default embed URL auto-filled successfully!");
+        } else {
+          const existingIndex = languageEmbeds.findIndex(le => le.language === langName);
+          if (existingIndex >= 0) {
+            const updated = [...languageEmbeds];
+            updated[existingIndex] = { ...updated[existingIndex], embedLink: data.embedUrl };
+            setLanguageEmbeds(updated);
+          } else {
+            setLanguageEmbeds([...languageEmbeds, { language: langName, embedLink: data.embedUrl }]);
+          }
+          setMessage(`${langName} embed URL auto-filled successfully!`);
+        }
       } else {
         setMessage(data.error || "Failed to auto-fill embed URL");
       }

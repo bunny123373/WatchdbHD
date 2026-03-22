@@ -149,16 +149,18 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             {availableLanguages.length > 0 && (
               <div className="flex flex-wrap gap-3 mb-6">
                 <span className="text-white/50 text-sm py-2">Audio:</span>
-                <button
-                  onClick={() => setSelectedLanguage("")}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
-                    !selectedLanguage
-                      ? "bg-[#e50914] text-white"
-                      : "bg-white/10 text-white/70 hover:bg-white/20"
-                  }`}
-                >
-                  Default
-                </button>
+                {movie.embedIframeLink && (
+                  <button
+                    onClick={() => setSelectedLanguage("")}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                      !selectedLanguage
+                        ? "bg-[#e50914] text-white"
+                        : "bg-white/10 text-white/70 hover:bg-white/20"
+                    }`}
+                  >
+                    Default
+                  </button>
+                )}
                 {availableLanguages.map((lang) => (
                   <button
                     key={lang.language}
