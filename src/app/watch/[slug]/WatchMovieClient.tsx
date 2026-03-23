@@ -20,16 +20,26 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
 
+  const languageSources = movie.languageSources || [];
+  const availableLanguages = languageSources.filter(ls => ls.hlsUrl || ls.embedLink);
+
   useEffect(() => {
     const savedLang = localStorage.getItem(`watch_lang_${movie._id}`);
-    if (savedLang) {
+    if (savedLang && availableLanguages.some(ls => ls.language === savedLang)) {
       setSelectedLanguage(savedLang);
+    } else if (availableLanguages.length > 0) {
+      const defaultLang = movie.language || "Telugu";
+      const matchedLang = availableLanguages.find(ls => 
+        ls.language?.toLowerCase().includes(defaultLang.toLowerCase()) ||
+        defaultLang.toLowerCase().includes(ls.language?.toLowerCase() || "")
+      );
+      setSelectedLanguage(matchedLang?.language || availableLanguages[0].language);
     } else {
       setSelectedLanguage("");
     }
     setActiveServer(1);
     setLangServer(1);
-  }, [movie._id]);
+  }, [movie._id, movie.language, availableLanguages]);
 
   useEffect(() => {
     if (selectedLanguage) {
@@ -49,9 +59,6 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
   const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
-  
-  const languageSources = movie.languageSources || [];
-  const availableLanguages = languageSources.filter(ls => ls.hlsUrl || ls.embedLink);
   
   const selectedLangSource = selectedLanguage 
     ? availableLanguages.find(ls => ls.language === selectedLanguage)
