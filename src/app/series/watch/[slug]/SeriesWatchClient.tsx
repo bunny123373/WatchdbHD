@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp, SkipForward } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
@@ -27,6 +27,8 @@ export default function SeriesWatchClient({
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [expandedSeasons, setExpandedSeasons] = useState<number[]>([initialSeason || 1]);
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const playerRef = useRef<{ playNext: () => void } | null>(null);
 
   useEffect(() => {
     setActiveServer(1);
@@ -74,6 +76,39 @@ export default function SeriesWatchClient({
         ? prev.filter(n => n !== seasonNum)
         : [...prev, seasonNum]
     );
+  };
+
+  const getNextEpisode = (): { episode: IEpisode; season: number } | null => {
+    const currentSeasonData = series.seasons?.find((item) => item.seasonNumber === currentSeason);
+    if (!currentSeasonData || !currentEpisode) return null;
+
+    const currentEpIndex = currentSeasonData.episodes.findIndex(ep => ep.episodeNumber === currentEpisode.episodeNumber);
+    
+    if (currentEpIndex < currentSeasonData.episodes.length - 1) {
+      return { episode: currentSeasonData.episodes[currentEpIndex + 1], season: currentSeason };
+    }
+
+    const nextSeason = series.seasons?.find(s => s.seasonNumber === currentSeason + 1);
+    if (nextSeason && nextSeason.episodes.length > 0) {
+      return { episode: nextSeason.episodes[0], season: currentSeason + 1 };
+    }
+
+    return null;
+  };
+
+  const handleVideoEnded = () => {
+    if (!autoPlayNext) return;
+    const next = getNextEpisode();
+    if (next) {
+      handleEpisodeSelect(next.episode, next.season);
+    }
+  };
+
+  const playNextEpisode = () => {
+    const next = getNextEpisode();
+    if (next) {
+      handleEpisodeSelect(next.episode, next.season);
+    }
   };
 
   const currentSeasonData = series.seasons?.find((item) => item.seasonNumber === currentSeason);
@@ -134,19 +169,45 @@ export default function SeriesWatchClient({
             </div>
           }
           actions={
-            currentDownloadUrl ? (
+            <div className="flex items-center gap-2 flex-wrap">
+              {currentDownloadUrl && (
+                <button
+                  onClick={() => handleDownload(currentDownloadUrl)}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-sm text-sm font-medium transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </button>
+              )}
+              {getNextEpisode() && (
+                <button
+                  onClick={playNextEpisode}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#e50914] hover:bg-[#b8070f] text-white rounded-sm text-sm font-medium transition-colors"
+                >
+                  <SkipForward className="w-4 h-4" />
+                  Next Episode
+                </button>
+              )}
               <button
-                onClick={() => handleDownload(currentDownloadUrl)}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-sm text-sm font-medium transition-colors"
+                onClick={() => setAutoPlayNext(!autoPlayNext)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-sm text-sm font-medium transition-colors ${
+                  autoPlayNext 
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
               >
-                <Download className="w-4 h-4" />
-                Download
+                Auto-Play: {autoPlayNext ? "On" : "Off"}
               </button>
-            ) : undefined
+            </div>
           }
         >
           {currentHlsUrl ? (
-            <HlsPlayer src={currentHlsUrl} title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} poster={series.poster} />
+            <HlsPlayer 
+              src={currentHlsUrl} 
+              title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} 
+              poster={series.poster}
+              onEnded={handleVideoEnded}
+            />
           ) : currentEmbedLink ? (
             <IframePlayer
               src={currentEmbedLink}

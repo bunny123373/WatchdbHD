@@ -6,9 +6,10 @@ interface HlsPlayerProps {
   src?: string;
   title: string;
   poster?: string;
+  onEnded?: () => void;
 }
 
-export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
+export default function HlsPlayer({ src, title, poster, onEnded }: HlsPlayerProps) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,6 +60,7 @@ export default function HlsPlayer({ src, title, poster }: HlsPlayerProps) {
           className="w-full h-full"
           onLoadedData={() => setLoading(false)}
           onError={() => setError(true)}
+          onEnded={onEnded}
         >
           Your browser does not support the video tag.
         </video>
