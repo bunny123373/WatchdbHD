@@ -465,6 +465,38 @@ export default function PremiumOTTPlayer({
     lastClickTime.current = now;
   };
 
+  const [touchStart, setTouchStart] = useState<{ x: number; time: number } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart({ x: e.touches[0].clientX, time: Date.now() });
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart.x - touchEnd;
+    const timeDiff = Date.now() - touchStart.time;
+    
+    if (Math.abs(diff) > 50 && timeDiff < 500) {
+      if (diff > 0) {
+        seekRelative(10);
+      } else {
+        seekRelative(-10);
+      }
+    }
+    setTouchStart(null);
+  };
+
+  const handleSingleTap = () => {
+    if (isPlaying) {
+      if (showControls) {
+        setShowControls(false);
+      } else {
+        showControlsTemporarily();
+      }
+    }
+  };
+
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
   const bufferedPercent = duration > 0 ? (buffered / duration) * 100 : 0;
 
@@ -484,12 +516,14 @@ export default function PremiumOTTPlayer({
 
   return (
     <div 
-      className="relative w-full bg-black rounded-2xl overflow-hidden group"
+      className="relative w-full bg-black rounded-2xl overflow-hidden group md:rounded-xl"
       onMouseMove={showControlsTemporarily}
       onMouseLeave={() => isPlaying && setShowControls(false)}
       onDoubleClick={handleDoubleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      <div ref={videoRef} className="w-full aspect-video" />
+      <div ref={videoRef} className="w-full aspect-video md:aspect-[16/9]" />
 
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -514,10 +548,10 @@ export default function PremiumOTTPlayer({
       {!isPlaying && !isLoading && (
         <button
           onClick={togglePlay}
-          className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300"
+          className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300 touch-manipulation"
         >
-          <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300">
-            <Play className="w-12 h-12 text-white ml-1" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 active:scale-95">
+            <Play className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-0.5 sm:ml-1" />
           </div>
         </button>
       )}
@@ -530,9 +564,9 @@ export default function PremiumOTTPlayer({
         {isPlaying && (
           <button
             onClick={togglePlay}
-            className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 pointer-events-auto"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-300 pointer-events-auto touch-manipulation"
           >
-            <Pause className="w-10 h-10 text-white" />
+            <Pause className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
           </button>
         )}
       </div>
@@ -544,19 +578,20 @@ export default function PremiumOTTPlayer({
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
 
-        <div className="relative z-10 px-4 pb-4 pt-16">
+        <div className="relative z-10 px-2 sm:px-4 pb-3 sm:pb-4 pt-12 sm:pt-16">
           {showSkipIntro && (
             <button
               onClick={skipIntro}
-              className="absolute left-1/2 -translate-x-1/2 -top-12 px-4 py-2 bg-[#e50914] text-white text-sm font-medium rounded-lg hover:bg-[#f60] transition-colors flex items-center gap-2 animate-bounce"
+              className="absolute left-1/2 -translate-x-1/2 -top-12 sm:-top-14 px-4 py-2 sm:py-2.5 bg-[#e50914] text-white text-sm font-medium rounded-lg hover:bg-[#f60] transition-colors flex items-center gap-2 animate-bounce touch-manipulation"
             >
               <SkipIntroIcon className="w-4 h-4" />
-              Skip Intro
+              <span className="hidden sm:inline">Skip Intro</span>
+              <span className="sm:hidden">Skip</span>
             </button>
           )}
 
           <div 
-            className="relative h-1.5 bg-white/20 rounded-full cursor-pointer group/progress"
+            className="relative h-2 sm:h-1.5 bg-white/20 rounded-full cursor-pointer group/progress"
             onClick={handleProgressClick}
           >
             <div 
@@ -568,26 +603,26 @@ export default function PremiumOTTPlayer({
               style={{ width: `${progressPercent}%` }}
             />
             <div 
-              className="absolute w-4 h-4 bg-[#e50914] rounded-full -top-1 -translate-x-1/2 opacity-0 group-hover/progress:opacity-100 transition-opacity"
+              className="absolute w-4 h-4 sm:w-3 sm:h-3 bg-[#e50914] rounded-full -top-1 -translate-x-1/2 opacity-0 group-hover/progress:opacity-100 transition-opacity"
               style={{ left: `${progressPercent}%` }}
             />
           </div>
 
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex items-center gap-3">
-              <button onClick={togglePlay} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white" />}
+          <div className="flex items-center justify-between mt-3 gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
+              <button onClick={togglePlay} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
+                {isPlaying ? <Pause className="w-6 h-6 sm:w-5 sm:h-5 text-white" /> : <Play className="w-6 h-6 sm:w-5 sm:h-5 text-white" />}
               </button>
 
-              <button onClick={() => seekRelative(-10)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <SkipBack className="w-5 h-5 text-white" />
+              <button onClick={() => seekRelative(-10)} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
+                <SkipBack className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
               </button>
 
-              <button onClick={() => seekRelative(10)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <SkipForward className="w-5 h-5 text-white" />
+              <button onClick={() => seekRelative(10)} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
+                <SkipForward className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2">
                 <button onClick={toggleMute} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
                   {isMuted || volume === 0 ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
                 </button>
@@ -602,46 +637,46 @@ export default function PremiumOTTPlayer({
                 />
               </div>
 
-              <span className="text-white/80 text-sm font-medium tabular-nums">
+              <span className="text-white/80 text-xs sm:text-sm font-medium tabular-nums hidden sm:block">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <div className="relative">
                 <button 
                   onClick={() => setShowSettings(!showSettings)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation"
                 >
-                  <Settings className="w-5 h-5 text-white" />
+                  <Settings className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
                 </button>
 
                 {showSettings && (
-                  <div className="absolute bottom-full right-0 mb-2 w-72 bg-[#1a1a1a]/95 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden shadow-2xl">
-                    <div className="flex border-b border-white/10">
+                  <div className="absolute bottom-full right-0 mb-2 w-64 sm:w-72 md:w-72 bg-[#1a1a1a]/95 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden shadow-2xl z-50 max-h-[80vh]">
+                    <div className="flex border-b border-white/10 overflow-x-auto">
                       {(["audio", "subtitle", "quality", "speed"] as const).map((tab) => (
                         <button
                           key={tab}
                           onClick={() => setActiveTab(tab)}
-                          className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                          className={`flex-1 py-3 px-2 sm:px-3 text-xs font-medium transition-colors whitespace-nowrap ${
                             activeTab === tab 
                               ? "text-[#e50914] bg-white/5" 
                               : "text-white/50 hover:text-white"
                           }`}
                         >
-                          {tab === "audio" ? "Audio" : tab === "subtitle" ? "Subtitles" : tab === "quality" ? "Quality" : "Speed"}
+                          {tab === "audio" ? "Audio" : tab === "subtitle" ? "Subs" : tab === "quality" ? "Quality" : "Speed"}
                         </button>
                       ))}
                     </div>
 
-                    <div className="max-h-60 overflow-y-auto p-2">
+                    <div className="max-h-48 sm:max-h-60 overflow-y-auto p-2">
                       {activeTab === "audio" && (
                         <div className="space-y-1">
                           {audioTracks.length > 0 ? audioTracks.map((track, index) => (
                             <button
                               key={track.id}
-                              onClick={() => switchAudioTrack(index)}
-                              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                              onClick={() => { switchAudioTrack(index); setShowSettings(false); }}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                                 currentAudioTrack === index 
                                   ? "bg-[#e50914] text-white" 
                                   : "text-white/70 hover:bg-white/10"
@@ -651,7 +686,7 @@ export default function PremiumOTTPlayer({
                               {currentAudioTrack === index && <Check className="w-4 h-4" />}
                             </button>
                           )) : (
-                            <p className="text-white/40 text-sm text-center py-4">No audio tracks available</p>
+                            <p className="text-white/40 text-sm text-center py-4">No audio tracks</p>
                           )}
                         </div>
                       )}
@@ -659,8 +694,8 @@ export default function PremiumOTTPlayer({
                       {activeTab === "subtitle" && (
                         <div className="space-y-1">
                           <button
-                            onClick={() => switchSubtitle(-1)}
-                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                            onClick={() => { switchSubtitle(-1); setShowSettings(false); }}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                               currentSubtitleTrack === -1 
                                 ? "bg-[#e50914] text-white" 
                                 : "text-white/70 hover:bg-white/10"
@@ -672,8 +707,8 @@ export default function PremiumOTTPlayer({
                           {subtitleTracks.map((track, index) => (
                             <button
                               key={track.id}
-                              onClick={() => switchSubtitle(index)}
-                              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                              onClick={() => { switchSubtitle(index); setShowSettings(false); }}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                                 currentSubtitleTrack === index 
                                   ? "bg-[#e50914] text-white" 
                                   : "text-white/70 hover:bg-white/10"
@@ -689,8 +724,8 @@ export default function PremiumOTTPlayer({
                       {activeTab === "quality" && (
                         <div className="space-y-1">
                           <button
-                            onClick={() => switchQuality(-1)}
-                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                            onClick={() => { switchQuality(-1); setShowSettings(false); }}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                               currentQuality === -1 
                                 ? "bg-[#e50914] text-white" 
                                 : "text-white/70 hover:bg-white/10"
@@ -702,8 +737,8 @@ export default function PremiumOTTPlayer({
                           {qualityLevels.map((level, index) => (
                             <button
                               key={index}
-                              onClick={() => switchQuality(index)}
-                              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                              onClick={() => { switchQuality(index); setShowSettings(false); }}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                                 currentQuality === index 
                                   ? "bg-[#e50914] text-white" 
                                   : "text-white/70 hover:bg-white/10"
@@ -721,8 +756,8 @@ export default function PremiumOTTPlayer({
                           {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((rate) => (
                             <button
                               key={rate}
-                              onClick={() => changePlaybackRate(rate)}
-                              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                              onClick={() => { changePlaybackRate(rate); setShowSettings(false); }}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
                                 playbackRate === rate 
                                   ? "bg-[#e50914] text-white" 
                                   : "text-white/70 hover:bg-white/10"
@@ -741,9 +776,9 @@ export default function PremiumOTTPlayer({
 
               <button 
                 onClick={toggleFullscreen}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation"
               >
-                {isFullscreen ? <Minimize className="w-5 h-5 text-white" /> : <Maximize className="w-5 h-5 text-white" />}
+                {isFullscreen ? <Minimize className="w-6 h-6 sm:w-5 sm:h-5 text-white" /> : <Maximize className="w-6 h-6 sm:w-5 sm:h-5 text-white" />}
               </button>
             </div>
           </div>
