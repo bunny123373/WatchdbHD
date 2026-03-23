@@ -198,11 +198,11 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
             <p className="text-gray-500 text-xs uppercase mb-1">Genres</p>
             <p className="text-white text-sm">{movie.tmdbGenres?.slice(0, 2).join(", ") || movie.tags?.slice(0, 2).join(", ") || "N/A"}</p>
           </div>
-          <div>
+            <div>
             <p className="text-gray-500 text-xs uppercase mb-1">Audio</p>
             <p className="text-white text-sm flex items-center gap-1">
               <Globe className="w-3 h-3" />
-              {movie.audioLanguages?.slice(0, 2).join(", ") || movie.language || "N/A"}
+              {movie.audioLanguages?.join(", ") || movie.language || "N/A"}
             </p>
           </div>
         </div>

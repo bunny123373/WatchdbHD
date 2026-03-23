@@ -71,6 +71,9 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                 <span className="text-yellow-500">{series.rating}</span>
               </span>
             )}
+            {series.audioLanguages && series.audioLanguages.length > 0 && (
+              <span className="text-white/80">Audio: {series.audioLanguages.join(", ")}</span>
+            )}
           </div>
 
           {/* Play Button - Full width mobile */}
