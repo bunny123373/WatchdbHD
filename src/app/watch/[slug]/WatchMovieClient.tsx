@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft, Star } from "lucide-react";
+import { Download, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
+import PremiumOTTPlayer from "@/components/PremiumOTTPlayer";
+import MovieRecommendations from "@/components/MovieRecommendations";
 import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
 
 interface WatchMovieClientProps {
@@ -120,7 +122,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           }
         >
           {currentHlsUrl ? (
-            <HlsPlayer src={currentHlsUrl} title={movie.title} poster={movie.poster} />
+            <PremiumOTTPlayer 
+              src={currentHlsUrl} 
+              content={movie}
+              onEnded={() => {
+                console.log("Video ended");
+              }}
+            />
           ) : currentEmbedLink ? (
             <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
           ) : hasVideo ? (
@@ -199,6 +207,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             </p>
           </div>
         </div>
+
+        <MovieRecommendations currentContent={movie} />
       </div>
     </div>
   );
