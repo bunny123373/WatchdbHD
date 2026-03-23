@@ -149,7 +149,7 @@ export default function PremiumOTTPlayer({
     videoRef.current.appendChild(videoElement);
 
     const player = videojs(videoElement, {
-      autoplay: false,
+      autoplay: "any",
       controls: false,
       responsive: true,
       fluid: false,
@@ -164,8 +164,10 @@ export default function PremiumOTTPlayer({
       },
       playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
       poster: content.poster
-    }, () => {
-      playerRef.current = player;
+    });
+
+    player.ready(() => {
+      playerRef.current = player as unknown as Player;
       setIsLoading(false);
     });
 
@@ -465,37 +467,35 @@ export default function PremiumOTTPlayer({
     lastClickTime.current = now;
   };
 
-  const [touchStart, setTouchStart] = useState<{ x: number; time: number } | null>(null);
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number; time: number } | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart({ x: e.touches[0].clientX, time: Date.now() });
+    setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY, time: Date.now() });
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStart) return;
-    const touchEnd = e.changedTouches[0].clientX;
-    const diff = touchStart.x - touchEnd;
+    const touchEnd = e.changedTouches[0];
+    const diffX = touchStart.x - touchEnd.clientX;
+    const diffY = Math.abs(touchStart.y - touchEnd.clientY);
     const timeDiff = Date.now() - touchStart.time;
     
-    if (Math.abs(diff) > 50 && timeDiff < 500) {
-      if (diff > 0) {
+    if (Math.abs(diffX) > 50 && timeDiff < 500 && diffY < 30) {
+      if (diffX > 0) {
         seekRelative(10);
       } else {
         seekRelative(-10);
       }
+    } else if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10 && timeDiff < 300) {
+      if (!playerRef.current) return;
+      if (isPlaying) {
+        playerRef.current.pause();
+      } else {
+        playerRef.current.play();
+      }
+      showControlsTemporarily();
     }
     setTouchStart(null);
-  };
-
-  const handleSingleTap = () => {
-    if (!playerRef.current) return;
-    if (isPlaying) {
-      playerRef.current.pause();
-      showControlsTemporarily();
-    } else {
-      playerRef.current.play();
-      showControlsTemporarily();
-    }
   };
 
   const handleTap = (e: React.MouseEvent | React.TouchEvent) => {
@@ -560,30 +560,6 @@ export default function PremiumOTTPlayer({
             >
               Retry
             </button>
-          </div>
-        </div>
-      )}
-
-      {!isPlaying && !isLoading && (
-        <div 
-          className="absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity duration-300 z-20 cursor-pointer"
-          onClick={handleTap}
-          onTouchEnd={handleTap}
-        >
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg">
-            <Play className="w-12 h-12 sm:w-14 sm:h-14 text-white ml-1" fill="white" />
-          </div>
-        </div>
-      )}
-
-      {isPlaying && showControls && (
-        <div 
-          className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer"
-          onClick={handleTap}
-          onTouchEnd={handleTap}
-        >
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center active:scale-95 transition-all duration-200 shadow-lg">
-            <Pause className="w-10 h-10 sm:w-12 sm:h-12 text-white" fill="white" />
           </div>
         </div>
       )}
