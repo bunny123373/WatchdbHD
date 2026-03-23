@@ -143,6 +143,42 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             </div>
           )}
         </WatchPlayerShell>
+
+        {/* Language Selection */}
+        {hasVideo && availableLanguages.length > 0 && (
+          <div className="flex flex-wrap gap-3 mb-6">
+            <span className="text-white/50 text-sm py-2">Audio:</span>
+            {(movie.hlsUrl || movie.embedIframeLink) && (
+              <button
+                onClick={() => setSelectedLanguage("")}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  !selectedLanguage
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                Default
+              </button>
+            )}
+            {availableLanguages.map((lang) => (
+              <button
+                key={lang.language}
+                onClick={() => {
+                  setSelectedLanguage(lang.language);
+                  setLangServer(1);
+                }}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  selectedLanguage === lang.language
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                {lang.language}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-t border-white/10">
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Type</p>
