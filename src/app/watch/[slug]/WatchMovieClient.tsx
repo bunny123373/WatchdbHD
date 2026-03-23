@@ -7,7 +7,6 @@ import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
-import PremiumOTTPlayer from "@/components/PremiumOTTPlayer";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
 
@@ -129,9 +128,10 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           }
         >
           {currentHlsUrl ? (
-            <PremiumOTTPlayer 
+            <HlsPlayer 
               src={currentHlsUrl} 
-              content={movie}
+              title={movie.title}
+              poster={movie.poster}
               onEnded={() => {
                 console.log("Video ended");
               }}
