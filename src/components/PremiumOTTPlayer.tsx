@@ -488,13 +488,27 @@ export default function PremiumOTTPlayer({
   };
 
   const handleSingleTap = () => {
+    if (!playerRef.current) return;
     if (isPlaying) {
-      if (showControls) {
-        setShowControls(false);
-      } else {
-        showControlsTemporarily();
-      }
+      playerRef.current.pause();
+      showControlsTemporarily();
+    } else {
+      playerRef.current.play();
+      showControlsTemporarily();
     }
+  };
+
+  const handleTap = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!playerRef.current) return;
+    
+    if (isPlaying) {
+      playerRef.current.pause();
+    } else {
+      playerRef.current.play();
+    }
+    showControlsTemporarily();
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -523,7 +537,12 @@ export default function PremiumOTTPlayer({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div ref={videoRef} className="w-full aspect-video md:aspect-[16/9]" />
+      <div 
+        ref={videoRef} 
+        className="w-full aspect-video md:aspect-[16/9] cursor-pointer"
+        onClick={handleTap}
+        onTouchEnd={handleTap}
+      />
 
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -546,30 +565,28 @@ export default function PremiumOTTPlayer({
       )}
 
       {!isPlaying && !isLoading && (
-        <button
-          onClick={togglePlay}
-          className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300 touch-manipulation"
+        <div 
+          className="absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity duration-300 z-20 cursor-pointer"
+          onClick={handleTap}
+          onTouchEnd={handleTap}
         >
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform duration-300 active:scale-95">
-            <Play className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-0.5 sm:ml-1" />
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg">
+            <Play className="w-12 h-12 sm:w-14 sm:h-14 text-white ml-1" fill="white" />
           </div>
-        </button>
+        </div>
       )}
 
-      <div 
-        className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${
-          isPlaying && !showControls ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        {isPlaying && (
-          <button
-            onClick={togglePlay}
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 active:scale-95 transition-transform duration-300 pointer-events-auto touch-manipulation"
-          >
-            <Pause className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-          </button>
-        )}
-      </div>
+      {isPlaying && showControls && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer"
+          onClick={handleTap}
+          onTouchEnd={handleTap}
+        >
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center active:scale-95 transition-all duration-200 shadow-lg">
+            <Pause className="w-10 h-10 sm:w-12 sm:h-12 text-white" fill="white" />
+          </div>
+        </div>
+      )}
 
       <div 
         className={`absolute bottom-0 left-0 right-0 transition-opacity duration-300 ${
