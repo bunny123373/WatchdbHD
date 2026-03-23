@@ -66,6 +66,11 @@ export default function HeroBanner({ content, onContentClick }: HeroBannerProps)
               </span>
             )}
             <span className="text-white/80">{content.language}</span>
+            {content.languageSources && content.languageSources.length > 0 && (
+              <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded">
+                {content.languageSources.length} Audio
+              </span>
+            )}
             <span className="px-2 py-0.5 bg-white/20 text-white/80 text-xs rounded">
               {isMovie ? "Movie" : "TV Show"}
             </span>
