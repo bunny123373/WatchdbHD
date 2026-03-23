@@ -236,6 +236,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/api/download/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/download">> = Specific
+  const handler = {} as typeof import("../../src/app/api/download/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/api/embed/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/embed">> = Specific
@@ -258,6 +267,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/notifications">> = Specific
   const handler = {} as typeof import("../../src/app/api/notifications/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/proxy-download/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/proxy-download">> = Specific
+  const handler = {} as typeof import("../../src/app/api/proxy-download/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

@@ -6,6 +6,7 @@ import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp } from "lucide
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
+import WatchPlayerShell from "@/components/WatchPlayerShell";
 import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
 
 interface SeriesWatchClientProps {
@@ -106,47 +107,66 @@ export default function SeriesWatchClient({
               <span className="text-sm font-medium">{series.title?.slice(0, 20)}{series.title && series.title.length > 20 ? "..." : ""}</span>
             </Link>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-[10px] font-bold bg-[#e50914] text-white rounded-sm">
-              S{currentSeason}E{currentEpisode?.episodeNumber}
-            </span>
-          </div>
         </div>
       </div>
 
       {/* Player Section */}
-      <div className="pt-14">
-        {currentHlsUrl ? (
-          <HlsPlayer src={currentHlsUrl} title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} poster={series.poster} />
-        ) : currentEmbedLink ? (
-          <IframePlayer
-            src={currentEmbedLink}
-            title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
-            autoPlay={series.autoPlay}
-          />
-        ) : hasVideo ? (
-          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
-            <div className="text-center">
-              <p className="text-white/50 mb-4">Select a language to play</p>
-            </div>
-          </div>
-        ) : (
-          <div className="w-full aspect-video bg-black flex items-center justify-center max-w-7xl mx-auto">
-            <div className="text-center">
-              <p className="text-white/50 mb-4">No stream available</p>
-              {currentDownloadUrl && (
-                <button
-                  onClick={() => handleDownload(currentDownloadUrl)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#e50914] text-white rounded-sm text-sm font-medium"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </button>
+      <div className="pt-14 px-2 sm:px-3 lg:px-4 pb-4">
+        <WatchPlayerShell
+          eyebrow="Now Playing"
+          title={`${series.title}`}
+          subtitle={`Season ${currentSeason}, Episode ${currentEpisode?.episodeNumber}${currentEpisode?.episodeTitle ? ` - ${currentEpisode.episodeTitle}` : ""}`}
+          badges={
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 text-[10px] font-bold bg-[#e50914] text-white rounded-sm">
+                S{currentSeason}E{currentEpisode?.episodeNumber}
+              </span>
+              {currentEpisode?.quality && (
+                <span className="px-2.5 py-1 text-[10px] font-medium bg-white/10 text-white/70 rounded-sm">
+                  {currentEpisode.quality}
+                </span>
+              )}
+              {currentHlsUrl && (
+                <span className="px-2.5 py-1 text-[10px] font-medium bg-green-600/20 text-green-400 rounded-sm">
+                  HLS
+                </span>
               )}
             </div>
-          </div>
-        )}
+          }
+          actions={
+            currentDownloadUrl ? (
+              <button
+                onClick={() => handleDownload(currentDownloadUrl)}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-sm text-sm font-medium transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+            ) : undefined
+          }
+        >
+          {currentHlsUrl ? (
+            <HlsPlayer src={currentHlsUrl} title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} poster={series.poster} />
+          ) : currentEmbedLink ? (
+            <IframePlayer
+              src={currentEmbedLink}
+              title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
+              autoPlay={series.autoPlay}
+            />
+          ) : hasVideo ? (
+            <div className="w-full aspect-video bg-black flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-white/50 mb-4">Select a language to play</p>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-video bg-black flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-white/50 mb-4">No stream available</p>
+              </div>
+            </div>
+          )}
+        </WatchPlayerShell>
       </div>
 
       {/* Info & Episodes */}
