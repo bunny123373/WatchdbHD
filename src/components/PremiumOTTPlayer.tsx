@@ -7,8 +7,8 @@ import "video.js/dist/video-js.css";
 import Hls from "hls.js";
 import { 
   Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
-  SkipBack, SkipForward, Settings, Subtitles, ChevronLeft,
-  Check, SkipForward as SkipIntroIcon
+  SkipBack, SkipForward, Settings, Subtitles, SkipForward as SkipIntroIcon,
+  X, ChevronDown
 } from "lucide-react";
 import { IContent } from "@/models/Content";
 
@@ -23,7 +23,6 @@ interface AudioTrack {
   id: string;
   language: string;
   label: string;
-  kind: string;
 }
 
 interface SubtitleTrack {
@@ -31,12 +30,10 @@ interface SubtitleTrack {
   language: string;
   label: string;
   kind: string;
-  default?: boolean;
 }
 
 interface QualityLevel {
   height: number;
-  bitrate: number;
   label: string;
 }
 
@@ -60,7 +57,6 @@ export default function PremiumOTTPlayer({
   const playerRef = useRef<Player | null>(null);
   const hlsRef = useRef<Hls | null>(null);
   const hideControlsTimer = useRef<NodeJS.Timeout | null>(null);
-  const lastClickTime = useRef<number>(0);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -69,7 +65,6 @@ export default function PremiumOTTPlayer({
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [buffered, setBuffered] = useState(0);
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [currentAudioTrack, setCurrentAudioTrack] = useState<number>(0);
   const [subtitleTracks, setSubtitleTracks] = useState<SubtitleTrack[]>([]);
@@ -82,6 +77,7 @@ export default function PremiumOTTPlayer({
   const [showSkipIntro, setShowSkipIntro] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showMobileControls, setShowMobileControls] = useState(false);
 
   const getContinueWatching = useCallback((): ContinueWatchingItem[] => {
     if (typeof window === "undefined") return [];
@@ -117,12 +113,14 @@ export default function PremiumOTTPlayer({
 
   const showControlsTemporarily = useCallback(() => {
     setShowControls(true);
+    setShowMobileControls(true);
     if (hideControlsTimer.current) {
       clearTimeout(hideControlsTimer.current);
     }
     if (isPlaying) {
       hideControlsTimer.current = setTimeout(() => {
         setShowControls(false);
+        setShowMobileControls(false);
         setShowSettings(false);
       }, 3000);
     }
@@ -143,7 +141,7 @@ export default function PremiumOTTPlayer({
     if (!videoRef.current || !src) return;
 
     const videoElement = document.createElement("video-js");
-    videoElement.classList.add("vjs-fill", "vjs-big-play-centered", "vjs-theme-watchmirror");
+    videoElement.classList.add("vjs-fill");
     videoElement.style.width = "100%";
     videoElement.style.height = "100%";
     videoRef.current.appendChild(videoElement);
@@ -213,7 +211,6 @@ export default function PremiumOTTPlayer({
               id: `audio-${i}`,
               language: track.lang || "und",
               label: track.name || `Track ${i + 1}`,
-              kind: "alternative"
             });
           }
         }
@@ -226,7 +223,6 @@ export default function PremiumOTTPlayer({
             const level = levels[i];
             qualities.push({
               height: level.height,
-              bitrate: level.bitrate,
               label: level.height >= 1080 ? "1080p" : level.height >= 720 ? "720p" : "480p"
             });
           }
@@ -246,7 +242,7 @@ export default function PremiumOTTPlayer({
 
       player.on("loadedmetadata", () => {
         const subtitles: SubtitleTrack[] = [];
-        const textTracks = player.textTracks() as unknown as Array<{kind?: string; language?: string; label?: string; default?: boolean}>;
+        const textTracks = player.textTracks() as unknown as Array<{kind?: string; language?: string; label?: string}>;
         if (textTracks) {
           textTracks.forEach((track, i) => {
             if (track.kind === "subtitles" || track.kind === "captions") {
@@ -254,8 +250,7 @@ export default function PremiumOTTPlayer({
                 id: `subtitle-${i}`,
                 language: track.language || "und",
                 label: track.label || `Subtitle ${i + 1}`,
-                kind: track.kind || "subtitles",
-                default: track.default
+                kind: track.kind || "subtitles"
               });
             }
           });
@@ -289,14 +284,6 @@ export default function PremiumOTTPlayer({
   }, [initializePlayer]);
 
   useEffect(() => {
-    if (!isPlaying && showControls) {
-      if (hideControlsTimer.current) {
-        clearTimeout(hideControlsTimer.current);
-      }
-    }
-  }, [isPlaying, showControls]);
-
-  useEffect(() => {
     if (currentTime > INTRO_DURATION && !showSkipIntro) {
       setShowSkipIntro(true);
     }
@@ -304,49 +291,6 @@ export default function PremiumOTTPlayer({
       setShowSkipIntro(false);
     }
   }, [currentTime, showSkipIntro]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!playerRef.current) return;
-      switch (e.key) {
-        case " ":
-        case "k":
-          e.preventDefault();
-          togglePlay();
-          break;
-        case "ArrowRight":
-          e.preventDefault();
-          seekRelative(10);
-          break;
-        case "ArrowLeft":
-          e.preventDefault();
-          seekRelative(-10);
-          break;
-        case "ArrowUp":
-          e.preventDefault();
-          adjustVolume(0.1);
-          break;
-        case "ArrowDown":
-          e.preventDefault();
-          adjustVolume(-0.1);
-          break;
-        case "m":
-          toggleMute();
-          break;
-        case "f":
-          toggleFullscreen();
-          break;
-        case "Escape":
-          if (isFullscreen) {
-            toggleFullscreen();
-          }
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFullscreen]);
 
   const togglePlay = () => {
     if (!playerRef.current) return;
@@ -363,16 +307,6 @@ export default function PremiumOTTPlayer({
     const newTime = Math.max(0, Math.min(duration, currTime + seconds));
     playerRef.current.currentTime(newTime);
     showControlsTemporarily();
-  };
-
-  const adjustVolume = (delta: number) => {
-    if (!playerRef.current) return;
-    const newVolume = Math.max(0, Math.min(1, volume + delta));
-    playerRef.current.volume(newVolume);
-    setVolume(newVolume);
-    if (newVolume > 0 && isMuted) {
-      setIsMuted(false);
-    }
   };
 
   const toggleMute = () => {
@@ -404,22 +338,8 @@ export default function PremiumOTTPlayer({
     showControlsTemporarily();
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    if (playerRef.current) {
-      playerRef.current.volume(newVolume);
-      setVolume(newVolume);
-      if (newVolume > 0 && isMuted) {
-        setIsMuted(false);
-      }
-    }
-  };
-
   const switchAudioTrack = (index: number) => {
     if (hlsRef.current && hlsRef.current.audioTracks) {
-      hlsRef.current.audioTracks.forEach((track, i) => {
-        track.forced = i === index;
-      });
       hlsRef.current.audioTrack = index;
       setCurrentAudioTrack(index);
     }
@@ -457,14 +377,6 @@ export default function PremiumOTTPlayer({
     playerRef.current.currentTime(Math.min(duration, INTRO_DURATION));
     setShowSkipIntro(false);
     showControlsTemporarily();
-  };
-
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    const now = Date.now();
-    if (now - lastClickTime.current < 300) {
-      toggleFullscreen();
-    }
-    lastClickTime.current = now;
   };
 
   const [touchStart, setTouchStart] = useState<{ x: number; y: number; time: number } | null>(null);
@@ -512,16 +424,15 @@ export default function PremiumOTTPlayer({
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const bufferedPercent = duration > 0 ? (buffered / duration) * 100 : 0;
 
   if (!src) {
     return (
-      <div className="relative w-full aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
-        <div className="text-center p-8">
-          <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-            <Play className="w-10 h-10 text-white/30" />
+      <div className="relative w-full aspect-[9/16] sm:aspect-video md:aspect-[16/9] bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
+        <div className="text-center p-4 sm:p-8">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+            <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white/30" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2">No Stream Available</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">No Stream Available</h3>
           <p className="text-white/40 text-sm">This content does not have a direct stream yet.</p>
         </div>
       </div>
@@ -533,27 +444,25 @@ export default function PremiumOTTPlayer({
       className="relative w-full bg-black rounded-2xl overflow-hidden group md:rounded-xl"
       onMouseMove={showControlsTemporarily}
       onMouseLeave={() => isPlaying && setShowControls(false)}
-      onDoubleClick={handleDoubleClick}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       <div 
         ref={videoRef} 
-        className="w-full aspect-video md:aspect-[16/9] cursor-pointer"
+        className="w-full aspect-[9/16] sm:aspect-video md:aspect-[16/9] cursor-pointer"
         onClick={handleTap}
-        onTouchEnd={handleTap}
       />
 
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 border-3 border-white/20 border-t-white rounded-full animate-spin" />
         </div>
       )}
 
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-          <div className="text-center">
-            <p className="text-white/60 mb-3">{error}</p>
+          <div className="text-center px-4">
+            <p className="text-white/60 mb-3 text-sm">{error}</p>
             <button 
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-white/10 text-white text-sm rounded-lg hover:bg-white/20"
@@ -564,219 +473,252 @@ export default function PremiumOTTPlayer({
         </div>
       )}
 
-      <div 
-        className={`absolute bottom-0 left-0 right-0 transition-opacity duration-300 ${
-          showControls ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-
-        <div className="relative z-10 px-2 sm:px-4 pb-3 sm:pb-4 pt-12 sm:pt-16">
-          {showSkipIntro && (
-            <button
-              onClick={skipIntro}
-              className="absolute left-1/2 -translate-x-1/2 -top-12 sm:-top-14 px-4 py-2 sm:py-2.5 bg-[#e50914] text-white text-sm font-medium rounded-lg hover:bg-[#f60] transition-colors flex items-center gap-2 animate-bounce touch-manipulation"
-            >
-              <SkipIntroIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">Skip Intro</span>
-              <span className="sm:hidden">Skip</span>
-            </button>
-          )}
-
-          <div 
-            className="relative h-2 sm:h-1.5 bg-white/20 rounded-full cursor-pointer group/progress"
-            onClick={handleProgressClick}
-          >
-            <div 
-              className="absolute h-full bg-white/40 rounded-full"
-              style={{ width: `${bufferedPercent}%` }}
-            />
-            <div 
-              className="absolute h-full bg-[#e50914] rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            />
-            <div 
-              className="absolute w-4 h-4 sm:w-3 sm:h-3 bg-[#e50914] rounded-full -top-1 -translate-x-1/2 opacity-0 group-hover/progress:opacity-100 transition-opacity"
-              style={{ left: `${progressPercent}%` }}
-            />
+      {showControls && (
+        <div className="absolute inset-0 flex flex-col justify-between">
+          <div className="absolute top-0 left-0 right-0 p-3 sm:p-4 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => window.history.back()}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <ChevronDown className="w-5 h-5 text-white rotate-90" />
+              </button>
+            </div>
+            <h3 className="text-white text-sm sm:text-base font-medium truncate max-w-[60%] sm:max-w-[40%]">
+              {content.title}
+            </h3>
+            <div className="w-10" />
           </div>
 
-          <div className="flex items-center justify-between mt-3 gap-2">
-            <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
-              <button onClick={togglePlay} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
-                {isPlaying ? <Pause className="w-6 h-6 sm:w-5 sm:h-5 text-white" /> : <Play className="w-6 h-6 sm:w-5 sm:h-5 text-white" />}
+          <div className="flex-1 flex items-center justify-center">
+            {!isPlaying && !isLoading && (
+              <button
+                onClick={togglePlay}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-all duration-200"
+              >
+                <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" fill="white" />
               </button>
+            )}
+          </div>
 
-              <button onClick={() => seekRelative(-10)} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
-                <SkipBack className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
+
+            {showSkipIntro && (
+              <button
+                onClick={skipIntro}
+                className="absolute -top-12 sm:-top-14 left-1/2 -translate-x-1/2 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#e50914] text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-[#f60] transition-colors flex items-center gap-1.5 animate-bounce"
+              >
+                <SkipIntroIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Skip Intro</span>
+                <span className="sm:hidden">Skip</span>
               </button>
+            )}
 
-              <button onClick={() => seekRelative(10)} className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation">
-                <SkipForward className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
-              </button>
+            <div className="relative z-10 px-2 sm:px-4 pb-2 sm:pb-4 pt-8 sm:pt-12">
+              <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <span className="text-white/80 text-xs sm:text-sm font-medium tabular-nums">
+                  {formatTime(currentTime)}
+                </span>
+                <span className="text-white/80 text-xs sm:text-sm font-medium tabular-nums">
+                  {formatTime(duration)}
+                </span>
+              </div>
 
-              <div className="hidden md:flex items-center gap-2">
-                <button onClick={toggleMute} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                  {isMuted || volume === 0 ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={isMuted ? 0 : volume}
-                  onChange={handleVolumeChange}
-                  className="w-0 group-hover:w-20 transition-all duration-300 h-1 accent-white bg-white/30 rounded-full cursor-pointer"
+              <div 
+                className="relative h-1.5 sm:h-2 bg-white/20 rounded-full cursor-pointer group/progress mb-2 sm:mb-3"
+                onClick={handleProgressClick}
+              >
+                <div 
+                  className="absolute h-full bg-[#e50914] rounded-full"
+                  style={{ width: `${progressPercent}%` }}
+                />
+                <div 
+                  className="absolute w-3 h-3 sm:w-4 sm:h-4 bg-[#e50914] rounded-full -top-0.5 sm:-top-1 -translate-x-1/2 opacity-0 group-hover/progress:opacity-100 transition-opacity"
+                  style={{ left: `${progressPercent}%` }}
                 />
               </div>
 
-              <span className="text-white/80 text-xs sm:text-sm font-medium tabular-nums hidden sm:block">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-            </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <button 
+                    onClick={togglePlay} 
+                    className="p-2 sm:p-2.5 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] sm:min-w-auto sm:min-h-auto flex items-center justify-center"
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    ) : (
+                      <Play className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    )}
+                  </button>
 
-            <div className="flex items-center gap-1 sm:gap-2">
-              <div className="relative">
-                <button 
-                  onClick={() => setShowSettings(!showSettings)}
-                  className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation"
-                >
-                  <Settings className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
-                </button>
+                  <button onClick={() => seekRelative(-10)} className="p-2 sm:p-2.5 hover:bg-white/10 rounded-lg transition-colors hidden sm:flex">
+                    <SkipBack className="w-5 h-5 text-white" />
+                  </button>
 
-                {showSettings && (
-                  <div className="absolute bottom-full right-0 mb-2 w-64 sm:w-72 md:w-72 bg-[#1a1a1a]/95 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden shadow-2xl z-50 max-h-[80vh]">
-                    <div className="flex border-b border-white/10 overflow-x-auto">
-                      {(["audio", "subtitle", "quality", "speed"] as const).map((tab) => (
-                        <button
-                          key={tab}
-                          onClick={() => setActiveTab(tab)}
-                          className={`flex-1 py-3 px-2 sm:px-3 text-xs font-medium transition-colors whitespace-nowrap ${
-                            activeTab === tab 
-                              ? "text-[#e50914] bg-white/5" 
-                              : "text-white/50 hover:text-white"
-                          }`}
-                        >
-                          {tab === "audio" ? "Audio" : tab === "subtitle" ? "Subs" : tab === "quality" ? "Quality" : "Speed"}
-                        </button>
-                      ))}
-                    </div>
+                  <button onClick={() => seekRelative(10)} className="p-2 sm:p-2.5 hover:bg-white/10 rounded-lg transition-colors hidden sm:flex">
+                    <SkipForward className="w-5 h-5 text-white" />
+                  </button>
 
-                    <div className="max-h-48 sm:max-h-60 overflow-y-auto p-2">
-                      {activeTab === "audio" && (
-                        <div className="space-y-1">
-                          {audioTracks.length > 0 ? audioTracks.map((track, index) => (
+                  <div className="hidden md:flex items-center gap-2">
+                    <button onClick={toggleMute} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                      {isMuted || volume === 0 ? (
+                        <VolumeX className="w-5 h-5 text-white" />
+                      ) : (
+                        <Volume2 className="w-5 h-5 text-white" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="relative">
+                    <button 
+                      onClick={() => setShowSettings(!showSettings)}
+                      className="p-2 sm:p-2.5 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] sm:min-w-auto sm:min-h-auto flex items-center justify-center"
+                    >
+                      <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </button>
+
+                    {showSettings && (
+                      <div className="absolute bottom-full right-0 sm:left-0 mb-2 w-56 sm:w-72 bg-[#1a1a1a]/95 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden shadow-2xl z-50 max-h-[70vh]">
+                        <div className="flex border-b border-white/10">
+                          {(["audio", "subtitle", "quality", "speed"] as const).map((tab) => (
                             <button
-                              key={track.id}
-                              onClick={() => { switchAudioTrack(index); setShowSettings(false); }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                                currentAudioTrack === index 
-                                  ? "bg-[#e50914] text-white" 
-                                  : "text-white/70 hover:bg-white/10"
+                              key={tab}
+                              onClick={() => setActiveTab(tab)}
+                              className={`flex-1 py-2.5 px-1 sm:px-3 text-xs font-medium transition-colors whitespace-nowrap ${
+                                activeTab === tab 
+                                  ? "text-[#e50914] bg-white/5" 
+                                  : "text-white/50 hover:text-white"
                               }`}
                             >
-                              <span>{track.label}</span>
-                              {currentAudioTrack === index && <Check className="w-4 h-4" />}
+                              {tab === "audio" ? "Audio" : tab === "subtitle" ? "Subs" : tab === "quality" ? "Quality" : "Speed"}
                             </button>
-                          )) : (
-                            <p className="text-white/40 text-sm text-center py-4">No audio tracks</p>
+                          ))}
+                        </div>
+
+                        <div className="max-h-48 sm:max-h-60 overflow-y-auto p-2">
+                          {activeTab === "audio" && (
+                            <div className="space-y-1">
+                              {audioTracks.length > 0 ? audioTracks.map((track, index) => (
+                                <button
+                                  key={track.id}
+                                  onClick={() => { switchAudioTrack(index); setShowSettings(false); }}
+                                  className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                    currentAudioTrack === index 
+                                      ? "bg-[#e50914] text-white" 
+                                      : "text-white/70 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <span>{track.label}</span>
+                                  {currentAudioTrack === index && <span className="text-xs">✓</span>}
+                                </button>
+                              )) : (
+                                <p className="text-white/40 text-sm text-center py-4">No audio tracks</p>
+                              )}
+                            </div>
+                          )}
+
+                          {activeTab === "subtitle" && (
+                            <div className="space-y-1">
+                              <button
+                                onClick={() => { switchSubtitle(-1); setShowSettings(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                  currentSubtitleTrack === -1 
+                                    ? "bg-[#e50914] text-white" 
+                                    : "text-white/70 hover:bg-white/10"
+                                }`}
+                              >
+                                <span className="flex items-center gap-2">Off</span>
+                                {currentSubtitleTrack === -1 && <span className="text-xs">✓</span>}
+                              </button>
+                              {subtitleTracks.map((track, index) => (
+                                <button
+                                  key={track.id}
+                                  onClick={() => { switchSubtitle(index); setShowSettings(false); }}
+                                  className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                    currentSubtitleTrack === index 
+                                      ? "bg-[#e50914] text-white" 
+                                      : "text-white/70 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <span>{track.label}</span>
+                                  {currentSubtitleTrack === index && <span className="text-xs">✓</span>}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {activeTab === "quality" && (
+                            <div className="space-y-1">
+                              <button
+                                onClick={() => { switchQuality(-1); setShowSettings(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                  currentQuality === -1 
+                                    ? "bg-[#e50914] text-white" 
+                                    : "text-white/70 hover:bg-white/10"
+                                }`}
+                              >
+                                <span>Auto</span>
+                                {currentQuality === -1 && <span className="text-xs">✓</span>}
+                              </button>
+                              {qualityLevels.map((level, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => { switchQuality(index); setShowSettings(false); }}
+                                  className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                    currentQuality === index 
+                                      ? "bg-[#e50914] text-white" 
+                                      : "text-white/70 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <span>{level.label}</span>
+                                  {currentQuality === index && <span className="text-xs">✓</span>}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {activeTab === "speed" && (
+                            <div className="space-y-1">
+                              {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((rate) => (
+                                <button
+                                  key={rate}
+                                  onClick={() => { changePlaybackRate(rate); setShowSettings(false); }}
+                                  className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors ${
+                                    playbackRate === rate 
+                                      ? "bg-[#e50914] text-white" 
+                                      : "text-white/70 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <span>{rate === 1 ? "Normal" : `${rate}x`}</span>
+                                  {playbackRate === rate && <span className="text-xs">✓</span>}
+                                </button>
+                              ))}
+                            </div>
                           )}
                         </div>
-                      )}
-
-                      {activeTab === "subtitle" && (
-                        <div className="space-y-1">
-                          <button
-                            onClick={() => { switchSubtitle(-1); setShowSettings(false); }}
-                            className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                              currentSubtitleTrack === -1 
-                                ? "bg-[#e50914] text-white" 
-                                : "text-white/70 hover:bg-white/10"
-                            }`}
-                          >
-                            <span className="flex items-center gap-2"><Subtitles className="w-4 h-4" /> Off</span>
-                            {currentSubtitleTrack === -1 && <Check className="w-4 h-4" />}
-                          </button>
-                          {subtitleTracks.map((track, index) => (
-                            <button
-                              key={track.id}
-                              onClick={() => { switchSubtitle(index); setShowSettings(false); }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                                currentSubtitleTrack === index 
-                                  ? "bg-[#e50914] text-white" 
-                                  : "text-white/70 hover:bg-white/10"
-                              }`}
-                            >
-                              <span>{track.label}</span>
-                              {currentSubtitleTrack === index && <Check className="w-4 h-4" />}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {activeTab === "quality" && (
-                        <div className="space-y-1">
-                          <button
-                            onClick={() => { switchQuality(-1); setShowSettings(false); }}
-                            className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                              currentQuality === -1 
-                                ? "bg-[#e50914] text-white" 
-                                : "text-white/70 hover:bg-white/10"
-                            }`}
-                          >
-                            <span>Auto</span>
-                            {currentQuality === -1 && <Check className="w-4 h-4" />}
-                          </button>
-                          {qualityLevels.map((level, index) => (
-                            <button
-                              key={index}
-                              onClick={() => { switchQuality(index); setShowSettings(false); }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                                currentQuality === index 
-                                  ? "bg-[#e50914] text-white" 
-                                  : "text-white/70 hover:bg-white/10"
-                              }`}
-                            >
-                              <span>{level.label}</span>
-                              {currentQuality === index && <Check className="w-4 h-4" />}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
-                      {activeTab === "speed" && (
-                        <div className="space-y-1">
-                          {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((rate) => (
-                            <button
-                              key={rate}
-                              onClick={() => { changePlaybackRate(rate); setShowSettings(false); }}
-                              className={`w-full flex items-center justify-between px-3 py-2.5 sm:py-2 rounded-lg text-sm transition-colors touch-manipulation ${
-                                playbackRate === rate 
-                                  ? "bg-[#e50914] text-white" 
-                                  : "text-white/70 hover:bg-white/10"
-                              }`}
-                            >
-                              <span>{rate === 1 ? "Normal" : `${rate}x`}</span>
-                              {playbackRate === rate && <Check className="w-4 h-4" />}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <button 
-                onClick={toggleFullscreen}
-                className="p-2 sm:p-2 md:p-2 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] md:min-w-auto md:min-h-auto flex items-center justify-center touch-manipulation"
-              >
-                {isFullscreen ? <Minimize className="w-6 h-6 sm:w-5 sm:h-5 text-white" /> : <Maximize className="w-6 h-6 sm:w-5 sm:h-5 text-white" />}
-              </button>
+                  <button 
+                    onClick={toggleFullscreen}
+                    className="p-2 sm:p-2.5 hover:bg-white/10 rounded-lg transition-colors min-w-[44px] min-h-[44px] sm:min-w-auto sm:min-h-auto flex items-center justify-center"
+                  >
+                    {isFullscreen ? (
+                      <Minimize className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    ) : (
+                      <Maximize className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
