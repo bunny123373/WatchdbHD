@@ -427,7 +427,7 @@ export default function PremiumOTTPlayer({
 
   if (!src) {
     return (
-      <div className="relative w-full aspect-[9/16] sm:aspect-video md:aspect-[16/9] bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
+      <div className="relative w-full aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center">
         <div className="text-center p-4 sm:p-8">
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
             <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white/30" />
@@ -449,7 +449,7 @@ export default function PremiumOTTPlayer({
     >
       <div 
         ref={videoRef} 
-        className="w-full aspect-[9/16] sm:aspect-video md:aspect-[16/9] cursor-pointer"
+        className="w-full aspect-video cursor-pointer"
         onClick={handleTap}
       />
 
