@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface IframePlayerProps {
   src?: string;
@@ -9,15 +9,18 @@ interface IframePlayerProps {
 }
 
 export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoaded(false);
+    setIsLoading(true);
   }, [src]);
 
   if (!src) {
     return (
-      <div className="w-full aspect-video bg-black" />
+      <div className="w-full aspect-video bg-black flex items-center justify-center">
+        <p className="text-gray-500">No stream available</p>
+      </div>
     );
   }
 
@@ -36,20 +39,21 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
 
   return (
     <div className="relative w-full aspect-video bg-black">
-      {!isLoaded && (
+      {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
           <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
         </div>
       )}
       <iframe
+        ref={iframeRef}
         key={embedUrl}
         src={embedUrl}
         title={title}
         className="absolute inset-0 w-full h-full"
         frameBorder={0}
         allowFullScreen
-        allow="autoplay; encrypted-media"
-        onLoad={() => setIsLoaded(true)}
+        allow="autoplay; fullscreen; picture-in-picture"
+        onLoad={() => setIsLoading(false)}
       />
     </div>
   );
