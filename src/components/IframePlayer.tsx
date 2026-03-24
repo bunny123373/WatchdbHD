@@ -9,11 +9,14 @@ interface IframePlayerProps {
 }
 
 export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const keyRef = useRef(src);
 
   useEffect(() => {
-    setIsLoading(true);
+    if (src !== keyRef.current) {
+      keyRef.current = src;
+      setIsLoading(true);
+    }
   }, [src]);
 
   if (!src) {
@@ -45,7 +48,6 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
         </div>
       )}
       <iframe
-        ref={iframeRef}
         key={embedUrl}
         src={embedUrl}
         title={title}

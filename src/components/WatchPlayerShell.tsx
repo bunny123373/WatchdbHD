@@ -20,11 +20,9 @@ export default function WatchPlayerShell({
   children,
 }: WatchPlayerShellProps) {
   return (
-    <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#060606] shadow-[0_32px_100px_rgba(0,0,0,0.62)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.16),_transparent_24%),radial-gradient(circle_at_82%_10%,_rgba(255,255,255,0.05),_transparent_18%),linear-gradient(180deg,_rgba(255,255,255,0.03),_rgba(255,255,255,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+    <section className="relative overflow-hidden rounded-lg border border-white/10 bg-[#060606]">
       <div className="relative">
-        <div className="border-b border-white/10 bg-[linear-gradient(180deg,rgba(12,12,12,0.95),rgba(12,12,12,0.72))] px-4 py-4 sm:px-6 lg:px-8">
+        <div className="border-b border-white/10 bg-[#0c0c0c] px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
             <div className="min-w-0">
               {eyebrow && (
@@ -40,12 +38,12 @@ export default function WatchPlayerShell({
           </div>
         </div>
 
-        <div className="bg-black p-1.5 sm:p-2 lg:p-2.5">
+        <div className="bg-black">
           {children}
         </div>
 
         {actions && (
-          <div className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.98),rgba(8,8,8,0.88))] px-4 py-4 sm:px-6 lg:px-8">
+          <div className="border-t border-white/10 bg-[#080808] px-4 py-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-stretch gap-2.5">{actions}</div>
           </div>
         )}
