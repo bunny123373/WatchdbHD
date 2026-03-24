@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface HlsPlayerProps {
   src?: string;
@@ -11,24 +11,19 @@ interface HlsPlayerProps {
 
 export default function HlsPlayer({ src, title, poster, onEnded }: HlsPlayerProps) {
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const keyRef = useRef(src);
 
   useEffect(() => {
-    if (src !== keyRef.current) {
-      keyRef.current = src;
-      setLoading(true);
-      setError(false);
+    setError(false);
+    if (videoRef.current) {
+      videoRef.current.load();
     }
   }, [src]);
 
   if (!src) {
     return (
       <div className="w-full aspect-video bg-black flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-500">No stream available</p>
-        </div>
+        <p className="text-gray-500">No stream available</p>
       </div>
     );
   }
@@ -58,9 +53,8 @@ export default function HlsPlayer({ src, title, poster, onEnded }: HlsPlayerProp
           poster={poster}
           controls
           playsInline
-          preload="none"
-          className="w-full h-full object-contain"
-          onLoadedData={() => setLoading(false)}
+          preload="auto"
+          className="w-full h-full"
           onError={() => setError(true)}
           onEnded={onEnded}
         >

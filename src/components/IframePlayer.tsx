@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ExternalLink, RefreshCw } from "lucide-react";
 
 interface IframePlayerProps {
@@ -41,12 +41,14 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
   const handleRetry = () => {
     setStatus("loading");
     if (iframeRef.current) {
-      iframeRef.current.src = embedUrl;
+      const current = iframeRef.current.src;
+      iframeRef.current.src = "";
+      iframeRef.current.src = current;
     }
   };
 
   return (
-    <div className="relative w-full aspect-video bg-black">
+    <div className="w-full aspect-video bg-black">
       {status === "loading" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
           <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -79,17 +81,15 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
       
       <iframe
         ref={iframeRef}
-        key={embedUrl}
         src={embedUrl}
         title={title}
-        className="absolute inset-0 w-full h-full"
+        className="w-full h-full"
         frameBorder={0}
         loading="eager"
         allowFullScreen
-        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        allow="autoplay; fullscreen; picture-in-picture"
         onLoad={() => setStatus("loaded")}
         onError={() => setStatus("error")}
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-storage-access-by-user-activation allow-modal allow-orientation-lock"
       />
     </div>
   );
