@@ -1,24 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { ExternalLink } from "lucide-react";
 
 interface IframePlayerProps {
   src?: string;
   title: string;
-  autoPlay?: boolean;
 }
 
-export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const keyRef = useRef(src);
-
-  useEffect(() => {
-    if (src !== keyRef.current) {
-      keyRef.current = src;
-      setIsLoading(true);
-    }
-  }, [src]);
-
+export default function IframePlayer({ src, title }: IframePlayerProps) {
   if (!src) {
     return (
       <div className="w-full aspect-video bg-black flex items-center justify-center">
@@ -35,28 +24,18 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
     embedUrl = "https://" + embedUrl;
   }
 
-  const separator = embedUrl.includes("?") ? "&" : "?";
-  if (autoPlay) {
-    embedUrl = `${embedUrl}${separator}autoplay=1`;
-  }
-
   return (
-    <div className="relative w-full aspect-video bg-black">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-          <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-        </div>
-      )}
-      <iframe
-        key={embedUrl}
-        src={embedUrl}
-        title={title}
-        className="absolute inset-0 w-full h-full"
-        frameBorder={0}
-        allowFullScreen
-        allow="autoplay; fullscreen; picture-in-picture"
-        onLoad={() => setIsLoading(false)}
-      />
+    <div className="w-full aspect-video bg-black flex items-center justify-center">
+      <a
+        href={embedUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col items-center gap-4 px-8 py-6 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+      >
+        <ExternalLink className="w-12 h-12 text-white" />
+        <span className="text-white font-medium text-lg">Watch Now</span>
+        <span className="text-gray-400 text-sm">Click to open in new tab</span>
+      </a>
     </div>
   );
 }

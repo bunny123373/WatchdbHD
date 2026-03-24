@@ -137,7 +137,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               }}
             />
           ) : currentEmbedLink ? (
-            <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
+            <IframePlayer src={currentEmbedLink} title={movie.title} />
           ) : hasVideo ? (
             <div className="w-full aspect-video bg-black flex items-center justify-center">
               <div className="text-center">

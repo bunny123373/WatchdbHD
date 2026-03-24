@@ -212,7 +212,6 @@ export default function SeriesWatchClient({
             <IframePlayer
               src={currentEmbedLink}
               title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`}
-              autoPlay={series.autoPlay}
             />
           ) : hasVideo ? (
             <div className="w-full aspect-video bg-black flex items-center justify-center">
