@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { ExternalLink, RefreshCw } from "lucide-react";
 
 interface IframePlayerProps {
   src?: string;
@@ -9,7 +10,12 @@ interface IframePlayerProps {
 }
 
 export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    setStatus("loading");
+  }, [src]);
 
   if (!src) {
     return (
@@ -32,22 +38,58 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
     embedUrl = `${embedUrl}${separator}autoplay=1`;
   }
 
+  const handleRetry = () => {
+    setStatus("loading");
+    if (iframeRef.current) {
+      iframeRef.current.src = embedUrl;
+    }
+  };
+
   return (
     <div className="relative w-full aspect-video bg-black">
-      {isLoading && (
+      {status === "loading" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
           <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
         </div>
       )}
+      
+      {status === "error" && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-20">
+          <p className="text-gray-400 mb-4">Unable to load embed</p>
+          <div className="flex gap-3">
+            <button
+              onClick={handleRetry}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
+            <a
+              href={embedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Open in New Tab
+            </a>
+          </div>
+        </div>
+      )}
+      
       <iframe
+        ref={iframeRef}
         key={embedUrl}
         src={embedUrl}
         title={title}
         className="absolute inset-0 w-full h-full"
         frameBorder={0}
+        loading="eager"
         allowFullScreen
-        allow="autoplay; fullscreen; picture-in-picture"
-        onLoad={() => setIsLoading(false)}
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        onLoad={() => setStatus("loaded")}
+        onError={() => setStatus("error")}
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-storage-access-by-user-activation allow-modal allow-orientation-lock"
       />
     </div>
   );
