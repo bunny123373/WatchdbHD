@@ -41,9 +41,10 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
   const handleRetry = () => {
     setStatus("loading");
     if (iframeRef.current) {
-      const current = iframeRef.current.src;
       iframeRef.current.src = "";
-      iframeRef.current.src = current;
+      setTimeout(() => {
+        if (iframeRef.current) iframeRef.current.src = embedUrl;
+      }, 100);
     }
   };
 
@@ -83,9 +84,9 @@ export default function IframePlayer({ src, title, autoPlay = false }: IframePla
         ref={iframeRef}
         src={embedUrl}
         title={title}
-        className="w-full h-full"
+        style={{ width: "100%", height: "100%" }}
         frameBorder={0}
-        loading="eager"
+        referrerPolicy="origin"
         allowFullScreen
         allow="autoplay; fullscreen; picture-in-picture"
         onLoad={() => setStatus("loaded")}
