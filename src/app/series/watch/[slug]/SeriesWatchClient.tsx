@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp, SkipForward } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
+import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
+import { AudioTrack } from "@/hooks/useAudioTracks";
 
 interface SeriesWatchClientProps {
   series: IContent;
@@ -28,7 +30,14 @@ export default function SeriesWatchClient({
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [expandedSeasons, setExpandedSeasons] = useState<number[]>([initialSeason || 1]);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
   const playerRef = useRef<{ playNext: () => void } | null>(null);
+
+  const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
+    setAudioTracks(tracks);
+    setActiveAudioTrackId(activeTrackId);
+  }, []);
 
   useEffect(() => {
     setActiveServer(1);
@@ -207,6 +216,7 @@ export default function SeriesWatchClient({
               title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} 
               poster={series.poster}
               onEnded={handleVideoEnded}
+              onAudioTracksChange={handleAudioTracksChange}
             />
           ) : currentEmbedLink ? (
             <IframePlayer
@@ -330,7 +340,7 @@ export default function SeriesWatchClient({
 
         {/* Language Selection */}
         {availableLanguages.length > 0 && (
-          <div className="flex flex-wrap gap-3 mb-6">
+          <div className="flex flex-wrap gap-3 mb-4">
             <span className="text-white/50 text-sm py-2">Audio:</span>
             {(currentEpisode?.hlsUrl || currentEpisode?.embedIframeLink) && (
               <button
@@ -360,6 +370,19 @@ export default function SeriesWatchClient({
                 {lang.language}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* Embedded Audio Track Selection */}
+        {audioTracks.length > 1 && (
+          <div className="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-white/10">
+            <AudioTrackSelector
+              tracks={audioTracks}
+              activeTrackId={activeAudioTrackId}
+              onTrackChange={setActiveAudioTrackId}
+              variant="inline"
+              showLabel={true}
+            />
           </div>
         )}
 

@@ -14,7 +14,8 @@ import {
   PlayCircle,
   Info,
   Trash2,
-  ExternalLink
+  ExternalLink,
+  Link as LinkIcon
 } from "lucide-react";
 import { useSettings } from "@/context/SettingsContext";
 import { cn } from "@/utils/cn";
@@ -134,6 +135,23 @@ export default function SettingsPage() {
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Player URL */}
+        <section>
+          <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">External Player</h2>
+          <div className="bg-[#141414] rounded-lg overflow-hidden">
+            <div className="flex items-center gap-3 p-4">
+              <LinkIcon className="w-5 h-5 text-gray-400 shrink-0" />
+              <input
+                type="text"
+                value={settings.playerUrl || ""}
+                onChange={(e) => updateSettings("playerUrl", e.target.value)}
+                placeholder="//site.com/playerjs.js"
+                className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-600"
+              />
             </div>
           </div>
         </section>

@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import { LANGUAGES, CATEGORIES, TMDB_GENRES, AUDIO_LANGUAGES } from "@/utils/constants";
 import TMDBSearch from "./TMDBSearch";
+import VideoConverter from "./VideoConverter";
 
 interface UploadMovieFormProps {
   onSuccess?: () => void;
@@ -100,6 +101,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
   const [crew, setCrew] = useState<{ name: string; job: string }[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [languageSources, setLanguageSources] = useState<{ language: string; embedLink?: string; hlsUrl?: string; downloadLink?: string }[]>([]);
+  const [audioLinks, setAudioLinks] = useState<{ language: string; url: string; label?: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isAutoFilling, setIsAutoFilling] = useState(false);
@@ -304,6 +306,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
           cast: cast.length > 0 ? cast : undefined,
           crew: crew.length > 0 ? crew : undefined,
           languageSources: languageSources.filter(ls => ls.language),
+          audioLinks: audioLinks.filter(al => al.language && al.url),
         }),
       });
 
@@ -340,6 +343,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         setCast([]);
         setCrew([]);
         setLanguageSources([]);
+        setAudioLinks([]);
         
         const notification = {
           id: Date.now().toString(),
@@ -644,6 +648,13 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
         </div>
       </div>
 
+      {/* Video Converter */}
+      <div className="mb-4">
+        <VideoConverter onHlsGenerated={(hlsUrl) => {
+          setFormData((prev) => ({ ...prev, hlsUrl }));
+        }} />
+      </div>
+
       {/* Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
         <div className="relative">
@@ -808,6 +819,72 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
             className="text-sm text-[#e50914] hover:text-[#d40812] transition-colors flex items-center gap-1"
           >
             <Plus className="w-4 h-4" /> Add Language Source
+          </button>
+        </div>
+
+        {/* Audio Links Section */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-400">
+            Separate Audio Links (Optional)
+          </label>
+          {audioLinks.map((audioLink, index) => (
+            <div key={index} className="p-3 bg-white/5 rounded-lg space-y-2">
+              <div className="flex items-center gap-2">
+                <select
+                  value={audioLink.language}
+                  onChange={(e) => {
+                    const updated = [...audioLinks];
+                    updated[index].language = e.target.value;
+                    setAudioLinks(updated);
+                  }}
+                  className="px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm focus:outline-none focus:border-[#e50914] min-w-[140px]"
+                >
+                  <option value="">Select Language</option>
+                  <option value="Telugu">Telugu</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Malayalam">Malayalam</option>
+                  <option value="Kannada">Kannada</option>
+                  <option value="English">English</option>
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setAudioLinks(audioLinks.filter((_, i) => i !== index))}
+                  className="p-2 text-gray-500 hover:text-red-400 transition-colors ml-auto"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <input
+                type="text"
+                value={audioLink.url}
+                onChange={(e) => {
+                  const updated = [...audioLinks];
+                  updated[index].url = e.target.value;
+                  setAudioLinks(updated);
+                }}
+                placeholder="Audio file URL (.mp3, .aac, etc.)"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+              />
+              <input
+                type="text"
+                value={audioLink.label || ""}
+                onChange={(e) => {
+                  const updated = [...audioLinks];
+                  updated[index].label = e.target.value;
+                  setAudioLinks(updated);
+                }}
+                placeholder="Label (e.g., Director's Commentary)"
+                className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
+              />
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setAudioLinks([...audioLinks, { language: "", url: "", label: "" }])}
+            className="text-sm text-[#e50914] hover:text-[#d40812] transition-colors flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" /> Add Audio Link
           </button>
         </div>
       </div>

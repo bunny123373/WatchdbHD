@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Download, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
@@ -8,7 +8,9 @@ import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
+import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
+import { AudioTrack } from "@/hooks/useAudioTracks";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -18,6 +20,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+  const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
+
+  const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
+    setAudioTracks(tracks);
+    setActiveAudioTrackId(activeTrackId);
+  }, []);
 
   const languageSources = movie.languageSources || [];
   const availableLanguages = languageSources.filter(ls => ls.hlsUrl || ls.embedLink);
@@ -135,6 +144,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               onEnded={() => {
                 console.log("Video ended");
               }}
+              onAudioTracksChange={handleAudioTracksChange}
             />
           ) : currentEmbedLink ? (
             <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
@@ -161,7 +171,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
         {/* Language Selection */}
         {hasVideo && availableLanguages.length > 0 && (
-          <div className="flex flex-wrap gap-3 mb-6">
+          <div className="flex flex-wrap gap-3 mb-4">
             <span className="text-white/50 text-sm py-2">Audio:</span>
             {(movie.hlsUrl || movie.embedIframeLink) && (
               <button
@@ -191,6 +201,19 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 {lang.language}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* Embedded Audio Track Selection */}
+        {audioTracks.length > 1 && (
+          <div className="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-white/10">
+            <AudioTrackSelector
+              tracks={audioTracks}
+              activeTrackId={activeAudioTrackId}
+              onTrackChange={setActiveAudioTrackId}
+              variant="inline"
+              showLabel={true}
+            />
           </div>
         )}
 

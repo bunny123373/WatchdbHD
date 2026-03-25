@@ -8,6 +8,7 @@ interface Settings {
   videoQuality: "auto" | "360p" | "720p" | "1080p";
   autoplay: boolean;
   notifications: boolean;
+  playerUrl?: string;
 }
 
 interface SettingsContextType {
@@ -21,6 +22,7 @@ const defaultSettings: Settings = {
   videoQuality: "auto",
   autoplay: true,
   notifications: true,
+  playerUrl: "//site.com/playerjs.js",
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

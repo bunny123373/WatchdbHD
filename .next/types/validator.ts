@@ -245,6 +245,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/api/convert-video/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/convert-video">> = Specific
+  const handler = {} as typeof import("../../src/app/api/convert-video/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/api/download/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/download">> = Specific
@@ -348,6 +357,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/tmdb">> = Specific
   const handler = {} as typeof import("../../src/app/api/tmdb/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/upload-video/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/upload-video">> = Specific
+  const handler = {} as typeof import("../../src/app/api/upload-video/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

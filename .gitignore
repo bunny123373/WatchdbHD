@@ -5,3 +5,6 @@ out
 *.log
 .env*.local
 .DS_Store
+temp_video.mp4
+*.mp4
+*.mp3

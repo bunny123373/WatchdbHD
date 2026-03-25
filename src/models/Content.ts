@@ -23,6 +23,7 @@ export interface IEpisode {
   downloadLink?: string;
   quality?: string;
   languageSources?: ILanguageSource[];
+  audioLinks?: IAudioLink[];
 }
 
 export interface ISeason {
@@ -77,6 +78,7 @@ export interface IContent {
   views?: number;
   autoPlay?: boolean;
   languageSources?: ILanguageSource[];
+  audioLinks?: IAudioLink[];
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -86,6 +88,12 @@ export interface ILanguageSource {
   embedLink?: string;
   hlsUrl?: string;
   downloadLink?: string;
+}
+
+export interface IAudioLink {
+  language: string;
+  url: string;
+  label?: string;
 }
 
 export interface IContentDocument extends Document {
@@ -116,6 +124,7 @@ export interface IContentDocument extends Document {
   views?: number;
   autoPlay?: boolean;
   languageSources?: ILanguageSource[];
+  audioLinks?: IAudioLink[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -133,6 +142,11 @@ const EpisodeSchema = new Schema<IEpisode>({
     embedLink: { type: String },
     hlsUrl: { type: String },
     downloadLink: { type: String },
+  }],
+  audioLinks: [{
+    language: { type: String },
+    url: { type: String },
+    label: { type: String },
   }],
 });
 
@@ -186,6 +200,11 @@ const ContentSchema = new Schema<IContent>(
       embedLink: { type: String },
       hlsUrl: { type: String },
       downloadLink: { type: String },
+    }],
+    audioLinks: [{
+      language: { type: String },
+      url: { type: String },
+      label: { type: String },
     }],
   },
   { timestamps: true }
