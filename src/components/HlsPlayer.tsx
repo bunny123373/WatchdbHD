@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Hls from "hls.js";
 import { Volume2, Globe, Check } from "lucide-react";
 import { AudioTrack } from "@/hooks/useAudioTracks";
+import { PlayerEventData } from "./IframePlayer";
 
 interface HlsPlayerProps {
   src?: string;
@@ -11,6 +12,7 @@ interface HlsPlayerProps {
   poster?: string;
   onEnded?: () => void;
   onAudioTracksChange?: (tracks: AudioTrack[], activeTrackId: number) => void;
+  onEvent?: (eventData: PlayerEventData) => void;
 }
 
 const languageFlags: Record<string, string> = {
@@ -30,7 +32,7 @@ function getLanguageFlag(lang?: string): string {
   return languageFlags[langCode] || languageFlags.default;
 }
 
-export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksChange }: HlsPlayerProps) {
+export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksChange, onEvent }: HlsPlayerProps) {
   const [error, setError] = useState(false);
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [activeAudioTrack, setActiveAudioTrack] = useState<number>(0);
@@ -38,6 +40,59 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const emitEvent = useCallback((event: string, data?: unknown) => {
+    if (onEvent) {
+      onEvent({ event, data });
+    }
+  }, [onEvent]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => emitEvent("play");
+    const handlePause = () => emitEvent("pause");
+    const handleEnded = () => {
+      emitEvent("end");
+      onEnded?.();
+    };
+    const handleTimeUpdate = () => {
+      emitEvent("time", video.currentTime);
+    };
+    const handleVolumeChange = () => {
+      emitEvent("volume", video.volume);
+    };
+    const handleLoadedMetadata = () => {
+      emitEvent("metadata");
+      emitEvent("duration", video.duration);
+    };
+    const handleError = () => emitEvent("error", "Video playback error");
+    const handleWaiting = () => emitEvent("buffering");
+    const handlePlaying = () => emitEvent("buffered");
+
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("volumechange", handleVolumeChange);
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("error", handleError);
+    video.addEventListener("waiting", handleWaiting);
+    video.addEventListener("playing", handlePlaying);
+
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("volumechange", handleVolumeChange);
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("error", handleError);
+      video.removeEventListener("waiting", handleWaiting);
+      video.removeEventListener("playing", handlePlaying);
+    };
+  }, [emitEvent, onEnded]);
 
   useEffect(() => {
     setError(false);
@@ -94,6 +149,7 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
       });
 
       hls.on(Hls.Events.ERROR, (_, data) => {
+        emitEvent("error", data.details || "HLS error");
         if (data.fatal) {
           setError(true);
         }
@@ -119,7 +175,7 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
         }
       });
     }
-  }, [src, onAudioTracksChange]);
+  }, [src, onAudioTracksChange, emitEvent]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

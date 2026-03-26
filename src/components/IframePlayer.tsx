@@ -1,21 +1,62 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ExternalLink, RefreshCw } from "lucide-react";
+
+export interface PlayerEventData {
+  event: string;
+  id?: string;
+  data?: unknown;
+  currentTime?: number;
+  duration?: number;
+  volume?: number;
+}
 
 interface IframePlayerProps {
   src?: string;
   title: string;
   autoPlay?: boolean;
+  onEvent?: (eventData: PlayerEventData) => void;
 }
 
-export default function IframePlayer({ src, title, autoPlay = false }: IframePlayerProps) {
+export default function IframePlayer({ src, title, autoPlay = false, onEvent }: IframePlayerProps) {
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     setStatus("loading");
   }, [src]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (!onEvent) return;
+      
+      const data = event.data;
+      if (typeof data !== "object" || !data) return;
+
+      const playerEvent = data.event || data.type;
+      if (!playerEvent) return;
+
+      const eventData: PlayerEventData = {
+        event: playerEvent,
+        id: data.id,
+        data: data.data,
+      };
+
+      if (playerEvent === "time" && typeof data.data === "number") {
+        eventData.currentTime = data.data;
+      } else if (playerEvent === "duration" && typeof data.data === "number") {
+        eventData.duration = data.data;
+      } else if (playerEvent === "volume") {
+        eventData.volume = data.data;
+      }
+
+      onEvent(eventData);
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [onEvent]);
 
   if (!src) {
     return (

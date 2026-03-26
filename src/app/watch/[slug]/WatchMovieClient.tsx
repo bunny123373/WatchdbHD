@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
+import { PlayerEventData } from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
@@ -26,6 +27,37 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
     setAudioTracks(tracks);
     setActiveAudioTrackId(activeTrackId);
+  }, []);
+
+  const handlePlayerEvent = useCallback((eventData: PlayerEventData) => {
+    console.log("[Player Event]", eventData.event, eventData.data);
+    
+    switch (eventData.event) {
+      case "play":
+        console.log("▶️ Play started");
+        break;
+      case "pause":
+        console.log("⏸️ Playback paused");
+        break;
+      case "end":
+        console.log("🏁 Playback finished");
+        break;
+      case "time":
+        console.log("⏱️ Time:", eventData.currentTime);
+        break;
+      case "volume":
+        console.log("🔊 Volume:", eventData.volume);
+        break;
+      case "error":
+        console.error("❌ Player error:", eventData.data);
+        break;
+      case "buffering":
+        console.log("⏳ Buffering...");
+        break;
+      case "buffered":
+        console.log("✅ Buffer ready");
+        break;
+    }
   }, []);
 
   const languageSources = movie.languageSources || [];
@@ -151,6 +183,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 console.log("Video ended");
               }}
               onAudioTracksChange={handleAudioTracksChange}
+              onEvent={handlePlayerEvent}
             />
           ) : directFileUrl ? (
             <HlsPlayer 
@@ -161,9 +194,10 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 console.log("Playback ended");
               }}
               onAudioTracksChange={handleAudioTracksChange}
+              onEvent={handlePlayerEvent}
             />
           ) : currentEmbedLink ? (
-            <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} />
+            <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} onEvent={handlePlayerEvent} />
           ) : hasVideo ? (
             <div className="w-full aspect-video bg-black flex items-center justify-center">
               <div className="text-center">
