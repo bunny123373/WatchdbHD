@@ -16,6 +16,7 @@ export interface PlyrEmbedProps {
   videoSources?: VideoSource[];
   tracks?: VideoTrack[];
   plyrSrc?: string;
+  plyrCss?: string;
   playerId?: string;
 }
 
@@ -29,7 +30,8 @@ export default function PlyrEmbed({
   sources,
   videoSources,
   tracks,
-  plyrSrc = "/plyr/plyr.js",
+  plyrSrc = "https://cdn.plyr.io/3.8.4/plyr.js",
+  plyrCss = "https://cdn.plyr.io/3.8.4/plyr.css",
   playerId = "plyr-player"
 }: PlyrEmbedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -137,7 +139,7 @@ export default function PlyrEmbed({
 
       const cssLink = document.createElement("link");
       cssLink.rel = "stylesheet";
-      cssLink.href = plyrSrc.replace(".js", ".css");
+      cssLink.href = plyrCss;
       document.head.appendChild(cssLink);
     };
 
