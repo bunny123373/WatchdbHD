@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft } from "lucide-react";
+import { Download, ChevronLeft, Play, Monitor, Layers } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
+import VideoJsPlayer from "@/components/VideoJsPlayer";
+import PlyrEmbed from "@/components/PlyrEmbed";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
+
+type PlayerType = "native" | "videojs" | "plyr";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -23,6 +27,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerType>("native");
 
   const languageSources = movie.languageSources || [];
   const availableLanguages = useMemo(() => 
@@ -184,28 +189,39 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             ) : undefined
           }
         >
-          {currentHlsUrl ? (
-            <HlsPlayer 
-              key={playerKey}
-              src={currentHlsUrl} 
-              title={movie.title}
-              poster={movie.poster}
-              sources={showMultiSourceSelector ? sourcesToUse : undefined}
-              onAudioTracksChange={handleAudioTracksChange}
-              onEvent={handlePlayerEvent}
-            />
-          ) : directFileUrl ? (
-            <HlsPlayer 
-              key={playerKey}
-              src={directFileUrl} 
-              title={movie.title}
-              poster={movie.poster}
-              onAudioTracksChange={handleAudioTracksChange}
-              onEvent={handlePlayerEvent}
-            />
+          {currentHlsUrl || directFileUrl ? (
+            selectedPlayer === "native" ? (
+              <HlsPlayer 
+                key={`native-${playerKey}`}
+                src={currentHlsUrl || directFileUrl} 
+                title={movie.title}
+                poster={movie.poster}
+                sources={showMultiSourceSelector ? sourcesToUse : undefined}
+                onAudioTracksChange={handleAudioTracksChange}
+                onEvent={handlePlayerEvent}
+              />
+            ) : selectedPlayer === "videojs" ? (
+              <VideoJsPlayer 
+                key={`videojs-${playerKey}`}
+                src={currentHlsUrl || directFileUrl} 
+                title={movie.title}
+                poster={movie.poster}
+                sources={showMultiSourceSelector ? sourcesToUse : undefined}
+                onEvent={handlePlayerEvent}
+              />
+            ) : (
+              <PlyrEmbed 
+                key={`plyr-${playerKey}`}
+                src={currentHlsUrl || directFileUrl} 
+                title={movie.title}
+                poster={movie.poster}
+                sources={showMultiSourceSelector ? sourcesToUse : undefined}
+                onEvent={handlePlayerEvent}
+              />
+            )
           ) : currentEmbedLink ? (
             <IframePlayer 
-              key={playerKey}
+              key={`iframe-${playerKey}`}
               src={currentEmbedLink} 
               title={movie.title} 
               autoPlay={movie.autoPlay} 
@@ -231,6 +247,46 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             </div>
           )}
         </WatchPlayerShell>
+
+        {/* Player Type Selector */}
+        {(currentHlsUrl || directFileUrl) && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="text-white/50 text-sm py-2 pr-2">Player:</span>
+            <button
+              onClick={() => setSelectedPlayer("native")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-sm transition-colors ${
+                selectedPlayer === "native"
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+              Native
+            </button>
+            <button
+              onClick={() => setSelectedPlayer("videojs")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-sm transition-colors ${
+                selectedPlayer === "videojs"
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <Monitor className="w-3 h-3 sm:w-4 sm:h-4" />
+              Video.js
+            </button>
+            <button
+              onClick={() => setSelectedPlayer("plyr")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-sm transition-colors ${
+                selectedPlayer === "plyr"
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
+              Plyr
+            </button>
+          </div>
+        )}
 
         {/* Language Selection */}
         {hasVideo && availableLanguages.length > 0 && (
