@@ -228,21 +228,22 @@ export default function PlyrEmbed({
       </div>
 
       {availableSources.length > 1 && (
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
           <button
             onClick={() => setShowSourceMenu(!showSourceMenu)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-black/70 hover:bg-black/90 text-white text-sm rounded transition-colors"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-black/70 hover:bg-black/90 text-white text-xs sm:text-sm rounded transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
-            <span>{activeSource?.name || "Sources"}</span>
+            <span className="hidden sm:inline">{activeSource?.name || "Sources"}</span>
+            <span className="sm:hidden">{activeSource?.name?.slice(0, 3) || "Src"}</span>
           </button>
 
           {showSourceMenu && (
-            <div className="absolute top-full left-0 mt-2 bg-[#1a1a1a] rounded-lg border border-[#333] overflow-hidden min-w-[180px]">
+            <div className="fixed sm:absolute inset-0 sm:inset-auto sm:top-full sm:left-0 mt-2 sm:mt-2 bg-[#1a1a1a] sm:rounded-lg border border-[#333] overflow-hidden min-w-[140px] sm:min-w-[180px] z-50">
               <div className="p-2 border-b border-[#333]">
-                <span className="text-white text-xs font-medium">Audio Sources</span>
+                <span className="text-white text-xs sm:text-sm font-medium">Audio Sources</span>
               </div>
               {availableSources.map((source, index) => (
                 <button
@@ -290,12 +291,59 @@ export default function PlyrEmbed({
       <style jsx>{`
         .plyr-container {
           width: 100%;
+          max-width: 100%;
+        }
+        .plyr-container :global(.plyr) {
+          --plyr-color-main: #e50914;
+          --plyr-video-background: #000;
+          --plyr-video-controls-background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+          --plyr-font-family: inherit;
+          --plyr-font-size-base: 14px;
+          border-radius: 0;
         }
         .plyr-container :global(.plyr__video-wrapper) {
           aspect-ratio: 16 / 9;
         }
         .plyr-container :global(.plyr--video) {
           background: #000;
+        }
+        .plyr-container :global(.plyr__controls) {
+          padding: 10px;
+          gap: 5px;
+        }
+        .plyr-container :global(.plyr__control) {
+          padding: 8px;
+          border-radius: 4px;
+        }
+        .plyr-container :global(.plyr__control--overlaid) {
+          padding: 16px;
+        }
+        @media (max-width: 640px) {
+          .plyr-container :global(.plyr__controls) {
+            padding: 8px;
+            gap: 3px;
+          }
+          .plyr-container :global(.plyr__control) {
+            padding: 6px;
+          }
+          .plyr-container :global(.plyr__control--overlaid) {
+            padding: 12px;
+          }
+          .plyr-container :global(.plyr__time) {
+            font-size: 12px;
+          }
+          .plyr-container :global(.plyr__tooltip) {
+            font-size: 11px;
+          }
+        }
+        @media (max-width: 480px) {
+          .plyr-container :global(.plyr__controls) {
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+          .plyr-container :global(.plyr__menu) {
+            max-width: 120px;
+          }
         }
       `}</style>
     </div>
