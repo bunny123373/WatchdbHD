@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import { Globe, Check } from "lucide-react";
@@ -58,7 +58,6 @@ export default function VideoJsPlayer({
   const [showAudioMenu, setShowAudioMenu] = useState(false);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
   const [showSourceMenu, setShowSourceMenu] = useState(false);
-  const [isReady, setIsReady] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const sourceMenuRef = useRef<HTMLDivElement>(null);
 
@@ -109,9 +108,6 @@ export default function VideoJsPlayer({
           overrideNative: true
         }
       }
-    }, function() {
-      emit("init");
-      setIsReady(true);
     });
 
     player.on('play', () => emit("play"));
@@ -121,7 +117,7 @@ export default function VideoJsPlayer({
     player.on('volumechange', () => { emit("volume", player.volume()); emit(player.muted() ? "mute" : "unmute"); });
     player.on('waiting', () => emit("buffering"));
     player.on('playing', () => emit("buffered"));
-    player.on('error', () => { emit("error", "Video error"); });
+    player.on('error', () => emit("error", "Video error"));
     player.on('loadedmetadata', () => { emit("metadata"); emit("duration", player.duration()); });
 
     playerRef.current = player;
@@ -150,7 +146,7 @@ export default function VideoJsPlayer({
 
   const handleAudioTrackChange = useCallback((trackId: number) => {
     if (playerRef.current && playerRef.current.audioTracks) {
-      const trackList = playerRef.current.audioTracks() as any;
+      const trackList = playerRef.current.audioTracks() as unknown as { id: number; label?: string; language?: string; enabled: boolean }[];
       for (let i = 0; i < trackList.length; i++) {
         trackList[i].enabled = i === trackId;
       }
