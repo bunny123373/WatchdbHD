@@ -8,7 +8,7 @@ import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
-import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
+import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
 
 interface SeriesWatchClientProps {
@@ -73,7 +73,8 @@ export default function SeriesWatchClient({
 
   const handleDownload = (url: string, filename?: string) => {
     if (isDirectFileUrl(url)) {
-      downloadFile(url, filename || `${series.title}.mp4`);
+      const ext = getFileExtension(url) || ".mp4";
+      downloadFile(url, filename || `${series.title}${ext}`);
     } else {
       window.open(url, "_blank");
     }
@@ -128,12 +129,17 @@ export default function SeriesWatchClient({
     ? availableLanguages.find(ls => ls.language === selectedLanguage)
     : null;
   
-  const langEmbedLink = langServer === 2 ? selectedLangSource?.embedLink?.replace('/embed/', '/embed-2/') : selectedLangSource?.embedLink;
+  const langEmbedLink = langServer === 2 && selectedLangSource?.embedLink?.includes('/embed/') 
+    ? selectedLangSource.embedLink.replace('/embed/', '/embed-2/') 
+    : selectedLangSource?.embedLink;
   
   const primaryEmbedLink = activeServer === 2 ? currentEpisode?.embedIframeLink2 : currentEpisode?.embedIframeLink;
   const currentHlsUrl = selectedLangSource?.hlsUrl || currentEpisode?.hlsUrl;
   const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
   const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink || currentEpisode?.downloadLink);
+
+  const isAudioFile = currentEmbedLink ? isAudioFileUrl(currentEmbedLink) : false;
+  const directFileUrl = isAudioFile ? currentEmbedLink : undefined;
 
   const hasVideo = currentEpisode?.hlsUrl || currentEpisode?.embedIframeLink || availableLanguages.length > 0;
 
@@ -213,6 +219,14 @@ export default function SeriesWatchClient({
           {currentHlsUrl ? (
             <HlsPlayer 
               src={currentHlsUrl} 
+              title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} 
+              poster={series.poster}
+              onEnded={handleVideoEnded}
+              onAudioTracksChange={handleAudioTracksChange}
+            />
+          ) : directFileUrl ? (
+            <HlsPlayer 
+              src={directFileUrl} 
               title={`${series.title} - ${currentEpisode?.episodeTitle || "Episode"}`} 
               poster={series.poster}
               onEnded={handleVideoEnded}

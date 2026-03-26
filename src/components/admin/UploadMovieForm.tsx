@@ -797,7 +797,7 @@ export default function UploadMovieForm({ onSuccess }: UploadMovieFormProps) {
                   updated[index].embedLink = e.target.value;
                   setLanguageSources(updated);
                 }}
-                placeholder="Embed URL (e.g., https://vidsrc.to/embed/...)"
+                placeholder="Embed/Direct URL (e.g., https://vidsrc.to/embed/... or https://...audio.mp3)"
                 className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-[#e50914]"
               />
               <input

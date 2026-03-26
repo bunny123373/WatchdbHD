@@ -9,7 +9,7 @@ import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
-import { normalizeExternalUrl, isDirectFileUrl, downloadFile } from "@/utils/url";
+import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
 
 interface WatchMovieClientProps {
@@ -59,7 +59,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
 
   const handleDownload = (url: string) => {
     if (isDirectFileUrl(url)) {
-      downloadFile(url, `${movie.title}.mp4`);
+      const ext = getFileExtension(url) || ".mp4";
+      downloadFile(url, `${movie.title}${ext}`);
     } else {
       window.open(url, "_blank");
     }
@@ -72,12 +73,17 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
     ? availableLanguages.find(ls => ls.language === selectedLanguage)
     : null;
   
-  const langEmbedLink = langServer === 2 ? selectedLangSource?.embedLink?.replace('/embed/', '/embed-2/') : selectedLangSource?.embedLink;
+  const langEmbedLink = langServer === 2 && selectedLangSource?.embedLink?.includes('/embed/') 
+    ? selectedLangSource.embedLink.replace('/embed/', '/embed-2/') 
+    : selectedLangSource?.embedLink;
   
   const currentHlsUrl = selectedLangSource?.hlsUrl || movie.hlsUrl;
   const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
   const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink) || movieDownloadUrl;
   const currentSourceUrl = currentHlsUrl || currentEmbedLink;
+  
+  const isAudioFile = currentEmbedLink ? isAudioFileUrl(currentEmbedLink) : false;
+  const directFileUrl = isAudioFile ? currentEmbedLink : undefined;
   
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
   const hasDownload = currentDownloadUrl || currentSourceUrl;
@@ -143,6 +149,16 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               poster={movie.poster}
               onEnded={() => {
                 console.log("Video ended");
+              }}
+              onAudioTracksChange={handleAudioTracksChange}
+            />
+          ) : directFileUrl ? (
+            <HlsPlayer 
+              src={directFileUrl} 
+              title={movie.title}
+              poster={movie.poster}
+              onEnded={() => {
+                console.log("Playback ended");
               }}
               onAudioTracksChange={handleAudioTracksChange}
             />

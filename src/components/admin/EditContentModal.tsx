@@ -287,7 +287,7 @@ export default function EditContentModal({ content, isOpen, onClose, onSuccess }
                         updated[index] = { ...updated[index], embedLink: e.target.value };
                         setFormData((prev) => ({ ...prev, languageSources: updated }));
                       }}
-                      placeholder="https://vidsrc.to/embed/..."
+                      placeholder="https://vidsrc.to/embed/... or https://...audio.mp3"
                     />
                     <Input
                       label="Download URL"

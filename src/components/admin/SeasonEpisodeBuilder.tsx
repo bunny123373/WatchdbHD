@@ -415,7 +415,7 @@ export default function SeasonEpisodeBuilder({ seasons, onChange }: SeasonEpisod
                                         />
                                         <input
                                           type="text"
-                                          placeholder="Embed URL"
+                                          placeholder="Embed/Direct URL (supports .mp3, .m4a, .mp4)"
                                           value={langSource.embedLink}
                                           onChange={(e) =>
                                             updateEpisodeLanguageSource(
