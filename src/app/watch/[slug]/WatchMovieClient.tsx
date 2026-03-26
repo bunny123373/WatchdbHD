@@ -10,7 +10,8 @@ import HlsPlayer from "@/components/HlsPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
-import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile } from "@/utils/url";
+import PlayerjsEmbed from "@/components/PlayerjsEmbed";
+import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile, ParsedSource } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
 
 interface WatchMovieClientProps {
@@ -23,16 +24,19 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
+  const [multiSources, setMultiSources] = useState<ParsedSource[]>([]);
+  const [playerType, setPlayerType] = useState<"auto" | "hls" | "playerjs">("auto");
 
   const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
     setAudioTracks(tracks);
     setActiveAudioTrackId(activeTrackId);
   }, []);
 
-  const handlePlayerEvent = useCallback((eventData: PlayerEventData) => {
-    console.log("[Player Event]", eventData.event, eventData.data);
+  const handlePlayerEvent = useCallback((event: string, data?: unknown) => {
+    const eventData = { event, data };
+    console.log("[Player Event]", event, data);
     
-    switch (eventData.event) {
+    switch (event) {
       case "play":
         console.log("▶️ Play started");
         break;
@@ -43,13 +47,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         console.log("🏁 Playback finished");
         break;
       case "time":
-        console.log("⏱️ Time:", eventData.currentTime);
+        console.log("⏱️ Time:", data);
         break;
       case "volume":
-        console.log("🔊 Volume:", eventData.volume);
+        console.log("🔊 Volume:", data);
         break;
       case "error":
-        console.error("❌ Player error:", eventData.data);
+        console.error("❌ Player error:", data);
         break;
       case "buffering":
         console.log("⏳ Buffering...");
@@ -120,6 +124,10 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
   const hasDownload = currentDownloadUrl || currentSourceUrl;
 
+  const parsedMultiSource = parseMultiSourceFile(currentHlsUrl || "");
+  const showMultiSourceSelector = parsedMultiSource.sources.length > 1;
+  const sourcesToUse = showMultiSourceSelector ? parsedMultiSource.sources : [];
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Top Bar */}
@@ -174,18 +182,19 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             ) : undefined
           }
         >
-          {currentHlsUrl ? (
+          {currentHlsUrl && playerType !== "playerjs" ? (
             <HlsPlayer 
               src={currentHlsUrl} 
               title={movie.title}
               poster={movie.poster}
+              sources={showMultiSourceSelector ? sourcesToUse : undefined}
               onEnded={() => {
                 console.log("Video ended");
               }}
               onAudioTracksChange={handleAudioTracksChange}
               onEvent={handlePlayerEvent}
             />
-          ) : directFileUrl ? (
+          ) : directFileUrl && playerType !== "playerjs" ? (
             <HlsPlayer 
               src={directFileUrl} 
               title={movie.title}
@@ -194,6 +203,14 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 console.log("Playback ended");
               }}
               onAudioTracksChange={handleAudioTracksChange}
+              onEvent={handlePlayerEvent}
+            />
+          ) : currentHlsUrl || directFileUrl ? (
+            <PlayerjsEmbed
+              file={currentHlsUrl || directFileUrl || ""}
+              title={movie.title}
+              poster={movie.poster}
+              autoplay={movie.autoPlay}
               onEvent={handlePlayerEvent}
             />
           ) : currentEmbedLink ? (
@@ -251,6 +268,33 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 {lang.language}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* Player Type Selector */}
+        {(currentHlsUrl || directFileUrl) && (
+          <div className="flex flex-wrap gap-3 mb-4">
+            <span className="text-white/50 text-sm py-2">Player:</span>
+            <button
+              onClick={() => setPlayerType("hls")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                playerType === "hls"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              HLS Native
+            </button>
+            <button
+              onClick={() => setPlayerType("playerjs")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                playerType === "playerjs"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              Player.js
+            </button>
           </div>
         )}
 

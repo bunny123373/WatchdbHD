@@ -12,11 +12,13 @@ export interface PlayerEventData {
   volume?: number;
 }
 
+type PlayerEventCallback = (event: string, data?: unknown) => void;
+
 interface IframePlayerProps {
   src?: string;
   title: string;
   autoPlay?: boolean;
-  onEvent?: (eventData: PlayerEventData) => void;
+  onEvent?: PlayerEventCallback;
 }
 
 export default function IframePlayer({ src, title, autoPlay = false, onEvent }: IframePlayerProps) {
@@ -37,21 +39,7 @@ export default function IframePlayer({ src, title, autoPlay = false, onEvent }: 
       const playerEvent = data.event || data.type;
       if (!playerEvent) return;
 
-      const eventData: PlayerEventData = {
-        event: playerEvent,
-        id: data.id,
-        data: data.data,
-      };
-
-      if (playerEvent === "time" && typeof data.data === "number") {
-        eventData.currentTime = data.data;
-      } else if (playerEvent === "duration" && typeof data.data === "number") {
-        eventData.duration = data.data;
-      } else if (playerEvent === "volume") {
-        eventData.volume = data.data;
-      }
-
-      onEvent(eventData);
+      onEvent(playerEvent, data.data);
     };
 
     window.addEventListener("message", handleMessage);

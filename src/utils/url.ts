@@ -44,3 +44,60 @@ export async function downloadFile(url: string, filename?: string): Promise<void
     window.open(url, "_blank");
   }
 }
+
+export interface ParsedSource {
+  name: string;
+  url: string;
+  quality?: string;
+}
+
+export interface ParsedMultiSource {
+  sources: ParsedSource[];
+  hasQuality: boolean;
+}
+
+const SOURCE_REGEX = /\[([^\]]+)\]\{([^}]+)\}([^;]+)|\{([^}]+)\}([^;]+)/g;
+
+export function parseMultiSourceFile(fileString: string): ParsedMultiSource {
+  if (!fileString || !fileString.includes(";")) {
+    return { sources: [], hasQuality: false };
+  }
+
+  const sources: ParsedSource[] = [];
+  let hasQuality = false;
+  
+  const regex = /\[([^\]]+)\]\{([^}]+)\}([^;]+)|\{([^}]+)\}([^;]+)/g;
+  let match;
+  
+  while ((match = regex.exec(fileString)) !== null) {
+    if (match[1] !== undefined) {
+      hasQuality = true;
+      sources.push({
+        quality: match[1].trim(),
+        name: match[2].trim(),
+        url: match[3].trim(),
+      });
+    } else if (match[4] !== undefined) {
+      sources.push({
+        name: match[4].trim(),
+        url: match[5].trim(),
+      });
+    }
+  }
+
+  return { sources, hasQuality };
+}
+
+export function groupSourcesByQuality(sources: ParsedSource[]): Map<string, ParsedSource[]> {
+  const grouped = new Map<string, ParsedSource[]>();
+  
+  for (const source of sources) {
+    const quality = source.quality || "default";
+    if (!grouped.has(quality)) {
+      grouped.set(quality, []);
+    }
+    grouped.get(quality)!.push(source);
+  }
+  
+  return grouped;
+}

@@ -2,9 +2,11 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Hls from "hls.js";
-import { Volume2, Globe, Check } from "lucide-react";
+import { Volume2, Globe, Check, Languages } from "lucide-react";
 import { AudioTrack } from "@/hooks/useAudioTracks";
-import { PlayerEventData } from "./IframePlayer";
+import { ParsedSource } from "@/utils/url";
+
+type PlayerEventCallback = (event: string, data?: unknown) => void;
 
 interface HlsPlayerProps {
   src?: string;
@@ -12,7 +14,8 @@ interface HlsPlayerProps {
   poster?: string;
   onEnded?: () => void;
   onAudioTracksChange?: (tracks: AudioTrack[], activeTrackId: number) => void;
-  onEvent?: (eventData: PlayerEventData) => void;
+  onEvent?: PlayerEventCallback;
+  sources?: ParsedSource[];
 }
 
 const languageFlags: Record<string, string> = {
@@ -32,18 +35,24 @@ function getLanguageFlag(lang?: string): string {
   return languageFlags[langCode] || languageFlags.default;
 }
 
-export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksChange, onEvent }: HlsPlayerProps) {
+export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksChange, onEvent, sources }: HlsPlayerProps) {
   const [error, setError] = useState(false);
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [activeAudioTrack, setActiveAudioTrack] = useState<number>(0);
   const [showAudioMenu, setShowAudioMenu] = useState(false);
+  const [activeSourceIndex, setActiveSourceIndex] = useState(0);
+  const [showSourceMenu, setShowSourceMenu] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const sourceMenuRef = useRef<HTMLDivElement>(null);
+
+  const currentSrc = sources && sources.length > 0 ? sources[activeSourceIndex]?.url || src : src;
+  const availableSources = sources || [];
 
   const emitEvent = useCallback((event: string, data?: unknown) => {
     if (onEvent) {
-      onEvent({ event, data });
+      onEvent(event, data);
     }
   }, [onEvent]);
 
@@ -102,21 +111,21 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
     if (videoRef.current) {
       videoRef.current.load();
     }
-  }, [src]);
+  }, [currentSrc]);
 
   useEffect(() => {
-    if (!src || !videoRef.current) return;
+    if (!currentSrc || !videoRef.current) return;
 
     const video = videoRef.current;
     
-    if (Hls.isSupported() && src.includes('.m3u8')) {
+    if (Hls.isSupported() && currentSrc.includes('.m3u8')) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: false,
       });
 
       hlsRef.current = hls;
-      hls.loadSource(src);
+      hls.loadSource(currentSrc);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -159,8 +168,8 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
         hls.destroy();
         hlsRef.current = null;
       };
-    } else if (video.canPlayType('application/vnd.apple.mpegurl') && src.includes('.m3u8')) {
-      video.src = src;
+    } else if (video.canPlayType('application/vnd.apple.mpegurl') && currentSrc.includes('.m3u8')) {
+      video.src = currentSrc;
       video.addEventListener('loadedmetadata', () => {
         const audioTrackList = (video as any).audioTracks;
         if (audioTrackList && audioTrackList.length > 1) {
@@ -175,12 +184,15 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
         }
       });
     }
-  }, [src, onAudioTracksChange, emitEvent]);
+  }, [currentSrc, onAudioTracksChange, emitEvent]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setShowAudioMenu(false);
+      }
+      if (sourceMenuRef.current && !sourceMenuRef.current.contains(event.target as Node)) {
+        setShowSourceMenu(false);
       }
     };
 
@@ -198,8 +210,16 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
   }, [audioTracks, onAudioTracksChange]);
 
   const activeTrack = audioTracks.find(t => t.id === activeAudioTrack);
+  const activeSource = availableSources[activeSourceIndex];
 
-  if (!src) {
+  const handleSourceChange = useCallback((index: number) => {
+    setActiveSourceIndex(index);
+    setShowSourceMenu(false);
+    setActiveAudioTrack(0);
+    setAudioTracks([]);
+  }, []);
+
+  if (!currentSrc) {
     return (
       <div className="w-full aspect-video bg-black flex items-center justify-center">
         <p className="text-gray-500">No stream available</p>
@@ -227,9 +247,9 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
       ) : (
         <>
           <video
-            key={src}
+            key={currentSrc}
             ref={videoRef}
-            src={src}
+            src={currentSrc}
             poster={poster}
             controls
             playsInline
@@ -271,6 +291,46 @@ export default function HlsPlayer({ src, title, poster, onEnded, onAudioTracksCh
                         <span>{track.name}</span>
                       </div>
                       {activeAudioTrack === track.id && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {availableSources.length > 1 && (
+            <div className="absolute top-4 left-4 z-10" ref={sourceMenuRef}>
+              <button
+                onClick={() => setShowSourceMenu(!showSourceMenu)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-black/70 hover:bg-black/90 text-white text-sm rounded transition-colors"
+              >
+                <Languages className="w-4 h-4" />
+                <span>{activeSource?.name || "Sources"}</span>
+              </button>
+
+              {showSourceMenu && (
+                <div className="absolute top-full left-0 mt-2 bg-[#1a1a1a] rounded-lg border border-[#333] overflow-hidden min-w-[180px]">
+                  <div className="p-2 border-b border-[#333]">
+                    <span className="text-white text-xs font-medium">Audio Sources</span>
+                  </div>
+                  {availableSources.map((source, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSourceChange(index)}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-sm transition-colors ${
+                        activeSourceIndex === index
+                          ? "bg-blue-500/20 text-blue-400"
+                          : "text-white hover:bg-[#333]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {getLanguageFlag(source.name)}
+                        <span>{source.name}</span>
+                        {source.quality && (
+                          <span className="text-xs text-white/50">({source.quality})</span>
+                        )}
+                      </div>
+                      {activeSourceIndex === index && <Check className="w-3.5 h-3.5" />}
                     </button>
                   ))}
                 </div>
