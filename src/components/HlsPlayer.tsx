@@ -52,6 +52,21 @@ export interface PlayerjsEvents {
   click?: () => void;
 }
 
+export interface VideoSource {
+  src: string;
+  type?: string;
+  label?: string;
+  res?: string;
+}
+
+export interface VideoTrack {
+  kind: "captions" | "subtitles" | "descriptions" | "chapters";
+  label: string;
+  src: string;
+  srclang: string;
+  default?: boolean;
+}
+
 interface HlsPlayerProps {
   src?: string;
   title: string;
@@ -61,6 +76,8 @@ interface HlsPlayerProps {
   onEvent?: PlayerEventCallback;
   onPlayerjsEvents?: PlayerjsEvents;
   sources?: ParsedSource[];
+  videoSources?: VideoSource[];
+  tracks?: VideoTrack[];
   playerId?: string;
 }
 
@@ -90,6 +107,8 @@ export default function HlsPlayer({
   onEvent,
   onPlayerjsEvents,
   sources,
+  videoSources,
+  tracks,
   playerId = "hls-player"
 }: HlsPlayerProps) {
   const [error, setError] = useState(false);
@@ -418,7 +437,6 @@ export default function HlsPlayer({
             id={playerId}
             key={currentSrc}
             ref={videoRef}
-            src={currentSrc}
             poster={poster}
             controls
             playsInline
@@ -428,6 +446,20 @@ export default function HlsPlayer({
             onEnded={onEnded}
             onClick={() => emit("click")}
           >
+            {currentSrc && <source src={currentSrc} type={currentSrc.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'} />}
+            {videoSources?.map((source, index) => (
+              <source key={index} src={source.src} type={source.type || 'video/mp4'} />
+            ))}
+            {tracks?.map((track, index) => (
+              <track
+                key={index}
+                kind={track.kind}
+                label={track.label}
+                src={track.src}
+                srcLang={track.srclang}
+                default={track.default}
+              />
+            ))}
             Your browser does not support the video tag.
           </video>
 
