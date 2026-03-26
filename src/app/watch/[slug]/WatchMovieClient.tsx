@@ -5,13 +5,10 @@ import Link from "next/link";
 import { Download, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
-import { PlayerEventData } from "@/components/IframePlayer";
-import HlsPlayer from "@/components/HlsPlayer";
+import PlyrEmbed from "@/components/PlyrEmbed";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
-import AudioTrackSelector from "@/components/AudioTrackSelector";
-import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile, ParsedSource } from "@/utils/url";
-import { AudioTrack } from "@/hooks/useAudioTracks";
+import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile } from "@/utils/url";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -21,16 +18,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
-  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
-
-  const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
-    setAudioTracks(tracks);
-    setActiveAudioTrackId(activeTrackId);
-  }, []);
 
   const handlePlayerEvent = useCallback((event: string, data?: unknown) => {
-    const eventData = { event, data };
     console.log("[Player Event]", event, data);
     
     switch (event) {
@@ -180,26 +169,18 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
           }
         >
           {currentHlsUrl ? (
-            <HlsPlayer 
+            <PlyrEmbed 
               src={currentHlsUrl} 
               title={movie.title}
               poster={movie.poster}
               sources={showMultiSourceSelector ? sourcesToUse : undefined}
-              onEnded={() => {
-                console.log("Video ended");
-              }}
-              onAudioTracksChange={handleAudioTracksChange}
               onEvent={handlePlayerEvent}
             />
           ) : directFileUrl ? (
-            <HlsPlayer 
+            <PlyrEmbed 
               src={directFileUrl} 
               title={movie.title}
               poster={movie.poster}
-              onEnded={() => {
-                console.log("Playback ended");
-              }}
-              onAudioTracksChange={handleAudioTracksChange}
               onEvent={handlePlayerEvent}
             />
           ) : currentEmbedLink ? (
@@ -257,19 +238,6 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 {lang.language}
               </button>
             ))}
-          </div>
-        )}
-
-        {/* Embedded Audio Track Selection */}
-        {audioTracks.length > 1 && (
-          <div className="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-white/10">
-            <AudioTrackSelector
-              tracks={audioTracks}
-              activeTrackId={activeAudioTrackId}
-              onTrackChange={setActiveAudioTrackId}
-              variant="inline"
-              showLabel={true}
-            />
           </div>
         )}
 
