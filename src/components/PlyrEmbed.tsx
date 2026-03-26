@@ -68,13 +68,15 @@ export default function PlyrEmbed({
 
       try {
         const player = new window.Plyr(videoRef.current, {
-          controls: ["play-large", "play", "rewind", "fast-forward", "progress", "current-time", "duration", "mute", "volume", "captions", "settings", "pip", "fullscreen"],
+          controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "captions", "settings", "fullscreen"],
           settings: ["quality", "captions"],
-          captions: { active: true },
+          captions: { active: false },
           ratio: "16:9",
           fullscreen: { enabled: true, fallback: true },
           keyboard: { focused: true, global: false },
-          tooltips: { controls: true, seek: true },
+          tooltips: { controls: false, seek: true },
+          invertTime: false,
+          toggleInvert: false,
         });
 
         plyrInstanceRef.current = player;
@@ -199,10 +201,12 @@ export default function PlyrEmbed({
         <video
           ref={videoRef}
           id={playerId}
-          className="w-full h-full"
+          className="w-full h-full object-contain"
           playsInline
-          preload="metadata"
+          preload="auto"
+          autoPlay={false}
           controlsList="nodownload"
+          disablePictureInPicture
         >
           <source src={currentSrc} type={currentSrc.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'} />
           {(videoSources || []).map((source, index) => (
