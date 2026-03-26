@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { Download, ChevronLeft } from "lucide-react";
 import { IContent } from "@/models/Content";
@@ -22,47 +22,16 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
   const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
-
-  const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
-    setAudioTracks(tracks);
-    setActiveAudioTrackId(activeTrackId);
-  }, []);
-
-  const handlePlayerEvent = useCallback((event: string, data?: unknown) => {
-    console.log("[Player Event]", event, data);
-    
-    switch (event) {
-      case "play":
-        console.log("▶️ Play started");
-        break;
-      case "pause":
-        console.log("⏸️ Playback paused");
-        break;
-      case "end":
-        console.log("🏁 Playback finished");
-        break;
-      case "time":
-        console.log("⏱️ Time:", data);
-        break;
-      case "volume":
-        console.log("🔊 Volume:", data);
-        break;
-      case "error":
-        console.error("❌ Player error:", data);
-        break;
-      case "buffering":
-        console.log("⏳ Buffering...");
-        break;
-      case "buffered":
-        console.log("✅ Buffer ready");
-        break;
-    }
-  }, []);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const languageSources = movie.languageSources || [];
-  const availableLanguages = languageSources.filter(ls => ls.hlsUrl || ls.embedLink);
+  const availableLanguages = useMemo(() => 
+    languageSources.filter(ls => ls.hlsUrl || ls.embedLink), 
+  [languageSources]);
 
   useEffect(() => {
+    if (isInitialized) return;
+    
     const savedLang = localStorage.getItem(`watch_lang_${movie._id}`);
     if (savedLang && availableLanguages.some(ls => ls.language === savedLang)) {
       setSelectedLanguage(savedLang);
@@ -78,31 +47,49 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
     }
     setActiveServer(1);
     setLangServer(1);
-  }, [movie._id, movie.language, availableLanguages]);
+    setIsInitialized(true);
+  }, [movie._id, movie.language, availableLanguages, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
     if (selectedLanguage) {
       localStorage.setItem(`watch_lang_${movie._id}`, selectedLanguage);
     } else {
       localStorage.removeItem(`watch_lang_${movie._id}`);
     }
-  }, [selectedLanguage, movie._id]);
+  }, [selectedLanguage, movie._id, isInitialized]);
 
-  const handleDownload = (url: string) => {
+  const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
+    setAudioTracks(tracks);
+    setActiveAudioTrackId(activeTrackId);
+  }, []);
+
+  const handlePlayerEvent = useCallback((event: string, data?: unknown) => {
+    if (event === "error") {
+      console.error("❌ Player error:", data);
+    }
+  }, []);
+
+  const handleDownload = useCallback((url: string) => {
     if (isDirectFileUrl(url)) {
       const ext = getFileExtension(url) || ".mp4";
       downloadFile(url, `${movie.title}${ext}`);
     } else {
       window.open(url, "_blank");
     }
-  };
+  }, [movie.title]);
 
-  const movieDownloadUrl = normalizeExternalUrl(movie.downloadLink);
+  const selectedLangSource = useMemo(() => 
+    selectedLanguage 
+      ? availableLanguages.find(ls => ls.language === selectedLanguage)
+      : null,
+  [selectedLanguage, availableLanguages]);
+
+  const movieDownloadUrl = useMemo(() => 
+    normalizeExternalUrl(movie.downloadLink), 
+  [movie.downloadLink]);
+
   const primaryEmbedLink = activeServer === 2 ? movie.embedIframeLink2 : movie.embedIframeLink;
-  
-  const selectedLangSource = selectedLanguage 
-    ? availableLanguages.find(ls => ls.language === selectedLanguage)
-    : null;
   
   const langEmbedLink = langServer === 2 && selectedLangSource?.embedLink?.includes('/embed/') 
     ? selectedLangSource.embedLink.replace('/embed/', '/embed-2/') 
@@ -110,7 +97,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   
   const currentHlsUrl = selectedLangSource?.hlsUrl || movie.hlsUrl;
   const currentEmbedLink = selectedLangSource ? langEmbedLink : primaryEmbedLink;
-  const currentDownloadUrl = normalizeExternalUrl(selectedLangSource?.downloadLink) || movieDownloadUrl;
+  const currentDownloadUrl = selectedLangSource?.downloadLink ? normalizeExternalUrl(selectedLangSource.downloadLink) : movieDownloadUrl;
   const currentSourceUrl = currentHlsUrl || currentEmbedLink;
   
   const isAudioFile = currentEmbedLink ? isAudioFileUrl(currentEmbedLink) : false;
@@ -119,9 +106,29 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const hasVideo = movie.hlsUrl || movie.embedIframeLink || availableLanguages.length > 0;
   const hasDownload = currentDownloadUrl || currentSourceUrl;
 
-  const parsedMultiSource = parseMultiSourceFile(currentHlsUrl || "");
+  const parsedMultiSource = useMemo(() => 
+    parseMultiSourceFile(currentHlsUrl || ""),
+  [currentHlsUrl]);
+  
   const showMultiSourceSelector = parsedMultiSource.sources.length > 1;
   const sourcesToUse = showMultiSourceSelector ? parsedMultiSource.sources : [];
+
+  const playerKey = useMemo(() => 
+    `${currentHlsUrl || directFileUrl || currentEmbedLink || 'default'}`,
+  [currentHlsUrl, directFileUrl, currentEmbedLink]);
+
+  const handleLanguageChange = useCallback((lang: string) => {
+    setSelectedLanguage(lang);
+    setLangServer(1);
+  }, []);
+
+  const handleDefaultClick = useCallback(() => {
+    setSelectedLanguage("");
+  }, []);
+
+  const handleAudioTrackChange = useCallback((trackId: number) => {
+    setActiveAudioTrackId(trackId);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -179,25 +186,31 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         >
           {currentHlsUrl ? (
             <HlsPlayer 
+              key={playerKey}
               src={currentHlsUrl} 
               title={movie.title}
               poster={movie.poster}
               sources={showMultiSourceSelector ? sourcesToUse : undefined}
-              onEnded={() => console.log("Video ended")}
               onAudioTracksChange={handleAudioTracksChange}
               onEvent={handlePlayerEvent}
             />
           ) : directFileUrl ? (
             <HlsPlayer 
+              key={playerKey}
               src={directFileUrl} 
               title={movie.title}
               poster={movie.poster}
-              onEnded={() => console.log("Playback ended")}
               onAudioTracksChange={handleAudioTracksChange}
               onEvent={handlePlayerEvent}
             />
           ) : currentEmbedLink ? (
-            <IframePlayer src={currentEmbedLink} title={movie.title} autoPlay={movie.autoPlay} onEvent={handlePlayerEvent} />
+            <IframePlayer 
+              key={playerKey}
+              src={currentEmbedLink} 
+              title={movie.title} 
+              autoPlay={movie.autoPlay} 
+              onEvent={handlePlayerEvent} 
+            />
           ) : hasVideo ? (
             <div className="w-full aspect-video bg-black flex items-center justify-center">
               <div className="text-center">
@@ -225,7 +238,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             <span className="text-white/50 text-sm py-2">Audio:</span>
             {(movie.hlsUrl || movie.embedIframeLink) && (
               <button
-                onClick={() => setSelectedLanguage("")}
+                onClick={handleDefaultClick}
                 className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
                   !selectedLanguage
                     ? "bg-[#e50914] text-white"
@@ -238,10 +251,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             {availableLanguages.map((lang) => (
               <button
                 key={lang.language}
-                onClick={() => {
-                  setSelectedLanguage(lang.language);
-                  setLangServer(1);
-                }}
+                onClick={() => handleLanguageChange(lang.language)}
                 className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
                   selectedLanguage === lang.language
                     ? "bg-[#e50914] text-white"
@@ -259,7 +269,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             <AudioTrackSelector
               tracks={audioTracks}
               activeTrackId={activeAudioTrackId}
-              onTrackChange={setActiveAudioTrackId}
+              onTrackChange={handleAudioTrackChange}
               variant="inline"
               showLabel={true}
             />
