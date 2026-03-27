@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Settings, Download } from "lucide-react";
+import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Settings } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 interface SearchResult {
@@ -20,7 +20,6 @@ const navLinks = [
   { href: "/all-series", label: "TV Shows", icon: Tv },
   { href: "/movies", label: "Movies", icon: Film },
   { href: "/collections", label: "Collections", icon: Star },
-  { href: "/downloads", label: "Downloads", icon: Download },
   { href: "/request", label: "Request", icon: Calendar },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
