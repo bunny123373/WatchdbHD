@@ -41,6 +41,7 @@ export default function LulustreamManager() {
 
   const fetchData = async () => {
     setLoading(true);
+    setMessage("");
     try {
       const [accountRes, filesRes] = await Promise.all([
         fetch("/api/lulustream?action=account"),
@@ -52,8 +53,21 @@ export default function LulustreamManager() {
       if (!accountData.success) {
         setMessage(accountData.error || "Failed to connect to Lulustream");
       }
-      if (accountData.success) setAccountInfo(accountData.data);
-      if (filesData.success) setFiles(filesData.data);
+      if (accountData.success && accountData.data) {
+        try {
+          setAccountInfo(accountData.data);
+        } catch (e) {
+          console.error("Parse account error:", e);
+        }
+      }
+      if (filesData.success && filesData.data) {
+        try {
+          setFiles(Array.isArray(filesData.data) ? filesData.data : []);
+        } catch (e) {
+          console.error("Parse files error:", e);
+          setFiles([]);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch data:", error);
       setMessage("Failed to connect to Lulustream");
