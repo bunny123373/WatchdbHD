@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp, SkipForward } from "lucide-react";
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
@@ -22,6 +23,7 @@ export default function SeriesWatchClient({
   initialSeason,
   initialEpisode,
 }: SeriesWatchClientProps) {
+  const router = useRouter();
   const [currentSeason, setCurrentSeason] = useState<number>(initialSeason || 1);
   const [currentEpisode, setCurrentEpisode] = useState<IEpisode | null>(null);
   const [showEpisodeList, setShowEpisodeList] = useState(true);
@@ -149,13 +151,13 @@ export default function SeriesWatchClient({
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent">
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link
-              href={`/series/${String(series._id)}`}
+            <button
+              onClick={() => router.back()}
               className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
               <span className="text-sm font-medium">{series.title?.slice(0, 20)}{series.title && series.title.length > 20 ? "..." : ""}</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

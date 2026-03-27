@@ -141,7 +141,9 @@ export default function PlyrEmbed({
       if (plyrInstanceRef.current) {
         try {
           plyrInstanceRef.current.destroy();
-        } catch {}
+        } catch (e) {
+          console.warn('Failed to destroy Plyr instance:', e);
+        }
         plyrInstanceRef.current = null;
       }
     };

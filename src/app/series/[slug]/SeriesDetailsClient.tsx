@@ -7,6 +7,7 @@ import { Play, Star, Tv, Download, ChevronLeft, ChevronDown, ChevronUp } from "l
 import { IContent, IEpisode } from "@/models/Content";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
+import BackButton from "@/components/BackButton";
 
 interface SeriesDetailsClientProps {
   series: IContent;
@@ -46,11 +47,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
         </div>
 
         {/* Back Button */}
-        <div className="relative z-10">
-          <Link href="/" className="absolute top-4 left-4 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors">
-            <ChevronLeft className="w-6 h-6 text-white" />
-          </Link>
-        </div>
+        <BackButton />
 
         {/* Content */}
         <div className="relative z-10 pt-[35vh] md:pt-[45vh] px-4">

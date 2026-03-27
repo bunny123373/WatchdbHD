@@ -151,7 +151,9 @@ export default function PlyrPlayer({
       if (playerRef.current) {
         try {
           (playerRef.current as unknown as { destroy: () => void }).destroy();
-        } catch {}
+        } catch (e) {
+          console.warn('Failed to destroy player:', e);
+        }
         playerRef.current = null;
       }
     };

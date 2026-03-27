@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Download, ChevronLeft, Play, Monitor, Layers } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
@@ -21,6 +22,7 @@ interface WatchMovieClientProps {
 }
 
 export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
+  const router = useRouter();
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
@@ -141,13 +143,13 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
       <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent">
         <div className="flex items-center justify-between px-4 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
-            <Link
-              href={`/movie/${String(movie._id)}`}
+            <button
+              onClick={() => router.back()}
               className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
               <span className="text-sm font-medium">Back</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>
