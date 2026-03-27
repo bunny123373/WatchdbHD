@@ -15,13 +15,11 @@ interface LulustreamFile {
 }
 
 interface LulustreamAccountInfo {
-  result: {
-    login: string;
-    files_total: number;
-    storage_used: number;
-    premium: number;
-    premium_expire: string;
-  };
+  login?: string;
+  files_total?: number;
+  storage_used?: number;
+  premium?: number;
+  premium_expire?: string;
 }
 
 export default function LulustreamManager() {
@@ -54,19 +52,13 @@ export default function LulustreamManager() {
         setMessage(accountData.error || "Failed to connect to Lulustream");
       }
       if (accountData.success && accountData.data) {
-        try {
-          setAccountInfo(accountData.data);
-        } catch (e) {
-          console.error("Parse account error:", e);
-        }
+        setAccountInfo(accountData.data);
       }
-      if (filesData.success && filesData.data && Array.isArray(filesData.data)) {
-        try {
-          setFiles(filesData.data);
-        } catch (e) {
-          console.error("Parse files error:", e);
-          setFiles([]);
-        }
+      if (filesData.success && filesData.data) {
+        const filesArray = Array.isArray(filesData.data) ? filesData.data : [];
+        setFiles(filesArray);
+      } else {
+        setFiles([]);
       }
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -202,20 +194,20 @@ export default function LulustreamManager() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
             <div>
               <p className="text-gray-500">User</p>
-              <p className="text-white font-medium">{accountInfo.result.login}</p>
+              <p className="text-white font-medium">{accountInfo.login}</p>
             </div>
             <div>
               <p className="text-gray-500">Files</p>
-              <p className="text-white font-medium">{accountInfo.result.files_total}</p>
+              <p className="text-white font-medium">{accountInfo.files_total}</p>
             </div>
             <div>
               <p className="text-gray-500">Storage Used</p>
-              <p className="text-white font-medium">{formatSize(accountInfo.result.storage_used)}</p>
+              <p className="text-white font-medium">{formatSize(accountInfo.storage_used || 0)}</p>
             </div>
             <div>
               <p className="text-gray-500">Premium</p>
-              <p className={`font-medium ${accountInfo.result.premium ? "text-green-400" : "text-gray-400"}`}>
-                {accountInfo.result.premium ? "Active" : "Free"}
+              <p className={`font-medium ${accountInfo.premium ? "text-green-400" : "text-gray-400"}`}>
+                {accountInfo.premium ? "Active" : "Free"}
               </p>
             </div>
           </div>
