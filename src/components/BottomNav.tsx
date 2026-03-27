@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Film, Tv, MessageSquare } from "lucide-react";
+import { Home, Film, Tv, MessageSquare, Download } from "lucide-react";
 import { store } from "@/redux/store";
 import { setTypeFilter } from "@/redux/slices/uiSlice";
 
@@ -74,6 +74,16 @@ function BottomNavContent() {
         </Link>
 
         <Link
+          href="/downloads"
+          className={`flex flex-col items-center justify-center w-full h-full ${
+            isActive("/downloads") ? "text-red-600" : "text-gray-400"
+          }`}
+        >
+          <Download className="w-6 h-6" />
+          <span className="text-xs mt-1">Downloads</span>
+        </Link>
+
+        <Link
           href="/request"
           className={`flex flex-col items-center justify-center w-full h-full ${
             isActive("/request") ? "text-red-600" : "text-gray-400"
@@ -103,6 +113,10 @@ function BottomNavFallback() {
           <Tv className="w-6 h-6" />
           <span className="text-xs mt-1">Series</span>
         </div>
+        <Link href="/downloads" className="flex flex-col items-center justify-center w-full h-full text-gray-400">
+          <Download className="w-6 h-6" />
+          <span className="text-xs mt-1">Downloads</span>
+        </Link>
         <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
           <MessageSquare className="w-6 h-6" />
           <span className="text-xs mt-1">Request</span>
