@@ -60,9 +60,9 @@ export default function LulustreamManager() {
           console.error("Parse account error:", e);
         }
       }
-      if (filesData.success && filesData.data) {
+      if (filesData.success && filesData.data && Array.isArray(filesData.data)) {
         try {
-          setFiles(Array.isArray(filesData.data) ? filesData.data : []);
+          setFiles(filesData.data);
         } catch (e) {
           console.error("Parse files error:", e);
           setFiles([]);
@@ -119,7 +119,7 @@ export default function LulustreamManager() {
       });
       const data = await response.json();
       if (data.success) {
-        setFiles(files.filter((f) => f.file_code !== fileCode));
+        setFiles(Array.isArray(files) ? files.filter((f) => f.file_code !== fileCode) : []);
         setMessage("File deleted");
       } else {
         setMessage(data.error || "Delete failed");
@@ -141,10 +141,10 @@ export default function LulustreamManager() {
     }
   };
 
-  const filteredFiles = files.filter(
+  const filteredFiles = Array.isArray(files) ? files.filter(
     (f) =>
       f.title?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + " B";
