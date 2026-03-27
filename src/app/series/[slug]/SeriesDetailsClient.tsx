@@ -69,7 +69,18 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
               </span>
             )}
             {series.audioLanguages && series.audioLanguages.length > 0 && (
-              <span className="text-white/80">Audio: {series.audioLanguages.join(", ")}</span>
+              <div className="flex flex-wrap gap-1">
+                {series.audioLanguages.slice(0, 4).map((lang) => (
+                  <span key={lang} className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white/80 rounded">
+                    {lang.toUpperCase()}
+                  </span>
+                ))}
+                {series.audioLanguages.length > 4 && (
+                  <span className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white/80 rounded">
+                    +{series.audioLanguages.length - 4}
+                  </span>
+                )}
+              </div>
             )}
           </div>
 
