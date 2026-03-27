@@ -150,18 +150,9 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
               </span>
             )}
             {movie.audioLanguages && movie.audioLanguages.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {movie.audioLanguages.slice(0, 4).map((lang) => (
-                  <span key={lang} className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white/80 rounded">
-                    {lang.toUpperCase()}
-                  </span>
-                ))}
-                {movie.audioLanguages.length > 4 && (
-                  <span className="px-2 py-0.5 text-xs font-medium bg-white/10 text-white/80 rounded">
-                    +{movie.audioLanguages.length - 4}
-                  </span>
-                )}
-              </div>
+              <span className="text-white/80">
+                {movie.audioLanguages.map((lang) => lang.toUpperCase()).join(" | ")}
+              </span>
             )}
           </div>
 
