@@ -2,14 +2,54 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Play, X, Film, Tv, Download, HardDrive, Trash2 } from "lucide-react";
-import { useDownloads, DownloadedItem } from "@/hooks/useDownloads";
+import { Play, X, Film, Tv, HardDrive, Trash2 } from "lucide-react";
+
+interface DownloadedItem {
+  id: string;
+  title: string;
+  poster: string;
+  type: "movie" | "series";
+  quality: string;
+  language: string;
+  downloadedAt: string;
+  size?: number;
+  season?: number;
+  episode?: number;
+}
 
 export default function DownloadsPage() {
-  const { downloads, removeDownload, clearAllDownloads, isLoaded } = useDownloads();
+  const [downloads, setDownloads] = useState<DownloadedItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<"all" | "movie" | "series">("all");
 
-  if (!isLoaded) {
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("watchdb_downloads");
+      if (stored) {
+        setDownloads(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error("Failed to load downloads:", e);
+    }
+    setLoading(false);
+  }, []);
+
+  const removeDownload = (id: string) => {
+    const updated = downloads.filter((d) => d.id !== id);
+    setDownloads(updated);
+    try {
+      localStorage.setItem("watchdb_downloads", JSON.stringify(updated));
+    } catch (e) {
+      console.error("Failed to save:", e);
+    }
+  };
+
+  const clearAllDownloads = () => {
+    setDownloads([]);
+    localStorage.removeItem("watchdb_downloads");
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-[#141414] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
@@ -172,7 +212,7 @@ export default function DownloadsPage() {
           Storage Info
         </h3>
         <p className="text-gray-400 text-sm">
-          {downloads.length} item(s) downloaded • {formatSize(downloads.reduce((acc, d) => acc + (d.size || 0), 0))} used
+          {downloads.length} item(s) downloaded
         </p>
       </div>
     </div>

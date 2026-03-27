@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Download, Check, ChevronDown, Loader2, ExternalLink } from "lucide-react";
 import { isDirectFileUrl, downloadFile } from "@/utils/url";
-import { useDownloads } from "@/hooks/useDownloads";
 
 interface DownloadOption {
   url: string;
   quality: string;
+}
+
+interface DownloadedItem {
+  id: string;
+  title: string;
+  poster: string;
+  type: "movie" | "series";
+  quality: string;
+  language: string;
+  downloadedAt: string;
+  size?: number;
+  season?: number;
+  episode?: number;
 }
 
 interface DownloadButtonProps {
@@ -34,7 +46,34 @@ export default function DownloadButton({
   const [downloaded, setDownloaded] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [extractedUrl, setExtractedUrl] = useState<string | null>(null);
-  const { addDownload } = useDownloads();
+  const [downloads, setDownloads] = useState<DownloadedItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("watchdb_downloads");
+      if (stored) {
+        setDownloads(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error("Failed to load downloads:", e);
+    }
+    setIsLoaded(true);
+  }, []);
+
+  const addDownload = (item: Omit<DownloadedItem, "downloadedAt">) => {
+    const newItem: DownloadedItem = {
+      ...item,
+      downloadedAt: new Date().toISOString(),
+    };
+    const updated = [newItem, ...downloads];
+    setDownloads(updated);
+    try {
+      localStorage.setItem("watchdb_downloads", JSON.stringify(updated));
+    } catch (e) {
+      console.error("Failed to save download:", e);
+    }
+  };
 
   const downloadOptions: DownloadOption[] = qualities.length > 0 
     ? qualities
@@ -74,7 +113,6 @@ export default function DownloadButton({
 
   const handleDownload = async (option: DownloadOption) => {
     if (!isDirectFileUrl(option.url)) {
-      // Try to extract first if it's an embed
       if (isEmbedUrl && !extractedUrl) {
         await handleExtractFromEmbed();
         return;
@@ -86,20 +124,26 @@ export default function DownloadButton({
     setDownloading(true);
     const ext = getFileExtension(option.url) || ".mp4";
     
-    await downloadFile(option.url, `${title}${ext}`);
-    
-    addDownload({
-      id: `${title}-${option.quality}`,
-      title,
-      poster: poster || "",
-      type,
-      quality: option.quality,
-      language,
-    });
-    
-    setDownloaded(true);
-    setDownloading(false);
-    setShowMenu(false);
+    try {
+      await downloadFile(option.url, `${title}${ext}`);
+      
+      addDownload({
+        id: `${title}-${option.quality}`,
+        title,
+        poster: poster || "",
+        type,
+        quality: option.quality,
+        language,
+      });
+      
+      setDownloaded(true);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Download failed. Please try again.");
+    } finally {
+      setDownloading(false);
+      setShowMenu(false);
+    }
   };
 
   const getFileExtension = (url: string): string => {
@@ -112,6 +156,10 @@ export default function DownloadButton({
       return ".mp4";
     }
   };
+
+  if (!isLoaded) {
+    return null;
+  }
 
   if (downloadOptions.length === 0 && !isEmbedUrl) return null;
 
