@@ -366,7 +366,12 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   };
 
   const getContentByCollection = (collection: ICollection) => {
-    const contentIds = collection.contentIds.map(id => String(id));
+    const contentIds = collection.contentIds.map((id: unknown) => {
+      if (typeof id === 'object' && id !== null && '_id' in id) {
+        return String((id as { _id: unknown })._id);
+      }
+      return String(id);
+    });
     return [...filteredContent]
       .filter((item: IContent) => contentIds.includes(String(item._id)))
       .slice(0, 12);
@@ -562,19 +567,18 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
             {/* Collections */}
             {collections.map((collection) => {
+              console.log("Collection:", collection.name, "contentIds:", collection.contentIds, "filteredContent ids:", filteredContent.map(c => String(c._id)));
               const collectionContent = getContentByCollection(collection);
-              if (collectionContent.length > 0) {
-                return (
-                  <ContentGrid 
-                    key={String(collection._id)} 
-                    title={collection.name} 
-                    items={collectionContent} 
-                    isNetflixStyle 
-                    onContentClick={handleContentClick} 
-                  />
-                );
-              }
-              return null;
+              console.log("Collection content found:", collectionContent.length);
+              return (
+                <ContentGrid 
+                  key={String(collection._id)} 
+                  title={collection.name} 
+                  items={collectionContent} 
+                  isNetflixStyle 
+                  onContentClick={handleContentClick} 
+                />
+              );
             })}
           </>
         )}
