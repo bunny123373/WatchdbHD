@@ -9,6 +9,7 @@ import HlsPlayer from "@/components/HlsPlayer";
 import VideoJsPlayer from "@/components/VideoJsPlayer";
 import PlyrEmbed from "@/components/PlyrEmbed";
 import VidstackEmbed from "@/components/VidstackEmbed";
+import VidstackPlayer from "@/components/VidstackPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
@@ -211,7 +212,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 onEvent={handlePlayerEvent}
               />
             ) : selectedPlayer === "vidstack" ? (
-              <VidstackEmbed 
+              <VidstackPlayer 
                 key={`vidstack-${playerKey}`}
                 src={currentHlsUrl || directFileUrl} 
                 title={movie.title}
