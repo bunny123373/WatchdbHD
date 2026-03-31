@@ -11,6 +11,7 @@ export interface MuxPlayerProps {
   playbackId?: string;
   title: string;
   poster?: string;
+  autoplay?: boolean;
   onEnded?: () => void;
   onEvent?: PlayerEventCallback;
   onPlayerjsEvents?: PlayerjsEvents;
@@ -40,6 +41,7 @@ export default function MuxPlayer({
   playbackId,
   title,
   poster,
+  autoplay,
   onEnded,
   onEvent,
   onPlayerjsEvents,
@@ -205,6 +207,7 @@ export default function MuxPlayer({
         metadata-video-title={title}
         metadata-viewer-user-id={playerId}
         playsinline
+        auto-={autoplay ? "autoplay" : undefined}
         style={{ 
           width: "100%", 
           height: "100%",
