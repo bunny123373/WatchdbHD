@@ -5,7 +5,8 @@ import { MediaPlayer } from "@vidstack/react";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
 import "@vidstack/react/player/styles/default/theme.css";
-import "@vidstack/react/player/styles/default/layout.css";
+import "@vidstack/react/player/styles/default/layouts/video.css";
+import "@vidstack/react/player/styles/base.css";
 
 export interface VidstackPlayerProps {
   src?: string;
