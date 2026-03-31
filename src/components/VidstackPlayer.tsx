@@ -42,6 +42,10 @@ function AudioSubmenu() {
   const options = useAudioOptions();
   const hint = options.selectedTrack?.label ?? 'Default';
 
+  if (!options || options.length === 0) {
+    return null;
+  }
+
   return (
     <Menu.Root>
       <Menu.Button className="vds-menu-item" disabled={options.disabled}>
