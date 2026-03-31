@@ -543,6 +543,20 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               return null;
             })}
 
+            {/* Collections - shown between language sections */}
+            {collections.map((collection) => {
+              const collectionContent = getContentByCollection(collection);
+              return (
+                <ContentGrid 
+                  key={String(collection._id)} 
+                  title={collection.name} 
+                  items={collectionContent} 
+                  isNetflixStyle 
+                  onContentClick={handleContentClick} 
+                />
+              );
+            })}
+
             {webSeries.length > 0 && (
               <ContentGrid title="Web Series" items={webSeries.slice(0, 12)} isNetflixStyle onContentClick={handleContentClick} />
             )}
@@ -565,24 +579,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               return null;
             })}
 
-            {/* Collections - Show all public collections */}
-            {collections.length > 0 && (
-              <div className="px-4 md:px-6 lg:px-8 py-4">
-                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-4">Collections</h2>
-                {collections.map((collection) => {
-                  const collectionContent = getContentByCollection(collection);
-                  return (
-                    <ContentGrid 
-                      key={String(collection._id)} 
-                      title={collection.name} 
-                      items={collectionContent} 
-                      isNetflixStyle 
-                      onContentClick={handleContentClick} 
-                    />
-                  );
-                })}
-              </div>
-            )}
           </>
         )}
 
