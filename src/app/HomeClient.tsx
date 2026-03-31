@@ -508,23 +508,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               );
             })}
 
-            {/* TMDB Date-based Trending Sections */}
-            {tmdbData.dateBased.today.length > 0 && (
-              <TMDBContentGrid title="Released Today" items={tmdbData.dateBased.today} />
-            )}
-
-            {tmdbData.dateBased.thisWeek.length > 0 && (
-              <TMDBContentGrid title="This Week Trending" items={tmdbData.dateBased.thisWeek} />
-            )}
-
-            {tmdbData.dateBased.thisMonth.length > 0 && (
-              <TMDBContentGrid title="This Month Trending" items={tmdbData.dateBased.thisMonth} />
-            )}
-
-            {tmdbData.dateBased.thisYear.length > 0 && (
-              <TMDBContentGrid title="This Year Trending" items={tmdbData.dateBased.thisYear} />
-            )}
-
             {latestUploaded.length > 0 && (
               <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
