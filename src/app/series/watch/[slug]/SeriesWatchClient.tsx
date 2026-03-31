@@ -6,6 +6,9 @@ import { Download, ChevronLeft, ListVideo, ChevronDown, ChevronUp, SkipForward }
 import { IContent, IEpisode } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
+import VideoJsPlayer from "@/components/VideoJsPlayer";
+import VidstackPlayer from "@/components/VidstackPlayer";
+import MuxPlayer from "@/components/MuxPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile } from "@/utils/url";

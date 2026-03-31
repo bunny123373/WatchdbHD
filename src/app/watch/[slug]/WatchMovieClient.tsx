@@ -10,13 +10,14 @@ import VideoJsPlayer from "@/components/VideoJsPlayer";
 import PlyrEmbed from "@/components/PlyrEmbed";
 import VidstackEmbed from "@/components/VidstackEmbed";
 import VidstackPlayer from "@/components/VidstackPlayer";
+import MuxPlayer from "@/components/MuxPlayer";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
 
-type PlayerType = "native" | "videojs" | "plyr" | "vidstack";
+type PlayerType = "native" | "videojs" | "plyr" | "vidstack" | "mux";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -220,6 +221,15 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 sources={showMultiSourceSelector ? sourcesToUse : undefined}
                 onEvent={handlePlayerEvent}
               />
+            ) : selectedPlayer === "mux" ? (
+              <MuxPlayer 
+                key={`mux-${playerKey}`}
+                src={currentHlsUrl || directFileUrl} 
+                title={movie.title}
+                poster={movie.poster}
+                sources={showMultiSourceSelector ? sourcesToUse : undefined}
+                onEvent={handlePlayerEvent}
+              />
             ) : (
               <PlyrEmbed 
                 key={`plyr-${playerKey}`}
@@ -306,6 +316,17 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             >
               <Play className="w-3 h-3 sm:w-4 sm:h-4" />
               Vidstack
+            </button>
+            <button
+              onClick={() => setSelectedPlayer("mux")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-sm transition-colors ${
+                selectedPlayer === "mux"
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+              Mux
             </button>
           </div>
         )}
