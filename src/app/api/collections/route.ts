@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
     const body = await request.json();
     const { name, description, contentIds, isPublic, isTopTen } = body;
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
     const body = await request.json();
     const { id, name, description, contentIds, isPublic, isTopTen } = body;
 
@@ -70,7 +70,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
