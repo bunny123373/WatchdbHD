@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
+import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
+import { MediaPlayer, MediaProvider, Poster, Menu, useAudioOptions } from "@vidstack/react";
 import { DefaultVideoLayout, defaultLayoutIcons } from "@vidstack/react/player/layouts/default";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, MusicIcon } from "@vidstack/react/icons";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/base.css";
@@ -35,6 +36,33 @@ function getLanguageFlag(lang?: string): string {
   if (!lang) return languageFlags.default;
   const langCode = lang.toLowerCase().slice(0, 2);
   return languageFlags[langCode] || languageFlags.default;
+}
+
+function AudioSubmenu() {
+  const options = useAudioOptions();
+  const hint = options.selectedTrack?.label ?? 'Default';
+
+  return (
+    <Menu.Root>
+      <Menu.Button className="vds-menu-item" disabled={options.disabled}>
+        <ChevronLeftIcon className="vds-menu-close-icon" />
+        <MusicIcon className="vds-icon" />
+        <span className="vds-menu-item-label">Audio</span>
+        <span className="vds-menu-item-hint">{hint}</span>
+        <ChevronRightIcon className="vds-menu-open-icon" />
+      </Menu.Button>
+      <Menu.Content className="vds-menu-items">
+        <Menu.RadioGroup className="vds-radio-group" value={options.selectedValue}>
+          {options.map(({ label, value, select }) => (
+            <Menu.Radio className="vds-radio" value={value} onSelect={select} key={value}>
+              <CheckIcon className="vds-icon" />
+              <span className="vds-radio-label">{label}</span>
+            </Menu.Radio>
+          ))}
+        </Menu.RadioGroup>
+      </Menu.Content>
+    </Menu.Root>
+  );
 }
 
 export default function VidstackPlayer({
@@ -179,7 +207,10 @@ export default function VidstackPlayer({
             src={poster}
             alt={title}
           />
-          <DefaultVideoLayout icons={defaultLayoutIcons} />
+          <DefaultVideoLayout 
+            icons={defaultLayoutIcons}
+            thumbnails="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+          />
         </MediaProvider>
       </MediaPlayer>
 
