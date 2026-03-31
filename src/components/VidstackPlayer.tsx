@@ -2,10 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
-
-declare module "@vidstack/react" {
-  export const PlayIcon: any;
-}
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
 import "@vidstack/react/player/styles/default/theme.css";
