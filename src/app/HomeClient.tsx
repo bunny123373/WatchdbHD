@@ -255,15 +255,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   const fetchCollections = async () => {
     try {
-      console.log("Fetching collections...");
       const response = await fetch("/api/collections");
       const data = await response.json();
-      console.log("Collections response:", data);
       if (data.collections) {
         setCollections(data.collections);
-        console.log("Collections loaded:", data.collections.length);
-      } else if (data.error) {
-        console.error("Collections API error:", data.error);
       }
     } catch (error) {
       console.error("Failed to fetch collections:", error);
@@ -570,21 +565,24 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               return null;
             })}
 
-            {/* Collections */}
-            {collections.map((collection) => {
-              console.log("Collection:", collection.name, "contentIds:", collection.contentIds, "filteredContent ids:", filteredContent.map(c => String(c._id)));
-              const collectionContent = getContentByCollection(collection);
-              console.log("Collection content found:", collectionContent.length);
-              return (
-                <ContentGrid 
-                  key={String(collection._id)} 
-                  title={collection.name} 
-                  items={collectionContent} 
-                  isNetflixStyle 
-                  onContentClick={handleContentClick} 
-                />
-              );
-            })}
+            {/* Collections - Show all public collections */}
+            {collections.length > 0 && (
+              <div className="px-4 md:px-6 lg:px-8 py-4">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-4">Collections</h2>
+                {collections.map((collection) => {
+                  const collectionContent = getContentByCollection(collection);
+                  return (
+                    <ContentGrid 
+                      key={String(collection._id)} 
+                      title={collection.name} 
+                      items={collectionContent} 
+                      isNetflixStyle 
+                      onContentClick={handleContentClick} 
+                    />
+                  );
+                })}
+              </div>
+            )}
           </>
         )}
 
