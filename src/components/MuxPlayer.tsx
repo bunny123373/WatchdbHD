@@ -198,7 +198,13 @@ export default function MuxPlayer({
         poster={poster}
         title={title}
         playsinline
-        style={{ width: "100%", height: "100%" }}
+        style={{ 
+          width: "100%", 
+          height: "100%",
+          "--media-control-background": "#000",
+          "--media-control-hover-background": "#333",
+          "--audio-track-menu-button": "none",
+        } as React.CSSProperties}
       />
 
       {availableSources.length > 1 && (
