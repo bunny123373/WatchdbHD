@@ -87,8 +87,10 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                   className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
                 >
                   {showNumbers && (
-                    <div className="absolute -left-1 -top-2 text-4xl md:text-5xl lg:text-6xl font-bold text-white/80 z-20 drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-                      {index + 1}
+                    <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/30">
+                      <span className="text-4xl md:text-5xl lg:text-7xl font-bold text-white drop-shadow-xl" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>
+                        {index + 1}
+                      </span>
                     </div>
                   )}
                   {item.type === "movie" ? (
