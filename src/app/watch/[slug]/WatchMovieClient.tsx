@@ -8,13 +8,14 @@ import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
 import VideoJsPlayer from "@/components/VideoJsPlayer";
 import PlyrEmbed from "@/components/PlyrEmbed";
+import VidstackEmbed from "@/components/VidstackEmbed";
 import WatchPlayerShell from "@/components/WatchPlayerShell";
 import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
 
-type PlayerType = "native" | "videojs" | "plyr";
+type PlayerType = "native" | "videojs" | "plyr" | "vidstack";
 
 interface WatchMovieClientProps {
   movie: IContent;
@@ -209,6 +210,15 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
                 sources={showMultiSourceSelector ? sourcesToUse : undefined}
                 onEvent={handlePlayerEvent}
               />
+            ) : selectedPlayer === "vidstack" ? (
+              <VidstackEmbed 
+                key={`vidstack-${playerKey}`}
+                src={currentHlsUrl || directFileUrl} 
+                title={movie.title}
+                poster={movie.poster}
+                sources={showMultiSourceSelector ? sourcesToUse : undefined}
+                onEvent={handlePlayerEvent}
+              />
             ) : (
               <PlyrEmbed 
                 key={`plyr-${playerKey}`}
@@ -284,6 +294,17 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
             >
               <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
               Plyr
+            </button>
+            <button
+              onClick={() => setSelectedPlayer("vidstack")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-sm transition-colors ${
+                selectedPlayer === "vidstack"
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <Play className="w-3 h-3 sm:w-4 sm:h-4" />
+              Vidstack
             </button>
           </div>
         )}
