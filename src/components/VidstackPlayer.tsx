@@ -172,9 +172,7 @@ export default function VidstackPlayer({
           }
         }}
       >
-        <MediaProvider>
-          <div slot="poster"></div>
-        </MediaProvider>
+        <MediaProvider />
       </MediaPlayer>
 
       {availableSources.length > 1 && (
