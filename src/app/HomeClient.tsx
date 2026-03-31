@@ -255,10 +255,15 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   const fetchCollections = async () => {
     try {
+      console.log("Fetching collections...");
       const response = await fetch("/api/collections");
       const data = await response.json();
+      console.log("Collections response:", data);
       if (data.collections) {
         setCollections(data.collections);
+        console.log("Collections loaded:", data.collections.length);
+      } else if (data.error) {
+        console.error("Collections API error:", data.error);
       }
     } catch (error) {
       console.error("Failed to fetch collections:", error);

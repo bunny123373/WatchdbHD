@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/dbconnect";
+import connectDB from "@/lib/mongodb";
 import Collection from "@/models/Collection";
 
 export async function GET() {
   try {
-    await dbConnect();
+    await connectDB();
     const collections = await Collection.find({ isPublic: true })
       .sort({ createdAt: -1 })
       .limit(20)
