@@ -8,6 +8,7 @@ import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 
 export interface MuxPlayerProps {
   src?: string;
+  playbackId?: string;
   title: string;
   poster?: string;
   onEnded?: () => void;
@@ -36,6 +37,7 @@ function getLanguageFlag(lang?: string): string {
 
 export default function MuxPlayer({
   src,
+  playbackId,
   title,
   poster,
   onEnded,
@@ -53,6 +55,8 @@ export default function MuxPlayer({
   const availableSources = sources || [];
   const currentSrc =
     availableSources.length > 0 ? availableSources[activeSourceIndex]?.url || src : src;
+
+  const usePlaybackId = !!playbackId;
 
   const emit = useCallback(
     (event: string, data?: unknown) => {
@@ -180,7 +184,7 @@ export default function MuxPlayer({
 
   const activeSource = availableSources[activeSourceIndex];
 
-  if (!currentSrc) {
+  if (!currentSrc && !usePlaybackId) {
     return (
       <div className="w-full aspect-video bg-black flex items-center justify-center">
         <p className="text-gray-500">No stream available</p>
@@ -195,8 +199,11 @@ export default function MuxPlayer({
         ref={playerRef}
         id={playerId}
         src={currentSrc}
+        playback-id={playbackId}
         poster={poster}
         title={title}
+        metadata-video-title={title}
+        metadata-viewer-user-id={playerId}
         playsinline
         style={{ 
           width: "100%", 
@@ -207,7 +214,7 @@ export default function MuxPlayer({
         } as React.CSSProperties}
       />
 
-      {availableSources.length > 1 && (
+      {availableSources.length > 1 && !usePlaybackId && (
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
           <button
             onClick={() => setShowSourceMenu((open) => !open)}
