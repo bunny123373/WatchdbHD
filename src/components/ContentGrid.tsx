@@ -88,7 +88,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                 >
                   {showNumbers && index < 10 && (
                     <div className="absolute right-0 top-0 bottom-0 flex items-center z-20 -mr-1 md:-mr-2">
-                      <span className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-700" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                      <span className="text-3xl md:text-5xl lg:text-6xl font-black text-white" style={{ WebkitTextStroke: '1.5px black', textShadow: '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000' }}>
                         {index + 1}
                       </span>
                     </div>
