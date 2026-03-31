@@ -492,6 +492,20 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         {/* Uploaded Content Sections - Only show uploaded movies/series */}
         {!showContent && (
           <>
+            {/* Collections - replaces Released Today */}
+            {collections.map((collection) => {
+              const collectionContent = getContentByCollection(collection);
+              return (
+                <ContentGrid 
+                  key={String(collection._id)} 
+                  title={collection.name} 
+                  items={collectionContent} 
+                  isNetflixStyle 
+                  onContentClick={handleContentClick} 
+                />
+              );
+            })}
+
             {/* TMDB Date-based Trending Sections */}
             {tmdbData.dateBased.today.length > 0 && (
               <TMDBContentGrid title="Released Today" items={tmdbData.dateBased.today} />
@@ -541,20 +555,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
                 );
               }
               return null;
-            })}
-
-            {/* Collections - shown between language sections */}
-            {collections.map((collection) => {
-              const collectionContent = getContentByCollection(collection);
-              return (
-                <ContentGrid 
-                  key={String(collection._id)} 
-                  title={collection.name} 
-                  items={collectionContent} 
-                  isNetflixStyle 
-                  onContentClick={handleContentClick} 
-                />
-              );
             })}
 
             {webSeries.length > 0 && (
