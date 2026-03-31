@@ -40,11 +40,18 @@ function getLanguageFlag(lang?: string): string {
 
 function AudioSubmenu() {
   const options = useAudioOptions();
-  const hint = options.selectedTrack?.label ?? 'Default';
+
+  const handleTrackSelect = (track: any) => {
+    if (track && typeof track.setActive === 'function') {
+      track.setActive();
+    }
+  };
 
   if (!options || options.length === 0) {
     return null;
   }
+
+  const hint = options.selectedTrack?.label ?? 'Default';
 
   return (
     <Menu.Root>
@@ -57,10 +64,18 @@ function AudioSubmenu() {
       </Menu.Button>
       <Menu.Content className="vds-menu-items">
         <Menu.RadioGroup className="vds-radio-group" value={options.selectedValue}>
-          {options.map(({ label, value, select }) => (
-            <Menu.Radio className="vds-radio" value={value} onSelect={select} key={value}>
+          {options.map(({ label, value, select, type }) => (
+            <Menu.Radio className="vds-radio" value={value} onSelect={() => {
+              const track = options.find((t: any) => t.value === value);
+              if (track && typeof (track as any).setActive === 'function') {
+                (track as any).setActive();
+              } else {
+                select();
+              }
+            }} key={value}>
               <CheckIcon className="vds-icon" />
               <span className="vds-radio-label">{label}</span>
+              {type === 'alternative' && <span className="text-xs text-gray-400 ml-1">(Alt)</span>}
             </Menu.Radio>
           ))}
         </Menu.RadioGroup>
