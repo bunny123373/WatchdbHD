@@ -14,8 +14,9 @@ export interface VidstackEmbedProps {
   sources?: ParsedSource[];
   playerId?: string;
   thumbnails?: string;
-  theme?: string;
-  videoCss?: string;
+  vidstackSrc?: string;
+  vidstackTheme?: string;
+  vidstackVideoCss?: string;
 }
 
 const languageFlags: Record<string, string> = {
@@ -35,8 +36,6 @@ function getLanguageFlag(lang?: string): string {
   return languageFlags[langCode] || languageFlags.default;
 }
 
-let scriptsLoaded = false;
-
 export default function VidstackEmbed({
   src,
   title,
@@ -47,8 +46,9 @@ export default function VidstackEmbed({
   sources,
   playerId = "vidstack-player",
   thumbnails,
-  theme = "https://cdn.vidstack.io/player/theme.css",
-  videoCss = "https://cdn.vidstack.io/player/video.css"
+  vidstackSrc = "https://cdn.vidstack.io/player",
+  vidstackTheme = "https://cdn.vidstack.io/player/theme.css",
+  vidstackVideoCss = "https://cdn.vidstack.io/player/video.css"
 }: VidstackEmbedProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
@@ -78,29 +78,46 @@ export default function VidstackEmbed({
     let mounted = true;
 
     const loadStyles = () => {
-      if (!document.querySelector(`link[href="${theme}"]`)) {
+      if (!document.querySelector(`link[href="${vidstackTheme}"]`)) {
         const cssLink = document.createElement("link");
         cssLink.rel = "stylesheet";
-        cssLink.href = theme;
+        cssLink.href = vidstackTheme;
         document.head.appendChild(cssLink);
       }
-      if (!document.querySelector(`link[href="${videoCss}"]`)) {
+      if (!document.querySelector(`link[href="${vidstackVideoCss}"]`)) {
         const cssLink = document.createElement("link");
         cssLink.rel = "stylesheet";
-        cssLink.href = videoCss;
+        cssLink.href = vidstackVideoCss;
         document.head.appendChild(cssLink);
       }
     };
 
-    const loadScript = async () => {
-      if (!scriptsLoaded) {
-        scriptsLoaded = true;
-        await import("vidstack");
+    const loadVidstack = () => {
+      if ((window as any).MediaPlayer) {
+        initPlayer();
+        return;
       }
 
-      if (!containerRef.current || !mounted) return;
+      const script = document.createElement("script");
+      script.src = vidstackSrc;
+      script.type = "module";
+      script.async = true;
+      script.onload = () => initPlayer();
+      script.onerror = () => {
+        console.error("Failed to load Vidstack script");
+        setError(true);
+      };
+      document.head.appendChild(script);
 
       loadStyles();
+    };
+
+    const initPlayer = () => {
+      if (!containerRef.current || !mounted) return;
+      if (!(window as any).MediaPlayer) {
+        console.error("MediaPlayer not available");
+        return;
+      }
 
       const player = document.createElement("media-player");
       player.setAttribute("src", currentSrc || "");
@@ -157,7 +174,7 @@ export default function VidstackEmbed({
     };
 
     if (typeof window !== "undefined") {
-      loadScript();
+      loadVidstack();
     }
 
     return () => {
@@ -171,7 +188,7 @@ export default function VidstackEmbed({
         playerRef.current = null;
       }
     };
-  }, [emit, onEnded, theme, videoCss, thumbnails]);
+  }, [emit, onEnded, vidstackSrc, vidstackTheme, vidstackVideoCss, thumbnails]);
 
   useEffect(() => {
     if (!isReady || !playerRef.current || !currentSrc) return;
@@ -263,6 +280,18 @@ export default function VidstackEmbed({
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        .vidstack-container :global(media-player) {
+          width: 100%;
+          height: 100%;
+          --media-background: #000;
+        }
+        .vidstack-container :global(media-video-layout) {
+          width: 100%;
+          height: 100%;
+        }
+      `}</style>
     </div>
   );
 }
