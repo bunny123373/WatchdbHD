@@ -4,12 +4,14 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Hls from "hls.js";
 
 export interface AudioTrack {
-  id: number;
+  id: number | string;
   name: string;
   lang?: string;
   kind?: string;
   url?: string;
   default?: boolean;
+  language?: string;
+  label?: string;
 }
 
 interface UseAudioTracksOptions {
