@@ -87,6 +87,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const [collections, setCollections] = useState<ICollection[]>([]);
   const searchParams = useSearchParams();
   const genreFilter = searchParams.get("genre");
+  const urlSearch = searchParams.get("q");
 
   useEffect(() => {
     if (initialContent.length === 0) {
@@ -266,10 +267,11 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   };
 
   const filteredContent = content.filter((item: IContent) => {
+    const searchTerm = search || urlSearch;
     const matchesSearch =
-      !search ||
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.tags?.some((tag: string) => tag.toLowerCase().includes(search.toLowerCase()));
+      !searchTerm ||
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const matchesType = typeFilter === "all" || item.type === typeFilter;
 
@@ -390,7 +392,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
   const topGenreIds = [28, 12, 35, 27, 10749, 878, 53, 16, 14, 80, 99, 36, 10402, 10770];
 
-  const showContent = search || typeFilter !== "all";
+  const showContent = search || urlSearch || typeFilter !== "all";
 
   const handleContentClick = (item: IContent) => {
     setSelectedContent(item);
