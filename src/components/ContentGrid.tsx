@@ -11,10 +11,11 @@ interface ContentGridProps {
   items: IContent[];
   horizontal?: boolean;
   isNetflixStyle?: boolean;
+  showNumbers?: boolean;
   onContentClick?: (content: IContent) => void;
 }
 
-export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, onContentClick }: ContentGridProps) {
+export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, onContentClick }: ContentGridProps) {
   if (items.length === 0) return null;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -83,8 +84,13 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               {items.map((item, index) => (
                 <div
                   key={String(item._id)}
-                  className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44"
+                  className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
                 >
+                  {showNumbers && (
+                    <div className="absolute -left-1 -top-2 text-4xl md:text-5xl lg:text-6xl font-bold text-white/80 z-20 drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                      {index + 1}
+                    </div>
+                  )}
                   {item.type === "movie" ? (
                     <MovieCard movie={item} index={index} />
                   ) : (
