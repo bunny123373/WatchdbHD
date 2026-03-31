@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MediaPlayer, MediaCommunitySkin, MediaOutlet, MediaPoster } from "@vidstack/react";
-import { Check, Languages } from "lucide-react";
+import { MediaPlayer } from "@vidstack/react";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
+import "@vidstack/react/player/styles/default/theme.css";
+import "@vidstack/react/player/styles/default/layout.css";
 
 export interface VidstackPlayerProps {
   src?: string;
@@ -154,12 +155,12 @@ export default function VidstackPlayer({
         poster={poster}
         title={title}
         playsInline
-        onPlay={handlePlay}
-        onPause={() => emit("pause")}
-        onEnded={handleEnded}
-        onTimeUpdate={(e: { currentTime: number; duration: number }) => handleTimeUpdate(e.currentTime, e.duration)}
-        onVolumeChange={(e: { volume: number; muted: boolean }) => handleVolumeChange(e.volume, e.muted)}
-        onSeeked={(e: { currentTime: number }) => emit("userseek", e.currentTime)}
+        onPlay={handlePlay as any}
+        onPause={() => emit("pause") as any}
+        onEnded={handleEnded as any}
+        onTimeUpdate={(detail: any) => handleTimeUpdate(detail.currentTime, detail.duration)}
+        onVolumeChange={(detail: any) => handleVolumeChange(detail.volume, detail.muted)}
+        onSeeked={(detail: any) => emit("userseek", detail)}
         onWaiting={() => emit("buffering")}
         onPlaying={() => emit("buffered")}
         onError={() => emit("error", "Video playback error")}
@@ -170,9 +171,7 @@ export default function VidstackPlayer({
           }
         }}
       >
-        <MediaOutlet />
-        <MediaPoster />
-        <MediaCommunitySkin />
+        <div slot="poster"></div>
       </MediaPlayer>
 
       {availableSources.length > 1 && (
@@ -181,7 +180,9 @@ export default function VidstackPlayer({
             onClick={() => setShowSourceMenu((open) => !open)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/70 hover:bg-black/90 text-white text-xs sm:text-sm font-medium rounded-md transition-colors backdrop-blur-sm"
           >
-            <Languages className="w-4 h-4" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
             <span>{activeSource?.name || "Sources"}</span>
           </button>
 
@@ -207,7 +208,11 @@ export default function VidstackPlayer({
                       <span className="text-white/50 text-xs">({source.quality})</span>
                     )}
                   </div>
-                  {activeSourceIndex === index && <Check className="w-4 h-4 text-red-500" />}
+                  {activeSourceIndex === index && (
+                    <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
                 </button>
               ))}
             </div>
