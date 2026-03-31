@@ -64,7 +64,7 @@ function AudioSubmenu() {
       </Menu.Button>
       <Menu.Content className="vds-menu-items">
         <Menu.RadioGroup className="vds-radio-group" value={options.selectedValue}>
-          {options.map(({ label, value, select, type }) => (
+          {options.map(({ label, value, select }) => (
             <Menu.Radio className="vds-radio" value={value} onSelect={() => {
               const track = options.find((t: any) => t.value === value);
               if (track && typeof (track as any).setActive === 'function') {
@@ -75,7 +75,6 @@ function AudioSubmenu() {
             }} key={value}>
               <CheckIcon className="vds-icon" />
               <span className="vds-radio-label">{label}</span>
-              {type === 'alternative' && <span className="text-xs text-gray-400 ml-1">(Alt)</span>}
             </Menu.Radio>
           ))}
         </Menu.RadioGroup>

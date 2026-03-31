@@ -31,7 +31,7 @@ export default function SeriesWatchClient({
   const [expandedSeasons, setExpandedSeasons] = useState<number[]>([initialSeason || 1]);
   const [autoPlayNext, setAutoPlayNext] = useState(true);
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
-  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
+  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number | string>(0);
   const playerRef = useRef<{ playNext: () => void } | null>(null);
 
   const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {

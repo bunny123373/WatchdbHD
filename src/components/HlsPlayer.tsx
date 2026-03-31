@@ -378,13 +378,14 @@ export default function HlsPlayer({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleAudioTrackChange = useCallback((trackId: number) => {
+  const handleAudioTrackChange = useCallback((trackId: number | string) => {
+    const numericId = typeof trackId === 'string' ? parseInt(trackId) : trackId;
     if (hlsRef.current && hlsRef.current.audioTracks) {
-      hlsRef.current.audioTrack = trackId;
-      setActiveAudioTrack(trackId);
-      const track = audioTracks[trackId];
+      hlsRef.current.audioTrack = numericId;
+      setActiveAudioTrack(numericId);
+      const track = audioTracks.find(t => t.id === numericId);
       if (track) emit("audiotrack", track.name);
-      onAudioTracksChange?.(audioTracks, trackId);
+      onAudioTracksChange?.(audioTracks, numericId);
     }
     setShowAudioMenu(false);
   }, [audioTracks, onAudioTracksChange, emit]);
@@ -483,7 +484,7 @@ export default function HlsPlayer({
                       key={track.id}
                       onClick={() => handleAudioTrackChange(track.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 text-sm transition-colors ${
-                        activeAudioTrack === track.id
+                        String(activeAudioTrack) === String(track.id)
                           ? "bg-yellow-500/20 text-yellow-500"
                           : "text-white hover:bg-[#333]"
                       }`}

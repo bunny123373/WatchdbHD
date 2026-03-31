@@ -27,7 +27,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
-  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number>(0);
+  const [activeAudioTrackId, setActiveAudioTrackId] = useState<number | string>(0);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerType>("native");
 
@@ -133,8 +133,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
     setSelectedLanguage("");
   }, []);
 
-  const handleAudioTrackChange = useCallback((trackId: number) => {
-    setActiveAudioTrackId(trackId);
+  const handleAudioTrackChange = useCallback((trackId: number | string) => {
+    setActiveAudioTrackId(typeof trackId === 'string' ? parseInt(trackId) : trackId);
   }, []);
 
   return (
