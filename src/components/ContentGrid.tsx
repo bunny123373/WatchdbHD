@@ -87,7 +87,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                   className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
                 >
                   {showNumbers && index < 10 && (
-                    <div className="absolute right-0 top-0 bottom-0 -mr-2 md:-mr-4 flex items-center z-20">
+                    <div className="absolute right-0 top-0 bottom-0 flex items-center z-20 -mr-1 md:-mr-2">
                       <span className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-700" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
                         {index + 1}
                       </span>
