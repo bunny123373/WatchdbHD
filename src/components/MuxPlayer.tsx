@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import "@mux/mux-player";
+import MuxPlayerReact from "@mux/mux-player-react";
+import "@mux/mux-player/themes/classic";
 import type MuxPlayerElement from "@mux/mux-player";
 import { ParsedSource } from "@/utils/url";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
@@ -196,25 +197,18 @@ export default function MuxPlayer({
 
   return (
     <div className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
-      {/* @ts-expect-error Mux Player web component */}
-      <mux-player
-        ref={playerRef}
-        id={playerId}
-        src={currentSrc}
-        playback-id={playbackId}
+      <MuxPlayerReact
+        ref={playerRef as any}
+        src={currentSrc || undefined}
+        playbackId={playbackId}
         poster={poster}
         title={title}
-        metadata-video-title={title}
-        metadata-viewer-user-id={playerId}
-        playsinline
-        auto-={autoplay ? "autoplay" : undefined}
-        style={{ 
-          width: "100%", 
-          height: "100%",
-          "--media-control-background": "#000",
-          "--media-control-hover-background": "#333",
-          "--audio-track-menu-button": "none",
-        } as React.CSSProperties}
+        metadataVideoTitle={title}
+        metadataViewerUserId={playerId}
+        playsInline
+        autoPlay={autoplay}
+        theme="classic"
+        style={{ width: "100%", height: "100%" }}
       />
 
       {availableSources.length > 1 && !usePlaybackId && (
