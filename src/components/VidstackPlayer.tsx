@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MediaPlayer, MediaProvider } from "@vidstack/react";
+import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
 import "@vidstack/react/player/styles/default/theme.css";
@@ -172,7 +172,13 @@ export default function VidstackPlayer({
           }
         }}
       >
-        <MediaProvider />
+        <MediaProvider>
+          <Poster
+            className="vds-poster"
+            src={poster}
+            alt={title}
+          />
+        </MediaProvider>
       </MediaPlayer>
 
       {availableSources.length > 1 && (
