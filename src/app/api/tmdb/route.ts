@@ -488,6 +488,46 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  if (action === "bydate") {
+    try {
+      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
+      const tmdbType = type === "series" ? "tv" : "movie";
+      const genreMap = await getGenreMap(tmdbType, apiKey);
+      const timeRange = searchParams.get("range") || "week";
+      
+      let dateFilter = "";
+      const now = new Date();
+      
+      if (timeRange === "today") {
+        dateFilter = `primary_release_date.gte=${now.toISOString().split('T')[0]}&primary_release_date.lte=${now.toISOString().split('T')[0]}`;
+      } else if (timeRange === "week") {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        dateFilter = `primary_release_date.gte=${weekAgo.toISOString().split('T')[0]}&primary_release_date.lte=${now.toISOString().split('T')[0]}`;
+      } else if (timeRange === "month") {
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        dateFilter = `primary_release_date.gte=${monthAgo.toISOString().split('T')[0]}&primary_release_date.lte=${now.toISOString().split('T')[0]}`;
+      } else if (timeRange === "year") {
+        const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+        dateFilter = `primary_release_date.gte=${yearAgo.toISOString().split('T')[0]}&primary_release_date.lte=${now.toISOString().split('T')[0]}`;
+      }
+      
+      const url = `https://api.themoviedb.org/3/discover/${tmdbType}?api_key=${apiKey}&${dateFilter}&sort_by=popularity.desc&language=en-US&page=1`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.results) {
+        const results = transformResults(data.results, genreMap, existingIds);
+        return NextResponse.json({ success: true, data: results });
+      }
+      
+      return NextResponse.json({ success: true, data: [] });
+    } catch (error) {
+      console.error("TMDB bydate error:", error);
+      return NextResponse.json({ success: true, data: [] });
+    }
+  }
+
   if (!query) {
     return NextResponse.json({ success: false, error: "Query required" }, { status: 400 });
   }

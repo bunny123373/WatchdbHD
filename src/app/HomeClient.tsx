@@ -13,6 +13,7 @@ import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useAppSelector } from "@/redux/hooks";
+import { ICollection } from "@/models/Collection";
 
 interface Genre {
   id: number;
@@ -30,6 +31,13 @@ interface TMDBContent {
   genreIds?: number[];
   genres?: string[];
   type?: string;
+}
+
+interface DateBasedContent {
+  today: TMDBContent[];
+  thisWeek: TMDBContent[];
+  thisMonth: TMDBContent[];
+  thisYear: TMDBContent[];
 }
 
 interface HomeClientProps {
@@ -56,6 +64,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     korean: TMDBContent[];
     japanese: TMDBContent[];
     byGenre: { [key: number]: TMDBContent[] };
+    dateBased: DateBasedContent;
   }>({
     popular: { movies: [], series: [] },
     trending: [],
@@ -70,10 +79,12 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     korean: [],
     japanese: [],
     byGenre: {},
+    dateBased: { today: [], thisWeek: [], thisMonth: [], thisYear: [] },
   });
   const [loadingTmdb, setLoadingTmdb] = useState(true);
   const [tmdbError, setTmdbError] = useState("");
   const { search, typeFilter } = useAppSelector((state) => state.ui);
+  const [collections, setCollections] = useState<ICollection[]>([]);
   const searchParams = useSearchParams();
   const genreFilter = searchParams.get("genre");
 
@@ -83,6 +94,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     }
     fetchGenres();
     fetchAllTmdbContent();
+    fetchCollections();
   }, []);
 
   const fetchGenres = async () => {
@@ -110,6 +122,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         topratedSeriesRes,
         upcomingMoviesRes,
         upcomingSeriesRes,
+        todayMoviesRes,
+        weekMoviesRes,
+        monthMoviesRes,
+        yearMoviesRes,
       ] = await Promise.all([
         fetch("/api/tmdb?action=popular&type=movie"),
         fetch("/api/tmdb?action=popular&type=series"),
@@ -118,6 +134,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         fetch("/api/tmdb?action=toprated&type=series"),
         fetch("/api/tmdb?action=upcoming&type=movie"),
         fetch("/api/tmdb?action=upcoming&type=series"),
+        fetch("/api/tmdb?action=bydate&type=movie&range=today"),
+        fetch("/api/tmdb?action=bydate&type=movie&range=week"),
+        fetch("/api/tmdb?action=bydate&type=movie&range=month"),
+        fetch("/api/tmdb?action=bydate&type=movie&range=year"),
       ]);
 
       const [
@@ -128,6 +148,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         topratedSeries,
         upcomingMovies,
         upcomingSeries,
+        todayMovies,
+        weekMovies,
+        monthMovies,
+        yearMovies,
       ] = await Promise.all([
         popularMoviesRes.json(),
         popularSeriesRes.json(),
@@ -136,6 +160,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         topratedSeriesRes.json(),
         upcomingMoviesRes.json(),
         upcomingSeriesRes.json(),
+        todayMoviesRes.json(),
+        weekMoviesRes.json(),
+        monthMoviesRes.json(),
+        yearMoviesRes.json(),
       ]);
 
       const languages = [
@@ -198,6 +226,12 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         korean: languageData.korean || [],
         japanese: languageData.japanese || [],
         byGenre,
+        dateBased: {
+          today: todayMovies.success ? todayMovies.data : [],
+          thisWeek: weekMovies.success ? weekMovies.data : [],
+          thisMonth: monthMovies.success ? monthMovies.data : [],
+          thisYear: yearMovies.success ? yearMovies.data : [],
+        },
       });
     } catch (error) {
       console.error("Failed to fetch TMDB content:", error);
@@ -216,6 +250,18 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       }
     } catch (error) {
       console.error("Failed to fetch content:", error);
+    }
+  };
+
+  const fetchCollections = async () => {
+    try {
+      const response = await fetch("/api/collections");
+      const data = await response.json();
+      if (data.collections) {
+        setCollections(data.collections);
+      }
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
     }
   };
 
@@ -316,6 +362,13 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         const dateB = new Date(b.createdAt).getTime();
         return dateB - dateA;
       })
+      .slice(0, 12);
+  };
+
+  const getContentByCollection = (collection: ICollection) => {
+    const contentIds = collection.contentIds.map(id => String(id));
+    return [...filteredContent]
+      .filter((item: IContent) => contentIds.includes(String(item._id)))
       .slice(0, 12);
   };
 
@@ -434,6 +487,23 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
         {/* Uploaded Content Sections - Only show uploaded movies/series */}
         {!showContent && (
           <>
+            {/* TMDB Date-based Trending Sections */}
+            {tmdbData.dateBased.today.length > 0 && (
+              <TMDBContentGrid title="Released Today" items={tmdbData.dateBased.today} />
+            )}
+
+            {tmdbData.dateBased.thisWeek.length > 0 && (
+              <TMDBContentGrid title="This Week Trending" items={tmdbData.dateBased.thisWeek} />
+            )}
+
+            {tmdbData.dateBased.thisMonth.length > 0 && (
+              <TMDBContentGrid title="This Month Trending" items={tmdbData.dateBased.thisMonth} />
+            )}
+
+            {tmdbData.dateBased.thisYear.length > 0 && (
+              <TMDBContentGrid title="This Year Trending" items={tmdbData.dateBased.thisYear} />
+            )}
+
             {latestUploaded.length > 0 && (
               <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
@@ -482,6 +552,23 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
                     key={genreId} 
                     title={`${genreName} Movies`} 
                     items={genreContent} 
+                    isNetflixStyle 
+                    onContentClick={handleContentClick} 
+                  />
+                );
+              }
+              return null;
+            })}
+
+            {/* Collections */}
+            {collections.map((collection) => {
+              const collectionContent = getContentByCollection(collection);
+              if (collectionContent.length > 0) {
+                return (
+                  <ContentGrid 
+                    key={String(collection._id)} 
+                    title={collection.name} 
+                    items={collectionContent} 
                     isNetflixStyle 
                     onContentClick={handleContentClick} 
                   />
