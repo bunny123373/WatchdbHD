@@ -150,6 +150,21 @@ export default function PlyrEmbed({
   }, [emit, onEnded, plyrSrc]);
 
   useEffect(() => {
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement) {
+        setTimeout(() => {
+          document.fullscreenElement?.requestFullscreen?.();
+        }, 100);
+      }
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isReady || !plyrInstanceRef.current || !currentSrc) return;
 
     const player = plyrInstanceRef.current as unknown as { source: { type: string; title: string; sources: { src: string; type: string }[]; poster?: string; tracks?: { kind: string; label: string; srclang: string; src: string; default?: boolean }[] } };

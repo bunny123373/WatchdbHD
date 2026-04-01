@@ -84,6 +84,21 @@ export default function MuxPlayer({
     emit("new");
   }, [currentSrc, emit]);
 
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement) {
+        setTimeout(() => {
+          document.fullscreenElement?.requestFullscreen?.();
+        }, 100);
+      }
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
+  }, []);
+
   const checkQuartile = useCallback(
     (currentTime: number, duration: number) => {
       if (!duration) return;

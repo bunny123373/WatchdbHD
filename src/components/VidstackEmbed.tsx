@@ -191,6 +191,21 @@ export default function VidstackEmbed({
   }, [emit, onEnded, vidstackSrc, vidstackTheme, vidstackVideoCss, thumbnails]);
 
   useEffect(() => {
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement) {
+        setTimeout(() => {
+          document.fullscreenElement?.requestFullscreen?.();
+        }, 100);
+      }
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isReady || !playerRef.current || !currentSrc) return;
 
     playerRef.current.src = currentSrc;

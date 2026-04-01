@@ -355,12 +355,20 @@ export default function HlsPlayer({
       }
     };
 
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement && videoRef.current) {
+        videoRef.current.requestFullscreen?.();
+      }
+    };
+
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
     };
   }, [emit]);
 

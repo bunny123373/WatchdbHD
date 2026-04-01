@@ -93,8 +93,21 @@ export default function VideoJsPlayer({
       }
     };
 
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement) {
+        setTimeout(() => {
+          document.fullscreenElement?.requestFullscreen?.();
+        }, 100);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    window.addEventListener("orientationchange", handleOrientationChange);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
   }, []);
 
   const handleSourceChange = useCallback(

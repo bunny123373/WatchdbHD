@@ -160,6 +160,21 @@ export default function PlyrPlayer({
   }, [emit, onEnded, options]);
 
   useEffect(() => {
+    const handleOrientationChange = () => {
+      if (document.fullscreenElement) {
+        setTimeout(() => {
+          document.fullscreenElement?.requestFullscreen?.();
+        }, 100);
+      }
+    };
+
+    window.addEventListener("orientationchange", handleOrientationChange);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isReady || !playerRef.current) return;
 
     const newSrc = availableSources.length > 0 
