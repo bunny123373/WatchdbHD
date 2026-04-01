@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPlayer } from "@videojs/react";
-import { MinimalVideoSkin, Video, videoFeatures } from "@videojs/react/video";
+import { Controls, createPlayer, PlayButton, Time } from "@videojs/react";
+import { Video, videoFeatures } from "@videojs/react/video";
 import "@videojs/react/video/minimal-skin.css";
 import { Check, Languages } from "lucide-react";
 import { PlayerEventCallback, PlayerjsEvents } from "./HlsPlayer";
 import { ParsedSource } from "@/utils/url";
+import "./BasicUsage.css";
 
 export interface VideoJsPlayerProps {
   src?: string;
@@ -153,12 +154,13 @@ export default function VideoJsPlayer({
   return (
     <div ref={playerContainerRef} className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
       <Player.Provider key={currentSrc}>
-        <MinimalVideoSkin poster={poster} className="w-full h-full bg-black">
+        <Player.Container className="react-controls-basic">
           <Video
             id={playerId}
             key={currentSrc}
             src={currentSrc}
             title={title}
+            poster={poster}
             playsInline
             preload="auto"
             className="w-full h-full"
@@ -203,7 +205,32 @@ export default function VideoJsPlayer({
             }}
             onError={() => emit("error", "Video playback error")}
           />
-        </MinimalVideoSkin>
+
+          <Controls.Root className="react-controls-basic__root">
+            <Controls.Group className="react-controls-basic__bottom" aria-label="Playback controls">
+              <PlayButton
+                className="react-controls-basic__button"
+                render={(props, state) => (
+                  <button {...props} className="flex items-center justify-center w-10 h-10 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+                    {state.paused ? (
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                      </svg>
+                    )}
+                  </button>
+                )}
+              />
+
+              <Time.Value type="current" className="react-controls-basic__time text-white text-sm" />
+              <span className="text-white text-sm">/</span>
+              <Time.Value type="duration" className="react-controls-basic__time text-white text-sm" />
+            </Controls.Group>
+          </Controls.Root>
+        </Player.Container>
       </Player.Provider>
 
       {availableSources.length > 1 && (

@@ -1,0 +1,35 @@
+.react-controls-basic {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.react-controls-basic__root {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+.react-controls-basic__bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.react-controls-basic__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-controls-basic__time {
+  font-variant-numeric: tabular-nums;
+}
+
+.react-controls-basic__volume {
+  display: flex;
+  align-items: center;
+}
