@@ -16,7 +16,7 @@
     "@capacitor/push-notifications": "^8.0.1",
     "@capacitor/share": "^8.0.1",
     "@mux/mux-player": "^3.11.7",
-    "@mux/mux-player-react": "^3.11.5",
+    "@mux/mux-player-react": "^3.11.7",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/hls.js": "^0.13.3",
     "@videojs/react": "^10.0.0-beta.3",

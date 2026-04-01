@@ -96,10 +96,11 @@ export default function VideoJsPlayer({
 
     const handleOrientationChange = () => {
       if (playerContainerRef.current) {
+        const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         const isLandscape = window.innerWidth > window.innerHeight;
-        if (isLandscape && !document.fullscreenElement) {
+        if (isMobile && isLandscape && !document.fullscreenElement) {
           playerContainerRef.current.requestFullscreen?.();
-        } else if (!isLandscape && document.fullscreenElement && document.fullscreenElement !== playerContainerRef.current) {
+        } else if (isMobile && !isLandscape && document.fullscreenElement && document.fullscreenElement === playerContainerRef.current) {
           document.exitFullscreen?.();
         }
       }
