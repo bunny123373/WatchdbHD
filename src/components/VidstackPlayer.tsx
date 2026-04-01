@@ -14,6 +14,7 @@ export interface VidstackPlayerProps {
   src?: string;
   title: string;
   poster?: string;
+  autoplay?: boolean;
   onEnded?: () => void;
   onEvent?: PlayerEventCallback;
   onPlayerjsEvents?: PlayerjsEvents;
@@ -87,6 +88,7 @@ export default function VidstackPlayer({
   src,
   title,
   poster,
+  autoplay,
   onEnded,
   onEvent,
   onPlayerjsEvents,
@@ -221,6 +223,7 @@ export default function VidstackPlayer({
         poster={poster}
         title={title}
         playsInline
+        autoplay={autoplay}
         onPlay={handlePlay as any}
         onPause={() => emit("pause") as any}
         onEnded={handleEnded as any}

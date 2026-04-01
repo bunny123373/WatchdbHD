@@ -8,6 +8,7 @@ export interface VidstackEmbedProps {
   src?: string;
   title: string;
   poster?: string;
+  autoplay?: boolean;
   onEnded?: () => void;
   onEvent?: PlayerEventCallback;
   onPlayerjsEvents?: PlayerjsEvents;
@@ -40,6 +41,7 @@ export default function VidstackEmbed({
   src,
   title,
   poster,
+  autoplay,
   onEnded,
   onEvent,
   onPlayerjsEvents,
@@ -125,6 +127,7 @@ export default function VidstackEmbed({
       if (title) player.setAttribute("title", title);
       player.setAttribute("playsinline", "true");
       player.setAttribute("id", playerId);
+      if (autoplay) player.setAttribute("autoplay", "true");
 
       player.innerHTML = `
         <media-provider></media-provider>
