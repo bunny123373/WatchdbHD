@@ -54,6 +54,7 @@ export default function MuxPlayer({
   const [hasStarted, setHasStarted] = useState(false);
   const lastQuartileRef = useRef<number>(0);
   const playerRef = useRef<typeof MuxPlayerElement.prototype>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
 
   const availableSources = sources || [];
   const currentSrc =
@@ -86,9 +87,11 @@ export default function MuxPlayer({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (document.fullscreenElement) {
+      if (playerContainerRef.current) {
         setTimeout(() => {
-          document.fullscreenElement?.requestFullscreen?.();
+          if (document.fullscreenElement) {
+            playerContainerRef.current?.requestFullscreen?.();
+          }
         }, 100);
       }
     };
@@ -211,7 +214,7 @@ export default function MuxPlayer({
   }
 
   return (
-    <div className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
+    <div ref={playerContainerRef} className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
       <MuxPlayerReact
         ref={playerRef as any}
         src={currentSrc || undefined}

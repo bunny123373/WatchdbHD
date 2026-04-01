@@ -57,6 +57,7 @@ export default function VideoJsPlayer({
   const [lastMuted, setLastMuted] = useState(false);
   const sourceMenuRef = useRef<HTMLDivElement>(null);
   const lastQuartileRef = useRef<number>(0);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
 
   const availableSources = sources || [];
   const currentSrc =
@@ -94,9 +95,11 @@ export default function VideoJsPlayer({
     };
 
     const handleOrientationChange = () => {
-      if (document.fullscreenElement) {
+      if (playerContainerRef.current) {
         setTimeout(() => {
-          document.fullscreenElement?.requestFullscreen?.();
+          if (document.fullscreenElement) {
+            playerContainerRef.current?.requestFullscreen?.();
+          }
         }, 100);
       }
     };
@@ -148,7 +151,7 @@ export default function VideoJsPlayer({
   }
 
   return (
-    <div className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
+    <div ref={playerContainerRef} className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
       <Player.Provider key={currentSrc}>
         <MinimalVideoSkin poster={poster} className="w-full h-full bg-black">
           <Video

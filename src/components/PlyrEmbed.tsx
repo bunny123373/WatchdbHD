@@ -151,9 +151,11 @@ export default function PlyrEmbed({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (document.fullscreenElement) {
+      if (containerRef.current) {
         setTimeout(() => {
-          document.fullscreenElement?.requestFullscreen?.();
+          if (document.fullscreenElement) {
+            containerRef.current?.requestFullscreen?.();
+          }
         }, 100);
       }
     };
