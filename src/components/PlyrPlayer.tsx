@@ -161,14 +161,10 @@ export default function PlyrPlayer({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (containerRef.current) {
-        const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        const isLandscape = window.innerWidth > window.innerHeight;
-        if (isMobile && isLandscape && !document.fullscreenElement) {
-          containerRef.current.requestFullscreen?.();
-        } else if (isMobile && !isLandscape && document.fullscreenElement && document.fullscreenElement === containerRef.current) {
-          document.exitFullscreen?.();
-        }
+      if (containerRef.current && document.fullscreenElement === containerRef.current) {
+        setTimeout(() => {
+          containerRef.current?.requestFullscreen?.();
+        }, 100);
       }
     };
 

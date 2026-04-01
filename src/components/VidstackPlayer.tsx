@@ -129,14 +129,10 @@ export default function VidstackPlayer({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (playerContainerRef.current) {
-        const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        const isLandscape = window.innerWidth > window.innerHeight;
-        if (isMobile && isLandscape && !document.fullscreenElement) {
-          playerContainerRef.current.requestFullscreen?.();
-        } else if (isMobile && !isLandscape && document.fullscreenElement && document.fullscreenElement === playerContainerRef.current) {
-          document.exitFullscreen?.();
-        }
+      if (playerContainerRef.current && document.fullscreenElement === playerContainerRef.current) {
+        setTimeout(() => {
+          playerContainerRef.current?.requestFullscreen?.();
+        }, 100);
       }
     };
 
