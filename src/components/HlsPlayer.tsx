@@ -356,8 +356,13 @@ export default function HlsPlayer({
     };
 
     const handleOrientationChange = () => {
-      if (document.fullscreenElement && videoRef.current) {
-        videoRef.current.requestFullscreen?.();
+      if (containerRef.current) {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (isLandscape && !document.fullscreenElement) {
+          containerRef.current.requestFullscreen?.();
+        } else if (!isLandscape && document.fullscreenElement && document.fullscreenElement !== containerRef.current) {
+          document.exitFullscreen?.();
+        }
       }
     };
 

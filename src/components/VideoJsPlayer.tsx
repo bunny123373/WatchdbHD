@@ -96,20 +96,23 @@ export default function VideoJsPlayer({
 
     const handleOrientationChange = () => {
       if (playerContainerRef.current) {
-        setTimeout(() => {
-          if (document.fullscreenElement) {
-            playerContainerRef.current?.requestFullscreen?.();
-          }
-        }, 100);
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (isLandscape && !document.fullscreenElement) {
+          playerContainerRef.current.requestFullscreen?.();
+        } else if (!isLandscape && document.fullscreenElement && document.fullscreenElement !== playerContainerRef.current) {
+          document.exitFullscreen?.();
+        }
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("orientationchange", handleOrientationChange);
+    window.addEventListener("resize", handleOrientationChange);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("orientationchange", handleOrientationChange);
+      window.removeEventListener("resize", handleOrientationChange);
     };
   }, []);
 

@@ -192,16 +192,21 @@ export default function VidstackEmbed({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (document.fullscreenElement) {
-        setTimeout(() => {
-          document.fullscreenElement?.requestFullscreen?.();
-        }, 100);
+      if (containerRef.current) {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (isLandscape && !document.fullscreenElement) {
+          containerRef.current.requestFullscreen?.();
+        } else if (!isLandscape && document.fullscreenElement && document.fullscreenElement !== containerRef.current) {
+          document.exitFullscreen?.();
+        }
       }
     };
 
     window.addEventListener("orientationchange", handleOrientationChange);
+    window.addEventListener("resize", handleOrientationChange);
     return () => {
       window.removeEventListener("orientationchange", handleOrientationChange);
+      window.removeEventListener("resize", handleOrientationChange);
     };
   }, []);
 

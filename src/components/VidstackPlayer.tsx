@@ -98,6 +98,7 @@ export default function VidstackPlayer({
   const [hasStarted, setHasStarted] = useState(false);
   const lastQuartileRef = useRef<number>(0);
   const playerRef = useRef<any>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
 
   const availableSources = sources || [];
   const currentSrc =
@@ -128,16 +129,21 @@ export default function VidstackPlayer({
 
   useEffect(() => {
     const handleOrientationChange = () => {
-      if (document.fullscreenElement) {
-        setTimeout(() => {
-          document.fullscreenElement?.requestFullscreen?.();
-        }, 100);
+      if (playerContainerRef.current) {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (isLandscape && !document.fullscreenElement) {
+          playerContainerRef.current.requestFullscreen?.();
+        } else if (!isLandscape && document.fullscreenElement && document.fullscreenElement !== playerContainerRef.current) {
+          document.exitFullscreen?.();
+        }
       }
     };
 
     window.addEventListener("orientationchange", handleOrientationChange);
+    window.addEventListener("resize", handleOrientationChange);
     return () => {
       window.removeEventListener("orientationchange", handleOrientationChange);
+      window.removeEventListener("resize", handleOrientationChange);
     };
   }, []);
 
@@ -210,7 +216,7 @@ export default function VidstackPlayer({
   }
 
   return (
-    <div className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
+    <div ref={playerContainerRef} className="relative w-full bg-black" style={{ aspectRatio: "16 / 9" }}>
       <MediaPlayer
         ref={playerRef}
         id={playerId}
