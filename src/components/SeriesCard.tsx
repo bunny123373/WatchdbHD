@@ -20,10 +20,17 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
   return (
     <Link href={`/series/${String(series._id)}`}>
       <div 
-        className="group cursor-pointer focus:outline-none"
+        className="group cursor-pointer focus:outline-none relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        {showNumber && index < 10 && (
+          <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-20">
+            <span className="text-[80px] sm:text-[100px] md:text-[120px] font-black text-white leading-none" style={{ WebkitTextStroke: '2px black', WebkitTextFillColor: 'white' }}>
+              {index + 1}
+            </span>
+          </div>
+        )}
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out w-[130px] sm:w-[140px] md:w-[150px]">
           <Image
             src={series.poster}
