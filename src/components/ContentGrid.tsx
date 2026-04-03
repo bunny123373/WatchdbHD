@@ -60,6 +60,52 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             </h2>
           )}
 
+          {largerGap ? (
+            <div className="relative group">
+              {showLeftArrow && (
+                <button
+                  onClick={() => scroll("left")}
+                  className="absolute left-0 top-0 bottom-0 z-10 w-6 md:w-10 bg-black/70 hover:bg-black/90 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </button>
+              )}
+              <div
+                ref={scrollRef}
+                className="flex gap-10 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
+              >
+                <style jsx>{`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
+                {items.slice(0, 10).map((item, index) => (
+                  <div key={String(item._id)} className="relative min-w-[180px] sm:min-w-[200px] md:min-w-[220px] h-56 flex items-center justify-center">
+                    <span className="absolute inset-0 flex items-center justify-center text-[160px] sm:text-[180px] md:text-[200px] lg:text-[220px] font-black text-transparent leading-none z-0 select-none" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.15)' }}>
+                      {index + 1}
+                    </span>
+                    <div className="relative z-10">
+                      {item.type === "movie" ? (
+                        <MovieCard movie={item} index={index} hideTitle />
+                      ) : (
+                        <SeriesCard series={item} index={index} hideTitle />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {showRightArrow && (
+                <button
+                  onClick={() => scroll("right")}
+                  className="absolute right-0 top-0 bottom-0 z-10 w-6 md:w-10 bg-black/70 hover:bg-black/90 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </button>
+              )}
+            </div>
+          ) : (
+
           <div className="relative group">
             {/* Left Arrow */}
             {showLeftArrow && (
@@ -106,6 +152,8 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               </button>
             )}
           </div>
+          )}
+
         </div>
       </section>
     );

@@ -23,19 +23,12 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
-          {showNumber && index < 10 && (
-            <div className="absolute left-0 top-0 bottom-0 flex items-center z-10 ml-2 pointer-events-none">
-              <span className="text-[80px] sm:text-[100px] md:text-[120px] lg:text-[140px] font-black leading-none text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.22)' }}>
-                {index + 1}
-              </span>
-            </div>
-          )}
+        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out w-[130px] sm:w-[140px] md:w-[150px]">
           <Image
             src={movie.poster}
             alt={movie.title}
             fill
-            sizes="(max-width: 480px) 33vw, (max-width: 640px) 28vw, (max-width: 768px) 22vw, (max-width: 1024px) 18vw, 16vw"
+            sizes="150px"
             loading={index < 8 ? "eager" : "lazy"}
             className={`object-cover transition-transform duration-300 ease-out ${isHovered ? 'scale-110' : 'scale-100'}`}
           />
@@ -44,14 +37,14 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
           
           {isHovered && (
             <div className="absolute inset-0 bg-black/70 lg:flex hidden items-center justify-center gap-3">
-              <button className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-colors transform hover:scale-110">
-                <Play className="w-6 h-6 fill-current ml-0.5" />
+              <button className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-colors">
+                <Play className="w-5 h-5 fill-current ml-0.5" />
               </button>
-              <button className="w-10 h-10 rounded-full bg-gray-600/80 text-white flex items-center justify-center hover:bg-gray-500 transition-colors transform hover:scale-110">
-                <Plus className="w-5 h-5" />
+              <button className="w-8 h-8 rounded-full bg-gray-600/80 text-white flex items-center justify-center hover:bg-gray-500 transition-colors">
+                <Plus className="w-4 h-4" />
               </button>
-              <button className="w-10 h-10 rounded-full bg-gray-600/80 text-white flex items-center justify-center hover:bg-gray-500 transition-colors transform hover:scale-110">
-                <Info className="w-5 h-5" />
+              <button className="w-8 h-8 rounded-full bg-gray-600/80 text-white flex items-center justify-center hover:bg-gray-500 transition-colors">
+                <Info className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -80,11 +73,6 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
               </>
             )}
           </div>
-          {movie.tmdbGenres && movie.tmdbGenres.length > 0 && (
-            <p className="text-[10px] text-gray-500 mt-1 line-clamp-1">
-              {movie.tmdbGenres.slice(0, 2).join(", ")}
-            </p>
-          )}
         </div>
         )}
       </div>
