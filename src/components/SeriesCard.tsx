@@ -28,7 +28,7 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
           {showNumber && index < 10 && (
             <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 ml-2 sm:ml-3 pointer-events-none">
-              <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.18)', filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.8))' }}>
+              <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent" style={{ WebkitTextStroke: '2px white', filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.8))' }}>
                 {index + 1}
               </span>
             </div>
