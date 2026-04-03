@@ -13,10 +13,11 @@ interface ContentGridProps {
   isNetflixStyle?: boolean;
   showNumbers?: boolean;
   largerGap?: boolean;
+  hideTitle?: boolean;
   onContentClick?: (content: IContent) => void;
 }
 
-export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, largerGap = false, onContentClick }: ContentGridProps) {
+export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, largerGap = false, hideTitle = false, onContentClick }: ContentGridProps) {
   if (items.length === 0) return null;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -54,7 +55,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
     return (
       <section className="py-1 mb-6">
         <div className="px-4 md:px-6 lg:px-8">
-          {title && (
+          {title && !hideTitle && (
             <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2">
               {title}
             </h2>
