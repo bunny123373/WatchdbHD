@@ -82,7 +82,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                 `}</style>
                 {items.slice(0, 10).map((item, index) => (
                   <div key={String(item._id)} className="relative min-w-[180px] sm:min-w-[200px] md:min-w-[220px] h-56 flex items-center justify-center">
-                    <div className="relative z-10 w-[130px] sm:w-[140px] md:w-[150px]">
+                    <div className="relative z-10">
                       {item.type === "movie" ? (
                         <MovieCard movie={item} index={index} hideTitle showNumber={showNumbers} />
                       ) : (

@@ -30,7 +30,7 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
             </span>
           </div>
         )}
-        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out w-[130px] sm:w-[140px] md:w-[150px]">
+        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
           <Image
             src={movie.poster}
             alt={movie.title}
