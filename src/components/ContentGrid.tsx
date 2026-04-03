@@ -74,7 +74,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             {/* Content Row */}
             <div
               ref={scrollRef}
-              className={`flex overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-6 lg:gap-8' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
+              className={`flex overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`

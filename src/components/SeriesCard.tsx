@@ -27,22 +27,20 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
       >
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
           {showNumber && index < 10 && (
-            <div className="absolute left-0 -bottom-4 sm:-bottom-5 md:-bottom-6 z-0 pointer-events-none select-none">
-              <span className="text-[120px] sm:text-[140px] md:text-[160px] lg:text-[180px] font-black leading-none text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.22)' }}>
+            <div className="absolute left-0 top-0 bottom-0 flex items-center z-10 ml-2 pointer-events-none">
+              <span className="text-[80px] sm:text-[100px] md:text-[120px] lg:text-[140px] font-black leading-none text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.22)' }}>
                 {index + 1}
               </span>
             </div>
           )}
-          <div className={`relative z-10 ${showNumber && index < 10 ? 'ml-10 sm:ml-12 md:ml-14' : ''}`}>
-            <Image
-              src={series.poster}
-              alt={series.title}
-              fill
-              sizes="(max-width: 480px) 33vw, (max-width: 640px) 28vw, (max-width: 768px) 22vw, (max-width: 1024px) 18vw, 16vw"
-              loading={index < 8 ? "eager" : "lazy"}
-              className={`object-cover transition-transform duration-300 ease-out ${isHovered ? 'scale-110' : 'scale-100'}`}
-            />
-          </div>
+          <Image
+            src={series.poster}
+            alt={series.title}
+            fill
+            sizes="(max-width: 480px) 33vw, (max-width: 640px) 28vw, (max-width: 768px) 22vw, (max-width: 1024px) 18vw, 16vw"
+            loading={index < 8 ? "eager" : "lazy"}
+            className={`object-cover transition-transform duration-300 ease-out ${isHovered ? 'scale-110' : 'scale-100'}`}
+          />
           
           <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300 lg:opacity-0 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
           
