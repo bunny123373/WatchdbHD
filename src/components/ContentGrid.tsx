@@ -72,7 +72,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               )}
               <div
                 ref={scrollRef}
-                className="flex gap-10 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
+                className="flex gap-4 sm:gap-5 md:gap-6 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
               >
                 <style jsx>{`
@@ -81,14 +81,12 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                   }
                 `}</style>
                 {items.slice(0, 10).map((item, index) => (
-                  <div key={String(item._id)} className="relative min-w-[180px] sm:min-w-[200px] md:min-w-[220px] h-56 flex items-center justify-center">
-                    <div className="relative z-10">
-                      {item.type === "movie" ? (
-                        <MovieCard movie={item} index={index} hideTitle showNumber={showNumbers} />
-                      ) : (
-                        <SeriesCard series={item} index={index} hideTitle showNumber={showNumbers} />
-                      )}
-                    </div>
+                  <div key={String(item._id)} className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40">
+                    {item.type === "movie" ? (
+                      <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers} />
+                    ) : (
+                      <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers} />
+                    )}
                   </div>
                 ))}
               </div>
