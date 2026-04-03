@@ -25,7 +25,7 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
         onMouseLeave={() => setIsHovered(false)}
       >
         {showNumber && index < 10 && (
-          <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 pointer-events-none -ml-8 sm:-ml-10 md:-ml-12">
+          <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 pointer-events-none -ml-12 sm:-ml-14 md:-ml-16">
             <span className="text-[90px] sm:text-[110px] md:text-[130px] font-black text-transparent leading-none" style={{ WebkitTextStroke: '2.5px white' }}>
               {index + 1}
             </span>
