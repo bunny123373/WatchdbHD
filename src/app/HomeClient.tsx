@@ -514,11 +514,11 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
             {/* TMDB-style Trending - Only uploaded movies/series with tmdbId */}
             {tmdbTrendingMovies.length > 0 && (
-              <ContentGrid title="Trending Movies" items={tmdbTrendingMovies} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
+              <ContentGrid title="" items={tmdbTrendingMovies} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
             )}
 
             {tmdbTrendingSeries.length > 0 && (
-              <ContentGrid title="Trending TV Shows" items={tmdbTrendingSeries} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
+              <ContentGrid title="" items={tmdbTrendingSeries} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
             )}
 
             {latestContent.length > 0 && (
