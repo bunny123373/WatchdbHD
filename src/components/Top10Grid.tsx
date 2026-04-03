@@ -69,23 +69,24 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
         
         <div
           ref={scrollRef}
-          className="flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-8 md:px-12"
+          className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto scrollbar-hide px-4 sm:px-8 md:px-12"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {topItems.map((item, index) => (
-            <div key={item._id} className="flex-shrink-0 relative group/item">
+            <div
+              key={item._id}
+              className="top10-card-slot relative flex-shrink-0 pl-9 sm:pl-12 md:pl-14 lg:pl-16 group/item"
+            >
               <Link
                 href={item.type === "series" ? `/series/${item._id}` : `/movie/${item._id}`}
                 onClick={() => handleClick(item)}
                 className="block"
               >
-                <div className="relative flex items-center">
-                  {/* Rank Number - Netflix Style */}
-                  <span className="text-6xl sm:text-7xl md:text-8xl font-bold text-black drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] leading-none -mr-4 sm:-mr-6 z-10 select-none">
+                <div className="relative flex items-end">
+                  <span className="top10-rank-number absolute bottom-2 left-0 z-10 select-none leading-[0.8]">
                     {index + 1}
                   </span>
-                  
-                  {/* Card - Netflix Hover Style */}
+
                   <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-all duration-300 ease-out lg:group-hover/item:scale-110 lg:group-hover/item:z-20 lg:group-hover/item:shadow-2xl lg:group-hover/item:shadow-black/50">
                     {item.poster ? (
                       <Image
@@ -128,3 +129,4 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
     </div>
   );
 }
+

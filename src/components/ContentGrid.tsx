@@ -12,10 +12,11 @@ interface ContentGridProps {
   horizontal?: boolean;
   isNetflixStyle?: boolean;
   showNumbers?: boolean;
+  largerGap?: boolean;
   onContentClick?: (content: IContent) => void;
 }
 
-export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, onContentClick }: ContentGridProps) {
+export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, largerGap = false, onContentClick }: ContentGridProps) {
   if (items.length === 0) return null;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -73,7 +74,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             {/* Content Row */}
             <div
               ref={scrollRef}
-              className="flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth"
+              className={`flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-5 lg:gap-6' : ''}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
@@ -84,11 +85,11 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               {items.map((item, index) => (
                 <div
                   key={String(item._id)}
-                  className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
+                  className={`flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative ${largerGap ? 'pl-8 sm:pl-10 md:pl-12' : ''}`}
                 >
-                  {showNumbers && index < 10 && (
-                    <div className="absolute right-0 top-0 bottom-0 flex items-center z-20 -mr-1 md:-mr-2">
-                      <span className="text-3xl md:text-5xl lg:text-6xl font-black text-white" style={{ WebkitTextStroke: '1.5px black', textShadow: '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000' }}>
+                  {showNumbers && index < 10 && largerGap && (
+                    <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 ml-1 sm:ml-2 pointer-events-none">
+                      <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-transparent" style={{ WebkitTextStroke: '2.5px white', filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.8))' }}>
                         {index + 1}
                       </span>
                     </div>

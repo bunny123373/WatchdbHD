@@ -292,7 +292,7 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const tmdbTrendingMovies = [...filteredContent]
     .filter((item: IContent) => item.type === "movie" && item.tmdbId)
     .sort((a: IContent, b: IContent) => (b.rating || 0) - (a.rating || 0))
-    .slice(0, 12);
+    .slice(0, 10);
 
   const tmdbTrendingSeries = [...filteredContent]
     .filter((item: IContent) => item.type === "series" && item.tmdbId)
@@ -514,11 +514,11 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
 
             {/* TMDB-style Trending - Only uploaded movies/series with tmdbId */}
             {tmdbTrendingMovies.length > 0 && (
-              <ContentGrid title="Trending Movies" items={tmdbTrendingMovies} isNetflixStyle showNumbers onContentClick={handleContentClick} />
+              <ContentGrid title="Trending Movies" items={tmdbTrendingMovies} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
             )}
 
             {tmdbTrendingSeries.length > 0 && (
-              <ContentGrid title="Trending TV Shows" items={tmdbTrendingSeries} isNetflixStyle onContentClick={handleContentClick} />
+              <ContentGrid title="Trending TV Shows" items={tmdbTrendingSeries} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
             )}
 
             {latestContent.length > 0 && (
