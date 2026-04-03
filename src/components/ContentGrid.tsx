@@ -54,7 +54,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
     return (
       <section className="py-1 mb-6">
         <div className="px-4 md:px-6 lg:px-8">
-          {title && !largerGap && (
+          {title && (
             <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2">
               {title}
             </h2>
