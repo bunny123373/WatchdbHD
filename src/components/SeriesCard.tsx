@@ -31,7 +31,7 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
             </span>
           </div>
         )}
-        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
+        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out ml-2 sm:ml-3 md:ml-4">
           <Image
             src={series.poster}
             alt={series.title}
