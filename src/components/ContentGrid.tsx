@@ -74,7 +74,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             {/* Content Row */}
             <div
               ref={scrollRef}
-              className={`flex overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-5 lg:gap-6' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
+              className={`flex overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-3 sm:gap-4 md:gap-4 lg:gap-5' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
@@ -85,7 +85,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               {items.map((item, index) => (
                 <div
                   key={String(item._id)}
-                  className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
+                  className={`flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative ${largerGap ? 'pl-8 sm:pl-10 md:pl-12' : ''}`}
                 >
                   {item.type === "movie" ? (
                     <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} />
