@@ -24,8 +24,8 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
         onMouseLeave={() => setIsHovered(false)}
       >
         {showNumber && index < 10 && (
-          <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-20">
-            <span className="text-[80px] sm:text-[100px] md:text-[120px] font-black text-white leading-none" style={{ WebkitTextStroke: '2px black', WebkitTextFillColor: 'white' }}>
+          <div className="absolute -left-4 sm:-left-6 md:-left-8 top-1/2 -translate-y-1/2 z-20">
+            <span className="text-[60px] sm:text-[80px] md:text-[100px] font-black text-white leading-none" style={{ WebkitTextStroke: '2px black', WebkitTextFillColor: 'white' }}>
               {index + 1}
             </span>
           </div>
