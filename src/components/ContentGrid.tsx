@@ -82,7 +82,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                 `}</style>
                 {items.slice(0, 10).map((item, index) => (
                   <div key={String(item._id)} className="relative min-w-[180px] sm:min-w-[200px] md:min-w-[220px] h-56 flex items-center justify-center">
-                    <span className="absolute inset-0 flex items-center justify-center text-[180px] sm:text-[200px] md:text-[220px] font-black text-transparent leading-none z-0 select-none" style={{ WebkitTextStroke: '3px rgba(255,255,255,0.2)' }}>
+                    <span className="absolute inset-0 flex items-center justify-center text-[180px] sm:text-[200px] md:text-[220px] font-black text-white leading-none z-0 select-none" style={{ WebkitTextStroke: '4px black', color: 'white', WebkitTextFillColor: 'transparent' }}>
                       {index + 1}
                     </span>
                     <div className="relative z-10 w-[130px] sm:w-[140px] md:w-[150px]">
