@@ -9,9 +9,11 @@ import { useState } from "react";
 interface MovieCardProps {
   movie: IContent;
   index?: number;
+  hideTitle?: boolean;
+  showNumber?: boolean;
 }
 
-export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
+export default function MovieCard({ movie, index = 0, hideTitle = false, showNumber = false }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -22,6 +24,13 @@ export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
+          {showNumber && index < 10 && (
+            <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 ml-2 sm:ml-3 pointer-events-none">
+              <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent" style={{ WebkitTextStroke: '3px white', filter: 'drop-shadow(3px 3px 4px rgba(0,0,0,0.9))' }}>
+                {index + 1}
+              </span>
+            </div>
+          )}
           <Image
             src={movie.poster}
             alt={movie.title}
@@ -57,6 +66,7 @@ export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
           )}
         </div>
         
+        {!hideTitle && (
         <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <h3 className="text-xs md:text-sm font-medium text-white line-clamp-2 leading-tight">
             {movie.title}
@@ -76,6 +86,7 @@ export default function MovieCard({ movie, index = 0 }: MovieCardProps) {
             </p>
           )}
         </div>
+        )}
       </div>
     </Link>
   );

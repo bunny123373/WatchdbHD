@@ -9,9 +9,11 @@ import { useState } from "react";
 interface SeriesCardProps {
   series: IContent;
   index?: number;
+  hideTitle?: boolean;
+  showNumber?: boolean;
 }
 
-export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
+export default function SeriesCard({ series, index = 0, hideTitle = false, showNumber = false }: SeriesCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const seasonCount = series.seasons?.length || 0;
   const episodeCount = series.seasons?.reduce((acc, s) => acc + (s.episodes?.length || 0), 0) || 0;
@@ -24,6 +26,13 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
+          {showNumber && index < 10 && (
+            <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 ml-2 sm:ml-3 pointer-events-none">
+              <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent" style={{ WebkitTextStroke: '3px white', filter: 'drop-shadow(3px 3px 4px rgba(0,0,0,0.9))' }}>
+                {index + 1}
+              </span>
+            </div>
+          )}
           <Image
             src={series.poster}
             alt={series.title}
@@ -66,6 +75,7 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
           )}
         </div>
         
+        {!hideTitle && (
         <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <h3 className="text-xs md:text-sm font-medium text-white line-clamp-2 leading-tight">
             {series.title}
@@ -85,6 +95,7 @@ export default function SeriesCard({ series, index = 0 }: SeriesCardProps) {
             </p>
           )}
         </div>
+        )}
       </div>
     </Link>
   );

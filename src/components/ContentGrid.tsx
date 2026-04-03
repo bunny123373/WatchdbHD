@@ -13,11 +13,10 @@ interface ContentGridProps {
   isNetflixStyle?: boolean;
   showNumbers?: boolean;
   largerGap?: boolean;
-  hideTitle?: boolean;
   onContentClick?: (content: IContent) => void;
 }
 
-export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, largerGap = false, hideTitle = false, onContentClick }: ContentGridProps) {
+export default function ContentGrid({ title, items, horizontal = false, isNetflixStyle = false, showNumbers = false, largerGap = false, onContentClick }: ContentGridProps) {
   if (items.length === 0) return null;
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -55,7 +54,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
     return (
       <section className="py-1 mb-6">
         <div className="px-4 md:px-6 lg:px-8">
-          {title && !hideTitle && (
+          {title && !largerGap && (
             <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-2">
               {title}
             </h2>
@@ -75,7 +74,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             {/* Content Row */}
             <div
               ref={scrollRef}
-              className={`flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-5 lg:gap-6' : ''}`}
+              className={`flex overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-5 lg:gap-6' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
@@ -86,19 +85,12 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               {items.map((item, index) => (
                 <div
                   key={String(item._id)}
-                  className={`flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative ${largerGap ? 'pl-8 sm:pl-10 md:pl-12' : ''}`}
+                  className={`flex-shrink-0 w-32 sm:w-36 md:w-40 lg:w-44 xl:w-48 relative ${largerGap ? 'pl-10 sm:pl-12 md:pl-14' : ''}`}
                 >
-                  {showNumbers && index < 10 && largerGap && (
-                    <div className="absolute left-0 top-0 bottom-0 flex items-center z-20 ml-1 sm:ml-2 pointer-events-none">
-                      <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-transparent" style={{ WebkitTextStroke: '2.5px white', filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.8))' }}>
-                        {index + 1}
-                      </span>
-                    </div>
-                  )}
                   {item.type === "movie" ? (
-                    <MovieCard movie={item} index={index} />
+                    <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} />
                   ) : (
-                    <SeriesCard series={item} index={index} />
+                    <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} />
                   )}
                 </div>
               ))}
@@ -131,7 +123,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
           <div className="relative -mx-4 px-4">
             <div
               ref={scrollRef}
-              className="flex gap-1 md:gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+              className={`flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-4 sm:gap-5 md:gap-5 lg:gap-6' : ''}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
@@ -166,11 +158,11 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 md:gap-3">
           {items.map((item, index) => (
             <div key={String(item._id)} className="w-full">
-              {item.type === "movie" ? (
-                <MovieCard movie={item} index={index} />
-              ) : (
-                <SeriesCard series={item} index={index} />
-              )}
+                  {item.type === "movie" ? (
+                    <MovieCard movie={item} index={index} hideTitle={largerGap} />
+                  ) : (
+                    <SeriesCard series={item} index={index} hideTitle={largerGap} />
+                  )}
             </div>
           ))}
         </div>
