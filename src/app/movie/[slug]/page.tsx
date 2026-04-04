@@ -117,10 +117,12 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
       <div className="lg:hidden">
         {/* Hero */}
         <section className="relative">
-          {(movie.banner || movie.poster) && (
-            <img src={movie.banner || movie.poster} alt={movie.title} className="w-full h-[260px] object-cover" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c1c] via-transparent to-transparent" />
+          {movie.banner ? (
+            <img src={movie.banner} alt={movie.title} className="w-full h-[260px] object-cover" />
+          ) : movie.poster ? (
+            <img src={movie.poster} alt={movie.title} className="w-full h-[260px] object-cover" />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c1c] via-[#1c1c1c]/50 to-transparent" />
         </section>
 
         {/* Content */}
