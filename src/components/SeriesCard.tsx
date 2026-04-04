@@ -65,7 +65,7 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
         </div>
         
         {!hideTitle && (
-        <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-4 sm:ml-5 md:ml-6">
+        <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-6 sm:ml-7 md:ml-8">
           <h3 className="text-xs md:text-sm font-medium text-white line-clamp-2 leading-tight">
             {series.title}
           </h3>
