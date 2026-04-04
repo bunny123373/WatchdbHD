@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { Play, Star, Globe, ChevronLeft } from "lucide-react";
+import { Play, Star, Globe, ChevronLeft, Download } from "lucide-react";
 import { IContent } from "@/models/Content";
 import dbConnect from "@/lib/dbconnect";
 import Content from "@/models/Content";
@@ -112,7 +112,92 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
   const director = movie.crew?.find((c: { job?: string }) => c.job === "Director");
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[#1c1c1c] max-w-sm mx-auto md:max-w-none md:mx-auto">
+      {/* Mobile Netflix-style */}
+      <div className="md:hidden">
+        {/* Hero */}
+        <section className="relative">
+          {(movie.banner || movie.poster) && (
+            <img src={movie.banner || movie.poster} alt={movie.title} className="w-full h-[260px] object-cover" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c1c] via-transparent to-transparent" />
+        </section>
+
+        {/* Content */}
+        <div className="px-4 pt-4">
+          {/* Meta */}
+          <div className="flex gap-3 text-xs text-gray-300 items-center">
+            {movie.year && <span>{movie.year}</span>}
+            {movie.quality && <span className="border px-1">{movie.quality}</span>}
+            {movie.language && <span>{movie.language}</span>}
+          </div>
+
+          {/* Title */}
+          <h1 className="text-xl font-semibold mt-4 uppercase">{movie.title}</h1>
+
+          {/* Buttons */}
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <button className="bg-white text-black py-3 rounded-md font-medium flex items-center justify-center gap-2">
+              <Play className="w-4 h-4 fill-black" /> Play
+            </button>
+            <button className="bg-zinc-700 py-3 rounded-md font-medium flex items-center justify-center gap-2">
+              <Download className="w-4 h-4" /> Download
+            </button>
+          </div>
+
+          {/* Description */}
+          {movie.description && (
+            <p className="text-sm text-gray-300 mt-4 leading-6">{movie.description}</p>
+          )}
+
+          {/* Details */}
+          <div className="text-xs text-gray-400 mt-4 leading-6">
+            {movie.tmdbGenres && movie.tmdbGenres.length > 0 && (
+              <p>Genres: {movie.tmdbGenres.slice(0, 3).join(", ")}</p>
+            )}
+            {movie.cast && movie.cast.length > 0 && (
+              <p>Cast: {(movie.cast as unknown as string[])?.slice(0, 3).join(", ") || "N/A"}...</p>
+            )}
+            {director && <p>Director: {director.name}</p>}
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-around mt-6 text-sm text-gray-300">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl">+</span>
+              <span>My List</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl">👍</span>
+              <span>Rate</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xl">✈</span>
+              <span>Share</span>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-6 mt-8 border-b border-white/10 pb-3 text-sm">
+            <span className="text-white border-b-2 border-red-600 pb-2">More Like This</span>
+            <span className="text-gray-400">Trailers & More</span>
+          </div>
+
+          {/* Grid */}
+          {similarMovies.length > 0 && (
+            <div className="grid grid-cols-3 gap-3 mt-5 pb-8">
+              {similarMovies.slice(0, 6).map((item: IContent) => (
+                <Link key={String(item._id)} href={`/movie/${String(item._id)}`}>
+                  <img src={item.poster} alt={item.title} className="w-full h-[140px] object-cover rounded-sm" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:block min-h-screen bg-black">
       {/* Hero Banner */}
       <div className="relative">
         {/* Banner Background */}
@@ -232,6 +317,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
       )}
 
       <Footer />
+      </div>
     </div>
   );
 }
