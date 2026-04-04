@@ -55,15 +55,6 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
               </button>
             </div>
           )}
-          
-          {movie.rating && (
-            <div className="absolute bottom-2 left-2">
-              <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/70 rounded-sm">
-                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                <span className="text-[10px] font-medium text-white">{movie.rating}</span>
-              </div>
-            </div>
-          )}
         </div>
         
         {!hideTitle && (
