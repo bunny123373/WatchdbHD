@@ -72,7 +72,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               )}
               <div
                 ref={scrollRef}
-                className="flex gap-8 sm:gap-10 md:gap-12 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
+                className="flex gap-10 sm:gap-12 md:gap-14 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
               >
                 <style jsx>{`
@@ -115,7 +115,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
             {/* Content Row */}
             <div
               ref={scrollRef}
-              className={`flex overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-6' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
+              className={`flex overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-10' : 'gap-1.5 md:gap-2 lg:gap-3'}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
@@ -166,7 +166,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
           <div className="relative -mx-4 px-4">
             <div
               ref={scrollRef}
-              className={`flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-6 sm:gap-7 md:gap-8' : ''}`}
+              className={`flex gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 ${largerGap ? 'gap-10 sm:gap-12 md:gap-14' : ''}`}
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
             >
               <style jsx>{`
