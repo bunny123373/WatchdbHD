@@ -72,7 +72,7 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
               )}
               <div
                 ref={scrollRef}
-                className="flex gap-16 sm:gap-20 md:gap-24 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
+                className="flex gap-8 sm:gap-10 md:gap-12 overflow-x-auto pb-8 scrollbar-hide scroll-smooth px-2"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
               >
                 <style jsx>{`
