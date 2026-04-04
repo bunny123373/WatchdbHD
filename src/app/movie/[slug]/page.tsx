@@ -112,9 +112,9 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
   const director = movie.crew?.find((c: { job?: string }) => c.job === "Director");
 
   return (
-    <div className="min-h-screen bg-[#1c1c1c] max-w-sm mx-auto md:max-w-lg lg:max-w-2xl xl:max-w-none">
+    <div className="min-h-screen bg-[#1c1c1c] sm:max-w-2xl md:max-w-3xl lg:max-w-none mx-auto">
       {/* Mobile Netflix-style */}
-      <div className="md:hidden">
+      <div className="lg:hidden">
         {/* Hero */}
         <section className="relative">
           {(movie.banner || movie.poster) && (
@@ -197,7 +197,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ s
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:block min-h-screen bg-black">
+      <div className="hidden lg:block min-h-screen bg-black">
       {/* Hero Banner */}
       <div className="relative">
         {/* Banner Background */}
