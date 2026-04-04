@@ -11,9 +11,10 @@ interface SeriesCardProps {
   index?: number;
   hideTitle?: boolean;
   showNumber?: boolean;
+  largerGap?: boolean;
 }
 
-export default function SeriesCard({ series, index = 0, hideTitle = false, showNumber = false }: SeriesCardProps) {
+export default function SeriesCard({ series, index = 0, hideTitle = false, showNumber = false, largerGap = false }: SeriesCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const seasonCount = series.seasons?.length || 0;
 

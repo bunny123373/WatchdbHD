@@ -11,9 +11,10 @@ interface MovieCardProps {
   index?: number;
   hideTitle?: boolean;
   showNumber?: boolean;
+  largerGap?: boolean;
 }
 
-export default function MovieCard({ movie, index = 0, hideTitle = false, showNumber = false }: MovieCardProps) {
+export default function MovieCard({ movie, index = 0, hideTitle = false, showNumber = false, largerGap = false }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (

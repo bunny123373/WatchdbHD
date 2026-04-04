@@ -83,9 +83,9 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                 {items.slice(0, 10).map((item, index) => (
                   <div key={String(item._id)} className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40">
                     {item.type === "movie" ? (
-                      <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers} />
+                      <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers} largerGap={largerGap} />
                     ) : (
-                      <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers} />
+                      <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers} largerGap={largerGap} />
                     )}
                   </div>
                 ))}
@@ -129,9 +129,9 @@ export default function ContentGrid({ title, items, horizontal = false, isNetfli
                   className="flex-shrink-0 w-28 sm:w-32 md:w-36 lg:w-40 xl:w-44 relative"
                 >
                   {item.type === "movie" ? (
-                    <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} />
+                    <MovieCard movie={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} largerGap={largerGap} />
                   ) : (
-                    <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} />
+                    <SeriesCard series={item} index={index} hideTitle={largerGap} showNumber={showNumbers && largerGap} largerGap={largerGap} />
                   )}
                 </div>
               ))}
