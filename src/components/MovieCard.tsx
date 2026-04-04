@@ -58,7 +58,7 @@ export default function MovieCard({ movie, index = 0, hideTitle = false, showNum
         </div>
         
         {!hideTitle && (
-        <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-2 sm:ml-3 md:ml-4">
+        <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-4 sm:ml-5 md:ml-6">
           <h3 className="text-xs md:text-sm font-medium text-white line-clamp-2 leading-tight">
             {movie.title}
           </h3>
