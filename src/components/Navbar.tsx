@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Settings } from "lucide-react";
+import { Search, X, Film, Tv, Home, Star, Calendar, Loader2, Menu, Settings, Bookmark } from "lucide-react";
 import { cn } from "@/utils/cn";
+import AuthModal, { UserMenu } from "@/components/AuthModal";
 
 interface SearchResult {
   _id: string;
@@ -20,6 +21,7 @@ const navLinks = [
   { href: "/all-series", label: "TV Shows", icon: Tv },
   { href: "/movies", label: "Movies", icon: Film },
   { href: "/collections", label: "Collections", icon: Star },
+  { href: "/watchlist", label: "Watchlist", icon: Bookmark },
   { href: "/request", label: "Request", icon: Calendar },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
@@ -29,6 +31,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -214,6 +217,9 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* User Menu */}
+          <UserMenu onOpen={() => setShowAuth(true)} />
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setIsSearchOpen(false); }}
@@ -246,6 +252,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
+      <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
     </nav>
   );
 }

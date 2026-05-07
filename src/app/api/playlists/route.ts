@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Playlist from "@/models/Playlist";
-import { verifyToken } from "@/lib/auth";
-
-function getUserId(request: NextRequest): string | null {
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const payload = verifyToken(authHeader.slice(7));
-  return payload?.userId || null;
-}
+import { getUserFromRequest } from "@/lib/get-user";
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,15 +19,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, data: playlists });
     }
 
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const playlists = await Playlist.find({ userId })
+    const playlists = await Playlist.find({ userId: userInfo.userId })
       .sort({ updatedAt: -1 })
       .populate("items.contentId", "title poster type slug year rating");
 
@@ -50,8 +43,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -78,7 +71,7 @@ export async function POST(request: NextRequest) {
       : [];
 
     const playlist = await Playlist.create({
-      userId,
+      userId: userInfo.userId,
       name: name.trim(),
       description,
       isPublic: isPublic ?? false,

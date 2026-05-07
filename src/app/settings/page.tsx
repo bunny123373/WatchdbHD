@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -15,9 +15,15 @@ import {
   Info,
   Trash2,
   ExternalLink,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Subtitles,
+  Gauge,
+  User,
+  LogIn,
+  Loader2,
 } from "lucide-react";
 import { useSettings } from "@/context/SettingsContext";
+import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/utils/cn";
 
 const languages = [
@@ -36,10 +42,39 @@ const videoQualities = [
   { value: "1080p", label: "1080p" },
 ];
 
+const playbackSpeeds = [
+  { value: 0.5, label: "0.5x" },
+  { value: 1, label: "1x (Normal)" },
+  { value: 1.25, label: "1.25x" },
+  { value: 1.5, label: "1.5x" },
+  { value: 2, label: "2x" },
+];
+
+const subtitleLanguages = [
+  { code: "", name: "None" },
+  { code: "te", name: "Telugu" },
+  { code: "hi", name: "Hindi" },
+  { code: "en", name: "English" },
+  { code: "ta", name: "Tamil" },
+  { code: "ml", name: "Malayalam" },
+  { code: "kn", name: "Kannada" },
+];
+
 export default function SettingsPage() {
   const pathname = usePathname();
   const { settings, updateSettings } = useSettings();
+  const { user, loading: authLoading, login, register } = useAuth();
   const [clearing, setClearing] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authUsername, setAuthUsername] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authSubmitting, setAuthSubmitting] = useState(false);
+
+  const isPlayerRoute = pathname.startsWith("/watch/") || pathname.startsWith("/series/watch/");
+  if (isPlayerRoute) return null;
 
   const handleClearCache = () => {
     setClearing(true);
@@ -49,16 +84,33 @@ export default function SettingsPage() {
     }, 500);
   };
 
-  const isPlayerRoute = pathname.startsWith("/watch/") || pathname.startsWith("/series/watch/");
-  if (isPlayerRoute) return null;
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError("");
+    setAuthSubmitting(true);
+
+    const result = authMode === "login"
+      ? await login(authEmail, authPassword)
+      : await register(authUsername, authEmail, authPassword);
+
+    if (result.success) {
+      setShowAuth(false);
+      setAuthEmail("");
+      setAuthPassword("");
+      setAuthUsername("");
+    } else {
+      setAuthError(result.error || "Something went wrong");
+    }
+    setAuthSubmitting(false);
+  };
 
   const isDark = settings.theme === "dark";
   const themeBg = isDark ? "bg-red-600" : "bg-gray-600";
   const themeTranslate = isDark ? "translate-x-4" : "translate-x-0.5";
-  
+
   const autoplayBg = settings.autoplay ? "bg-red-600" : "bg-gray-600";
   const autoplayTranslate = settings.autoplay ? "translate-x-4" : "translate-x-0.5";
-  
+
   const notifBg = settings.notifications ? "bg-red-600" : "bg-gray-600";
   const notifTranslate = settings.notifications ? "translate-x-4" : "translate-x-0.5";
 
@@ -74,6 +126,114 @@ export default function SettingsPage() {
       </div>
 
       <div className="p-4 space-y-6">
+        {authLoading ? (
+          <section className="flex justify-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
+          </section>
+        ) : !user ? (
+          <section>
+            <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Account</h2>
+            <div className="bg-[#141414] rounded-lg overflow-hidden">
+              <button
+                onClick={() => { setShowAuth(true); setAuthMode("login"); }}
+                className="w-full flex items-center gap-3 p-4 hover:bg-white/5 transition-colors"
+              >
+                <LogIn className="w-5 h-5 text-gray-400" />
+                <span>Sign In</span>
+              </button>
+              <button
+                onClick={() => { setShowAuth(true); setAuthMode("register"); }}
+                className="w-full flex items-center gap-3 p-4 pt-0 hover:bg-white/5 transition-colors"
+              >
+                <User className="w-4 h-5 text-gray-400" />
+                <span>Create Account</span>
+              </button>
+            </div>
+          </section>
+        ) : (
+          <section>
+            <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Account</h2>
+            <div className="bg-[#141414] rounded-lg overflow-hidden">
+              <div className="flex items-center gap-3 p-4">
+                <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                  <span className="text-lg font-bold text-white">
+                    {user.username.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">{user.username}</p>
+                  <p className="text-gray-500 text-xs">{user.email}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Auth Modal */}
+        {showAuth && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4">
+            <div className="bg-[#1a1a1a] rounded-lg w-full max-w-md border border-white/10">
+              <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <h2 className="text-lg font-semibold text-white">
+                  {authMode === "login" ? "Sign In" : "Create Account"}
+                </h2>
+                <button onClick={() => setShowAuth(false)} className="p-1 hover:bg-white/10 rounded">
+                  <ArrowLeft className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+              <form onSubmit={handleAuth} className="p-4 space-y-4">
+                {authMode === "register" && (
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">Username</label>
+                    <input
+                      type="text"
+                      value={authUsername}
+                      onChange={(e) => setAuthUsername(e.target.value)}
+                      className="w-full bg-[#141414] text-white px-3 py-2 rounded border border-white/10 focus:outline-none focus:border-red-600 text-sm"
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    className="w-full bg-[#141414] text-white px-3 py-2 rounded border border-white/10 focus:outline-none focus:border-red-600 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Password</label>
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    className="w-full bg-[#141414] text-white px-3 py-2 rounded border border-white/10 focus:outline-none focus:border-red-600 text-sm"
+                  />
+                </div>
+                {authError && <p className="text-red-500 text-sm">{authError}</p>}
+                <button
+                  type="submit"
+                  disabled={authSubmitting}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded text-sm font-medium disabled:opacity-50"
+                >
+                  {authSubmitting ? "Please wait..." : authMode === "login" ? "Sign In" : "Create Account"}
+                </button>
+                <p className="text-center text-sm text-gray-500">
+                  {authMode === "login" ? "No account?" : "Have an account?"}{" "}
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}
+                    className="text-red-500 hover:underline"
+                  >
+                    {authMode === "login" ? "Sign up" : "Sign in"}
+                  </button>
+                </p>
+              </form>
+            </div>
+          </div>
+        )}
+
         {/* Appearance */}
         <section>
           <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Appearance</h2>
@@ -118,6 +278,27 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        {/* Subtitle Language */}
+        <section>
+          <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Subtitles</h2>
+          <div className="bg-[#141414] rounded-lg overflow-hidden">
+            <div className="flex items-center gap-3 p-4">
+              <Subtitles className="w-5 h-5 text-gray-400" />
+              <select
+                value={settings.subtitleLanguage || ""}
+                onChange={(e) => updateSettings("subtitleLanguage", e.target.value)}
+                className="flex-1 bg-transparent text-white focus:outline-none"
+              >
+                {subtitleLanguages.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="bg-[#1a1a1a]">
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </section>
+
         {/* Video Quality */}
         <section>
           <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Video Quality</h2>
@@ -132,6 +313,27 @@ export default function SettingsPage() {
                 {videoQualities.map((q) => (
                   <option key={q.value} value={q.value} className="bg-[#1a1a1a]">
                     {q.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Playback Speed */}
+        <section>
+          <h2 className="text-sm font-medium text-gray-400 mb-3 px-1">Playback Speed</h2>
+          <div className="bg-[#141414] rounded-lg overflow-hidden">
+            <div className="flex items-center gap-3 p-4">
+              <Gauge className="w-5 h-5 text-gray-400" />
+              <select
+                value={settings.playbackSpeed || 1}
+                onChange={(e) => updateSettings("playbackSpeed", parseFloat(e.target.value))}
+                className="flex-1 bg-transparent text-white focus:outline-none"
+              >
+                {playbackSpeeds.map((s) => (
+                  <option key={s.value} value={s.value} className="bg-[#1a1a1a]">
+                    {s.label}
                   </option>
                 ))}
               </select>
@@ -220,7 +422,7 @@ export default function SettingsPage() {
               <Info className="w-5 h-5 text-gray-400" />
               <div className="flex-1">
                 <p className="text-sm">TeluguDB</p>
-                <p className="text-xs text-gray-500">Version 1.0.0</p>
+                <p className="text-xs text-gray-500">Version 1.1.0</p>
               </div>
             </div>
             <a 

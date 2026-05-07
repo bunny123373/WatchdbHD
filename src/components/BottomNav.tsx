@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Film, Tv, MessageSquare } from "lucide-react";
+import { Home, Film, Tv, MessageSquare, Bookmark } from "lucide-react";
 import { store } from "@/redux/store";
 import { setTypeFilter } from "@/redux/slices/uiSlice";
 
@@ -82,6 +82,16 @@ function BottomNavContent() {
           <MessageSquare className="w-6 h-6" />
           <span className="text-xs mt-1">Request</span>
         </Link>
+
+        <Link
+          href="/watchlist"
+          className={`flex flex-col items-center justify-center w-full h-full ${
+            isActive("/watchlist") ? "text-red-600" : "text-gray-400"
+          }`}
+        >
+          <Bookmark className="w-6 h-6" />
+          <span className="text-xs mt-1">Watchlist</span>
+        </Link>
       </div>
     </nav>
   );
@@ -106,6 +116,10 @@ function BottomNavFallback() {
         <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
           <MessageSquare className="w-6 h-6" />
           <span className="text-xs mt-1">Request</span>
+        </div>
+        <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
+          <Bookmark className="w-6 h-6" />
+          <span className="text-xs mt-1">Watchlist</span>
         </div>
       </div>
     </nav>

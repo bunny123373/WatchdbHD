@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { Download, ChevronLeft, Play, Monitor, Layers } from "lucide-react";
+import { Download, ChevronLeft, Play, Monitor, Layers, Subtitles } from "lucide-react";
 import { IContent } from "@/models/Content";
 import IframePlayer from "@/components/IframePlayer";
 import HlsPlayer from "@/components/HlsPlayer";
@@ -16,6 +16,9 @@ import MovieRecommendations from "@/components/MovieRecommendations";
 import AudioTrackSelector from "@/components/AudioTrackSelector";
 import { normalizeExternalUrl, isDirectFileUrl, isAudioFileUrl, getFileExtension, downloadFile, parseMultiSourceFile } from "@/utils/url";
 import { AudioTrack } from "@/hooks/useAudioTracks";
+import { useAuth } from "@/context/AuthContext";
+import { useSettings } from "@/context/SettingsContext";
+import type { ISubtitle } from "@/models/Subtitle";
 
 type PlayerType = "native" | "videojs" | "plyr" | "vidstack" | "mux";
 
@@ -24,6 +27,8 @@ interface WatchMovieClientProps {
 }
 
 export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
+  const { token } = useAuth();
+  const { settings } = useSettings();
   const [activeServer, setActiveServer] = useState<1 | 2>(1);
   const [langServer, setLangServer] = useState<1 | 2>(1);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
@@ -31,6 +36,8 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
   const [activeAudioTrackId, setActiveAudioTrackId] = useState<number | string>(0);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerType>("native");
+  const [subtitles, setSubtitles] = useState<ISubtitle[]>([]);
+  const [selectedSubtitle, setSelectedSubtitle] = useState<string>("");
 
   const languageSources = movie.languageSources || [];
   const availableLanguages = useMemo(() => 
@@ -66,6 +73,40 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
       localStorage.removeItem(`watch_lang_${movie._id}`);
     }
   }, [selectedLanguage, movie._id, isInitialized]);
+
+  useEffect(() => {
+    fetch(`/api/subtitles?contentId=${movie._id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setSubtitles(data.data);
+      })
+      .catch(() => {});
+  }, [movie._id]);
+
+  useEffect(() => {
+    if (settings.subtitleLanguage && subtitles.length > 0) {
+      const match = subtitles.find(
+        (s) => s.language.toLowerCase() === settings.subtitleLanguage!.toLowerCase()
+      );
+      if (match) setSelectedSubtitle(match.url);
+    }
+  }, [settings.subtitleLanguage, subtitles]);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        contentId: movie._id,
+        progress: 5,
+        duration: 0,
+      }),
+    }).catch(() => {});
+  }, [token, movie._id]);
 
   const handleAudioTracksChange = useCallback((tracks: AudioTrack[], activeTrackId: number) => {
     setAudioTracks(tracks);
@@ -364,7 +405,7 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
         )}
 
         {audioTracks.length > 1 && (
-          <div className="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-white/10">
+          <div className="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-white/10">
             <AudioTrackSelector
               tracks={audioTracks}
               activeTrackId={activeAudioTrackId}
@@ -372,6 +413,36 @@ export default function WatchMovieClient({ movie }: WatchMovieClientProps) {
               variant="inline"
               showLabel={true}
             />
+          </div>
+        )}
+
+        {subtitles.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-white/10">
+            <Subtitles className="w-5 h-5 text-gray-400" />
+            <span className="text-white/50 text-sm">Subtitles:</span>
+            <button
+              onClick={() => setSelectedSubtitle("")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                !selectedSubtitle
+                  ? "bg-[#e50914] text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              Off
+            </button>
+            {subtitles.map((sub) => (
+              <button
+                key={sub._id}
+                onClick={() => setSelectedSubtitle(sub.url)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  selectedSubtitle === sub.url
+                    ? "bg-[#e50914] text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                {sub.label}
+              </button>
+            ))}
           </div>
         )}
 

@@ -4,9 +4,11 @@ export interface IUser {
   _id: string;
   username: string;
   email: string;
-  password: string;
+  password?: string;
   avatar?: string;
   isAdmin: boolean;
+  provider?: string;
+  providerAccountId?: string;
   preferences?: {
     language?: string;
     autoPlay?: boolean;
@@ -38,9 +40,11 @@ const UserSchema = new Schema<IUser>(
   {
     username: { type: String, required: true, unique: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
+    password: { type: String },
     avatar: { type: String },
     isAdmin: { type: Boolean, default: false },
+    provider: { type: String },
+    providerAccountId: { type: String },
     preferences: {
       language: { type: String },
       autoPlay: { type: Boolean, default: true },

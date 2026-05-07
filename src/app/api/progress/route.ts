@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import WatchProgress from "@/models/WatchProgress";
-import { verifyToken } from "@/lib/auth";
-
-function getUserId(request: NextRequest): string | null {
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const payload = verifyToken(authHeader.slice(7));
-  return payload?.userId || null;
-}
+import { getUserFromRequest } from "@/lib/get-user";
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -25,7 +18,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const contentId = searchParams.get("contentId");
 
-    const query: Record<string, unknown> = { userId };
+    const query: Record<string, unknown> = { userId: userInfo.userId };
     if (contentId) query.contentId = contentId;
 
     const progress = await WatchProgress.find(query)
@@ -44,8 +37,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -64,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const filter: Record<string, unknown> = { userId, contentId };
+    const filter: Record<string, unknown> = { userId: userInfo.userId, contentId };
     if (seasonNumber !== undefined) filter.seasonNumber = seasonNumber;
     if (episodeNumber !== undefined) filter.episodeNumber = episodeNumber;
 
@@ -91,8 +84,8 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -111,7 +104,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await WatchProgress.deleteMany({ userId, contentId });
+    await WatchProgress.deleteMany({ userId: userInfo.userId, contentId });
 
     return NextResponse.json({ success: true, message: "Progress cleared" });
   } catch (error) {

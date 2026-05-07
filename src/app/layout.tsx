@@ -6,7 +6,9 @@ import AppChrome from "@/components/AppChrome";
 import ReduxProviderClient from "@/components/ReduxProviderClient";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SettingsProvider } from "@/context/SettingsContext";
+import { AuthProvider } from "@/context/AuthContext";
 import ExternalPlayerLoader from "@/components/ExternalPlayerLoader";
+import SessionProvider from "@/components/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,13 +88,17 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased overflow-x-hidden`}>
         <ExternalPlayerLoader />
+        <SessionProvider>
         <ReduxProviderClient>
-          <LanguageProvider>
-            <SettingsProvider>
-              <AppChrome>{children}</AppChrome>
-            </SettingsProvider>
-          </LanguageProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <SettingsProvider>
+                <AppChrome>{children}</AppChrome>
+              </SettingsProvider>
+            </LanguageProvider>
+          </AuthProvider>
         </ReduxProviderClient>
+        </SessionProvider>
       </body>
     </html>
   );

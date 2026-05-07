@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Playlist from "@/models/Playlist";
-import { verifyToken } from "@/lib/auth";
-
-function getUserId(request: NextRequest): string | null {
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const payload = verifyToken(authHeader.slice(7));
-  return payload?.userId || null;
-}
+import { getUserFromRequest } from "@/lib/get-user";
 
 export async function GET(
   request: NextRequest,
@@ -30,8 +23,9 @@ export async function GET(
     }
 
     if (!playlist.isPublic) {
-      const userId = getUserId(request);
-      if (!userId || String(playlist.userId._id || playlist.userId) !== userId) {
+      const userInfo = await getUserFromRequest(request);
+      const ownerId = String((playlist.userId as { _id?: unknown })?._id || playlist.userId);
+      if (!userInfo || ownerId !== userInfo.userId) {
         return NextResponse.json(
           { success: false, error: "Unauthorized" },
           { status: 401 }
@@ -55,8 +49,8 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -73,7 +67,7 @@ export async function PUT(
       );
     }
 
-    if (String(playlist.userId) !== userId) {
+    if (String(playlist.userId) !== userInfo.userId) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -112,8 +106,8 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -130,7 +124,7 @@ export async function DELETE(
       );
     }
 
-    if (String(playlist.userId) !== userId) {
+    if (String(playlist.userId) !== userInfo.userId) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }

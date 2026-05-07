@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Watchlist from "@/models/Watchlist";
-import { verifyToken } from "@/lib/auth";
-
-function getUserId(request: NextRequest): string | null {
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const payload = verifyToken(authHeader.slice(7));
-  return payload?.userId || null;
-}
+import { getUserFromRequest } from "@/lib/get-user";
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -22,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    const watchlist = await Watchlist.find({ userId })
+    const watchlist = await Watchlist.find({ userId: userInfo.userId })
       .sort({ createdAt: -1 })
       .populate("contentId", "title poster type slug year rating banner");
 
@@ -38,8 +31,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -56,12 +49,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await Watchlist.findOne({ userId, contentId });
+    const existing = await Watchlist.findOne({ userId: userInfo.userId, contentId });
     if (existing) {
       return NextResponse.json({ success: true, data: existing, message: "Already in watchlist" });
     }
 
-    const item = await Watchlist.create({ userId, contentId });
+    const item = await Watchlist.create({ userId: userInfo.userId, contentId });
 
     return NextResponse.json({ success: true, data: item }, { status: 201 });
   } catch (error) {
@@ -75,8 +68,8 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const userId = getUserId(request);
-    if (!userId) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -95,7 +88,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await Watchlist.findOneAndDelete({ userId, contentId });
+    await Watchlist.findOneAndDelete({ userId: userInfo.userId, contentId });
 
     return NextResponse.json({ success: true, message: "Removed from watchlist" });
   } catch (error) {

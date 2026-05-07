@@ -9,11 +9,13 @@ interface Settings {
   autoplay: boolean;
   notifications: boolean;
   playerUrl?: string;
+  subtitleLanguage?: string;
+  playbackSpeed?: number;
 }
 
 interface SettingsContextType {
   settings: Settings;
-  updateSettings: (key: keyof Settings, value: string | boolean) => void;
+  updateSettings: (key: keyof Settings, value: string | boolean | number) => void;
 }
 
 const defaultSettings: Settings = {
@@ -23,6 +25,8 @@ const defaultSettings: Settings = {
   autoplay: true,
   notifications: true,
   playerUrl: "//site.com/playerjs.js",
+  subtitleLanguage: "",
+  playbackSpeed: 1,
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -49,8 +53,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }, [settings, mounted]);
 
-  const updateSettings = (key: keyof Settings, value: string | boolean) => {
-    setSettings((prev) => ({ ...prev, [key]: value }));
+  const updateSettings = (key: keyof Settings, value: string | boolean | number) => {
+    setSettings((prev) => ({ ...prev, [key]: value as never }));
   };
 
   return (

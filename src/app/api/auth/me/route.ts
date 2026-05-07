@@ -1,30 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
-import { verifyToken } from "@/lib/auth";
+import { getUserFromRequest } from "@/lib/get-user";
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const token = authHeader.slice(7);
-    const payload = verifyToken(token);
-    if (!payload) {
-      return NextResponse.json(
-        { success: false, error: "Invalid or expired token" },
-        { status: 401 }
-      );
-    }
-
     await connectDB();
 
-    const user = await User.findById(payload.userId).select("-password");
+    const user = await User.findById(userInfo.userId).select("-password");
     if (!user) {
       return NextResponse.json(
         { success: false, error: "User not found" },
@@ -47,19 +38,10 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
+    const userInfo = await getUserFromRequest(request);
+    if (!userInfo) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.slice(7);
-    const payload = verifyToken(token);
-    if (!payload) {
-      return NextResponse.json(
-        { success: false, error: "Invalid or expired token" },
         { status: 401 }
       );
     }
@@ -84,7 +66,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const user = await User.findByIdAndUpdate(
-      payload.userId,
+      userInfo.userId,
       { $set: updates },
       { new: true, runValidators: true }
     ).select("-password");

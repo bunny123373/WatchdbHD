@@ -13,6 +13,7 @@ import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
 import HomeSkeleton from "@/components/HomeSkeleton";
+import ContinueWatching from "@/components/ContinueWatching";
 import { useAppSelector } from "@/redux/hooks";
 import { ICollection } from "@/models/Collection";
 
@@ -425,6 +426,9 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
       {featuredContent && !showContent && (
         <HeroBanner content={featuredContent} onContentClick={handleContentClick} />
       )}
+
+      {/* Continue Watching */}
+      {!showContent && <ContinueWatching />}
 
       <div className="pb-8 sm:pb-12 -mt-2 sm:-mt-4 relative z-10">
         {/* Search Results */}
