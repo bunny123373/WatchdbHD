@@ -26,13 +26,13 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
         onMouseLeave={() => setIsHovered(false)}
       >
         {showNumber && index < 10 && (
-          <div className="absolute left-0 top-0 bottom-0 flex items-center z-0 pointer-events-none -ml-8 sm:-ml-10 md:-ml-12">
-            <span className="text-[90px] sm:text-[110px] md:text-[130px] font-black text-transparent leading-none" style={{ WebkitTextStroke: '2.5px white' }}>
+          <div className="absolute left-0 top-0 bottom-0 flex items-center z-0 pointer-events-none -translate-x-[10%]">
+            <span className="top10-rank-number">
               {index + 1}
             </span>
           </div>
         )}
-        <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out">
+        <div className={`relative aspect-[2/3] rounded-md overflow-hidden bg-[#1f1f1f] lg:hover:scale-105 transition-transform duration-300 ease-out ${showNumber ? 'ml-8 sm:ml-10 md:ml-12 lg:ml-14' : ''}`}>
           <Image
             src={series.poster}
             alt={series.title}
@@ -75,7 +75,7 @@ export default function SeriesCard({ series, index = 0, hideTitle = false, showN
         </div>
         
         {!hideTitle && (
-        <div className="mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-6 sm:ml-7 md:ml-8">
+        <div className={`mt-2 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${showNumber ? 'ml-10 sm:ml-12 md:ml-14 lg:ml-16' : 'ml-6 sm:ml-7 md:ml-8'}`}>
           <h3 className="text-xs md:text-sm font-medium text-white line-clamp-2 leading-tight">
             {series.title}
           </h3>

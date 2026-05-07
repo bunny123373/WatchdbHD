@@ -466,13 +466,13 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
               );
             })}
 
-            {latestUploaded.length > 0 && (
-              <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
-            )}
-
             {/* TMDB-style Trending - Only uploaded movies/series with tmdbId */}
             {tmdbTrendingMovies.length > 0 && (
               <ContentGrid title="Trending Movies" items={tmdbTrendingMovies} isNetflixStyle showNumbers largerGap onContentClick={handleContentClick} />
+            )}
+
+            {latestUploaded.length > 0 && (
+              <ContentGrid title="Latest Uploaded" items={latestUploaded} isNetflixStyle onContentClick={handleContentClick} />
             )}
 
             {tmdbTrendingSeries.length > 0 && (

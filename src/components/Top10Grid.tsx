@@ -75,19 +75,19 @@ export default function Top10Grid({ title, items, onContentClick }: Top10GridPro
           {topItems.map((item, index) => (
             <div
               key={item._id}
-              className="top10-card-slot relative flex-shrink-0 pl-9 sm:pl-12 md:pl-14 lg:pl-16 group/item"
+              className="top10-card-slot relative flex-shrink-0 group/item"
             >
               <Link
                 href={item.type === "series" ? `/series/${item._id}` : `/movie/${item._id}`}
                 onClick={() => handleClick(item)}
                 className="block"
               >
-                <div className="relative flex items-end">
-                  <span className="top10-rank-number absolute bottom-2 left-0 z-10 select-none leading-[0.8]">
+                <div className="flex items-center">
+                  <span className="top10-rank-number flex-shrink-0 -mr-6 sm:-mr-8 md:-mr-10 select-none relative z-0">
                     {index + 1}
                   </span>
 
-                  <div className="w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] relative rounded-md overflow-hidden transition-all duration-300 ease-out lg:group-hover/item:scale-110 lg:group-hover/item:z-20 lg:group-hover/item:shadow-2xl lg:group-hover/item:shadow-black/50">
+                  <div className="relative z-10 w-28 sm:w-36 md:w-44 lg:w-52 aspect-[2/3] rounded-md overflow-hidden transition-all duration-300 ease-out lg:group-hover/item:scale-110 lg:group-hover/item:z-20 lg:group-hover/item:shadow-2xl lg:group-hover/item:shadow-black/50">
                     {item.poster ? (
                       <Image
                         src={item.poster}
