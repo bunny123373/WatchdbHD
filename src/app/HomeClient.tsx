@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { IContent } from "@/models/Content";
 import Footer from "@/components/Footer";
@@ -12,6 +12,7 @@ import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
+import HomeSkeleton from "@/components/HomeSkeleton";
 import { useAppSelector } from "@/redux/hooks";
 import { ICollection } from "@/models/Collection";
 
@@ -402,51 +403,8 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
     setSelectedContent(null);
   };
 
-  // Skeleton component
-  const Skeleton = ({ className = "", delay = 0 }: { className?: string; delay?: number }) => (
-    <div 
-      className={`netflix-skeleton rounded ${className}`}
-      style={{ animationDelay: `${delay}ms` } as React.CSSProperties}
-    />
-  );
-
-  const SkeletonRow = ({ rowIndex }: { rowIndex: number }) => (
-    <div className="py-4 animate-slide-up" style={{ animationDelay: `${400 + rowIndex * 150}ms` }}>
-      <Skeleton className="h-6 w-32 mb-3" delay={rowIndex * 100} />
-      <div className="flex gap-3 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="flex-shrink-0 w-36 animate-fade-in" style={{ animationDelay: `${500 + rowIndex * 150 + i * 80}ms` }}>
-            <Skeleton className="aspect-[2/3] w-full rounded-md" delay={i * 50} />
-            <Skeleton className="h-4 w-24 mt-2" delay={i * 50 + 100} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const SkeletonHero = () => (
-    <div className="relative w-full h-[50vh] animate-fade-in">
-      <Skeleton className="absolute inset-0" delay={0} />
-      <div className="absolute bottom-20 left-4 md:left-8 space-y-3">
-        <Skeleton className="h-10 w-64" delay={100} />
-        <Skeleton className="h-6 w-48" delay={200} />
-        <Skeleton className="h-12 w-32 rounded" delay={300} />
-      </div>
-    </div>
-  );
-
   if (content.length === 0) {
-    return (
-      <div className="min-h-screen bg-[#141414]">
-        <SkeletonHero />
-        <div className="px-4 md:px-6 lg:px-8 py-6 space-y-6">
-          <SkeletonRow rowIndex={0} />
-          <SkeletonRow rowIndex={1} />
-          <SkeletonRow rowIndex={2} />
-        </div>
-        <Footer />
-      </div>
-    );
+    return <HomeSkeleton />;
   }
 
   return (
