@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, UserCheck } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAdminAuthenticated } from "@/redux/slices/uiSlice";
 
@@ -17,16 +17,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const dispatch = useAppDispatch();
   const { isAdminAuthenticated } = useAppSelector((state) => state.ui);
+  const { data: session, status: sessionStatus } = useSession();
+
+  const isAdminSession =
+    sessionStatus === "authenticated" &&
+    (session?.user as Record<string, unknown> | undefined)?.isAdmin === true;
 
   useEffect(() => {
-    const storedKey = sessionStorage.getItem("adminKey");
+    if (isAdminSession) {
+      dispatch(setAdminAuthenticated(true));
+      setIsCheckingSession(false);
+      return;
+    }
+  }, [isAdminSession, dispatch]);
 
+  useEffect(() => {
+    if (sessionStatus === "loading") return;
+    if (isAdminSession) return;
+
+    const storedKey = sessionStorage.getItem("adminKey");
     if (!storedKey || isAdminAuthenticated) {
       setIsCheckingSession(false);
       return;
     }
-
-    let isMounted = true;
 
     fetch("/api/admin/verify", {
       method: "POST",
@@ -35,7 +48,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (!isMounted) return;
         if (data.success) {
           dispatch(setAdminAuthenticated(true));
         } else {
@@ -43,15 +55,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         }
       })
       .finally(() => {
-        if (isMounted) {
-          setIsCheckingSession(false);
-        }
+        setIsCheckingSession(false);
       });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [dispatch, isAdminAuthenticated]);
+  }, [dispatch, isAdminAuthenticated, sessionStatus, isAdminSession]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +103,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-white mb-2">Admin Panel</h1>
-            <p className="text-gray-400 text-sm">Enter your admin key to continue</p>
+            <p className="text-gray-400 text-sm">Sign in with an admin account or use admin key</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -125,9 +131,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-gray-500 text-xs">
-            Restricted access - Authorized personnel only
-          </p>
+          {isAdminSession && (
+            <div className="mt-4 text-center">
+              <p className="text-green-400 text-sm mb-2">Signed in as admin</p>
+              <button
+                onClick={() => dispatch(setAdminAuthenticated(true))}
+                className="text-red-500 hover:underline text-sm"
+              >
+                Enter Admin Panel
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );

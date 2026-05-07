@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Content from "@/models/Content";
+import User from "@/models/User";
+import ConversionJob from "@/models/ConversionJob";
+import Watchlist from "@/models/Watchlist";
+import Review from "@/models/Review";
+import { getUserFromRequest } from "@/lib/get-user";
 
-// GET /api/admin/stats - Get admin dashboard stats
 export async function GET(request: NextRequest) {
   try {
-    // Verify admin key
+    const userInfo = await getUserFromRequest(request);
     const adminKey = request.headers.get("x-admin-key");
-    if (adminKey !== process.env.ADMIN_KEY) {
+
+    const isAuthorized =
+      userInfo?.isAdmin ||
+      adminKey === process.env.ADMIN_KEY;
+
+    if (!isAuthorized) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -16,11 +25,24 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    const totalMovies = await Content.countDocuments({ type: "movie" });
-    const totalSeries = await Content.countDocuments({ type: "series" });
-    const trendingCount = await Content.countDocuments({ category: "Trending" });
+    const [
+      totalMovies,
+      totalSeries,
+      trendingCount,
+      totalUsers,
+      totalConversionJobs,
+      totalWatchlistItems,
+      totalReviews,
+    ] = await Promise.all([
+      Content.countDocuments({ type: "movie" }),
+      Content.countDocuments({ type: "series" }),
+      Content.countDocuments({ category: "Trending" }),
+      User.countDocuments(),
+      ConversionJob.countDocuments(),
+      Watchlist.countDocuments(),
+      Review.countDocuments(),
+    ]);
 
-    // Count total episodes across all series
     const seriesData = await Content.find({ type: "series" }, { seasons: 1 });
     const totalEpisodes = seriesData.reduce((acc: number, series: { seasons?: { episodes?: { length: number }[] }[] }) => {
       return (
@@ -38,6 +60,10 @@ export async function GET(request: NextRequest) {
         totalSeries,
         totalEpisodes,
         trendingCount,
+        totalUsers,
+        totalConversionJobs,
+        totalWatchlistItems,
+        totalReviews,
       },
     });
   } catch (error) {

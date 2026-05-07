@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Film, Tv, Boxes, ClipboardList, TriangleAlert, Sparkles, BellRing, LayoutDashboard, Search, Plus, X, CloudUpload } from "lucide-react";
+import { Film, Tv, Boxes, ClipboardList, TriangleAlert, Sparkles, BellRing, LayoutDashboard, Search, Plus, X, CloudUpload, Users, Video, Subtitles, ListOrdered } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminStats from "@/components/admin/AdminStats";
 import UploadMovieForm from "@/components/admin/UploadMovieForm";
@@ -13,13 +13,21 @@ import AdminRequests from "@/components/admin/AdminRequests";
 import AdminCollections from "@/components/admin/AdminCollections";
 import AdminReports from "@/components/admin/AdminReports";
 import LulustreamManager from "@/components/admin/LulustreamManager";
+import AdminUsers from "@/components/admin/AdminUsers";
+import AdminConversionJobs from "@/components/admin/AdminConversionJobs";
+import VideoConverter from "@/components/admin/VideoConverter";
+import AdminSubtitles from "@/components/admin/AdminSubtitles";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "upload-movie", label: "Add Movie", icon: Film },
   { id: "upload-series", label: "Add Series", icon: Tv },
   { id: "manage", label: "Manage", icon: Boxes },
+  { id: "converter", label: "Converter", icon: Video },
   { id: "lulustream", label: "Lulustream", icon: CloudUpload },
+  { id: "users", label: "Users", icon: Users },
+  { id: "subtitles", label: "Subtitles", icon: Subtitles },
+  { id: "conversion-jobs", label: "Jobs", icon: ListOrdered },
   { id: "requests", label: "Requests", icon: ClipboardList },
   { id: "reports", label: "Reports", icon: TriangleAlert },
   { id: "collections", label: "Collections", icon: Sparkles },
@@ -202,10 +210,38 @@ function AdminPageContent() {
             </div>
           )}
 
+          {/* Video Converter */}
+          {activeTab === "converter" && (
+            <div className="w-full p-4">
+              <VideoConverter />
+            </div>
+          )}
+
           {/* Lulustream */}
           {activeTab === "lulustream" && (
             <div className="w-full p-4">
               <LulustreamManager />
+            </div>
+          )}
+
+          {/* Users */}
+          {activeTab === "users" && (
+            <div className="w-full p-4">
+              <AdminUsers />
+            </div>
+          )}
+
+          {/* Subtitles */}
+          {activeTab === "subtitles" && (
+            <div className="w-full p-4">
+              <AdminSubtitles />
+            </div>
+          )}
+
+          {/* Conversion Jobs */}
+          {activeTab === "conversion-jobs" && (
+            <div className="w-full p-4">
+              <AdminConversionJobs />
             </div>
           )}
 
