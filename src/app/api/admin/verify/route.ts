@@ -4,9 +4,15 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function POST(request: NextRequest) {
   try {
-    // Check next-auth session first
-    const session = await getServerSession(authOptions);
-    const sessionUser = session?.user as Record<string, unknown> | undefined;
+    // Check next-auth session first (wrapped in try-catch to handle missing env)
+    let sessionUser: Record<string, unknown> | undefined;
+    try {
+      const session = await getServerSession(authOptions);
+      sessionUser = session?.user as Record<string, unknown> | undefined;
+    } catch {
+      // next-auth not configured, fall through to key check
+    }
+
     if (sessionUser?.isAdmin) {
       return NextResponse.json({
         success: true,

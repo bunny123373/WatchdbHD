@@ -23,8 +23,6 @@ const nextConfig = {
     ],
   },
   env: {
-    MONGODB_URI: process.env.MONGODB_URI,
-    ADMIN_KEY: process.env.ADMIN_KEY,
     NEXT_PUBLIC_ADSENSE_ENABLED: process.env.NEXT_PUBLIC_ADSENSE_ENABLED,
     NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
   },
