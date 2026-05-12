@@ -280,7 +280,6 @@ export async function GET(request: NextRequest) {
 
   if (action === "trending") {
     try {
-      const existingIds = filterExisting ? await getExistingTmdbIds() : new Set<number>();
       const timeWindow = searchParams.get("timeWindow") || "week";
       
       const movieResponse = await fetch(
@@ -302,33 +301,48 @@ export async function GET(request: NextRequest) {
       const tvData = await tvResponse.json();
       
       const allResults = [...(movieData.results || []), ...(tvData.results || [])]
-        .filter((item: { id: number }) => existingIds.has(item.id))
-        .sort((a: { vote_average: number }, b: { vote_average: number }) => b.vote_average - a.vote_average)
-        .slice(0, 20);
+        .slice(0, 50);
       
-      const results = allResults.map((item: { 
-        id: number; 
-        title?: string; 
-        name?: string; 
-        media_type: string;
-        poster_path: string; 
-        backdrop_path: string; 
-        overview: string; 
-        release_date?: string; 
-        first_air_date?: string; 
-        vote_average: number;
-        genre_ids?: number[];
-      }) => ({
-        tmdbId: item.id,
-        title: item.title || item.name,
-        type: item.media_type,
-        poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "",
-        banner: item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : "",
-        description: item.overview,
-        year: (item.release_date || item.first_air_date || "").split("-")[0],
-        rating: Math.round(item.vote_average * 10) / 10,
-        genreIds: item.genre_ids || [],
-      }));
+      await connectDB();
+      const localContents = await Content.find({
+        tmdbId: { $in: allResults.map((r: { id: number }) => r.id) }
+      }).select("tmdbId slug _id type").lean();
+      const localMap = new Map(
+        localContents.map((c) => [c.tmdbId as number, c])
+      );
+      
+      const results = allResults
+        .filter((item: { id: number }) => localMap.has(item.id))
+        .sort((a: { vote_average: number }, b: { vote_average: number }) => b.vote_average - a.vote_average)
+        .slice(0, 20)
+        .map((item: { 
+          id: number; 
+          title?: string; 
+          name?: string; 
+          media_type: string;
+          poster_path: string; 
+          backdrop_path: string; 
+          overview: string; 
+          release_date?: string; 
+          first_air_date?: string; 
+          vote_average: number;
+          genre_ids?: number[];
+        }) => {
+          const local = localMap.get(item.id) as Record<string, unknown> | undefined;
+          return {
+            _id: local?._id,
+            slug: local?.slug,
+            tmdbId: item.id,
+            title: item.title || item.name,
+            type: local?.type || item.media_type,
+            poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "",
+            banner: item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : "",
+            description: item.overview,
+            year: (item.release_date || item.first_air_date || "").split("-")[0],
+            rating: Math.round(item.vote_average * 10) / 10,
+            genreIds: item.genre_ids || [],
+          };
+        });
       
       return NextResponse.json({ success: true, data: results });
     } catch (error) {

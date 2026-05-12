@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { generateSlug } from "@/lib/slug";
 
 export interface ICast {
   name: string;
@@ -209,6 +210,23 @@ const ContentSchema = new Schema<IContent>(
   },
   { timestamps: true }
 );
+
+ContentSchema.index({ slug: 1 }, { unique: true, sparse: true });
+
+ContentSchema.pre("save", function (next) {
+  if (this.title && !this.slug) {
+    this.slug = generateSlug(this.title);
+  }
+  next();
+});
+
+ContentSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate() as Record<string, unknown>;
+  if (update?.title && !update?.slug) {
+    update.slug = generateSlug(update.title as string);
+  }
+  next();
+});
 
 const Content = mongoose.models.Content || mongoose.model<IContent>("Content", ContentSchema);
 

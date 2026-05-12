@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Content from "@/models/Content";
+import { generateSlug } from "@/lib/slug";
 
 // GET /api/content/[id] - Get single content (public)
 export async function GET(
@@ -11,18 +12,35 @@ export async function GET(
   try {
     await connectDB();
 
-    const content = await Content.findById(id);
+    let item: Record<string, unknown> | null = null;
+    try {
+      const doc = await Content.findById(id).lean();
+      if (doc && !Array.isArray(doc)) item = doc as any;
+    } catch (_) {}
 
-    if (!content) {
+    if (!item) {
+      const doc = await Content.findOne({ slug: id }).lean();
+      if (doc) item = doc as any;
+    }
+
+    if (!item) {
       return NextResponse.json(
         { success: false, error: "Content not found" },
         { status: 404 }
       );
     }
 
+    const data = item as Record<string, unknown>;
+    if (!data.slug && data.title) {
+      data.slug = generateSlug(data.title as string);
+      try {
+        await Content.findByIdAndUpdate(data._id, { slug: data.slug });
+      } catch (_) {}
+    }
+
     return NextResponse.json({
       success: true,
-      data: content,
+      data,
     });
   } catch (error) {
     console.error("Error fetching content:", error);

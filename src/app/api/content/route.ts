@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Content from "@/models/Content";
+import { generateSlug } from "@/lib/slug";
 
 // GET /api/content - Get all content (public)
 export async function GET(request: NextRequest) {
@@ -13,8 +14,13 @@ export async function GET(request: NextRequest) {
     const language = searchParams.get("language");
     const search = searchParams.get("search");
     const genreId = searchParams.get("genreId");
+    const ids = searchParams.get("ids");
 
     let query: Record<string, unknown> = {};
+
+    if (ids) {
+      query._id = { $in: ids.split(",") };
+    }
 
     if (type && type !== "all") {
       query.type = type;
@@ -41,15 +47,24 @@ export async function GET(request: NextRequest) {
     }
 
     const noLimit = searchParams.get("noLimit") === "true";
-    let queryBuilder = Content.find(query).sort({ createdAt: -1 });
+    let queryBuilder = Content.find(query).sort({ createdAt: -1 }).lean();
     if (!noLimit) {
       queryBuilder = queryBuilder.limit(50);
     }
     const content = await queryBuilder;
+    const data = content.map((item: Record<string, unknown>) => {
+      if (!item.slug && item.title) {
+        item.slug = generateSlug(item.title as string);
+        try {
+          Content.findByIdAndUpdate(item._id, { slug: item.slug }).exec();
+        } catch (_) {}
+      }
+      return item;
+    });
 
     return NextResponse.json({
       success: true,
-      data: content,
+      data,
     }, {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
