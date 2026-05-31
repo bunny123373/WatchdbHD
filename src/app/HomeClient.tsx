@@ -12,7 +12,6 @@ import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
-import HomeSkeleton from "@/components/HomeSkeleton";
 import ContinueWatching from "@/components/ContinueWatching";
 import { useAppSelector } from "@/redux/hooks";
 import { ICollection } from "@/models/Collection";
@@ -403,10 +402,6 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const handleCloseModal = () => {
     setSelectedContent(null);
   };
-
-  if (content.length === 0) {
-    return <HomeSkeleton />;
-  }
 
   return (
     <PullToRefresh onRefresh={fetchContent}>
