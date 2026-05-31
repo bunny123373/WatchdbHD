@@ -12,6 +12,7 @@ import MovieCard from "@/components/MovieCard";
 import SeriesCard from "@/components/SeriesCard";
 import TMDBContentGrid from "@/components/TMDBContentGrid";
 import PullToRefresh from "@/components/PullToRefresh";
+import HomeSkeleton from "@/components/HomeSkeleton";
 import ContinueWatching from "@/components/ContinueWatching";
 import { useAppSelector } from "@/redux/hooks";
 import { ICollection } from "@/models/Collection";
@@ -89,6 +90,13 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const searchParams = useSearchParams();
   const genreFilter = searchParams.get("genre");
   const urlSearch = searchParams.get("q");
+  const [showSkeleton, setShowSkeleton] = useState(initialContent.length === 0);
+
+  useEffect(() => {
+    if (content.length > 0) {
+      setShowSkeleton(false);
+    }
+  }, [content]);
 
   useEffect(() => {
     if (initialContent.length === 0) {
@@ -402,6 +410,10 @@ export default function HomeClient({ initialContent }: HomeClientProps) {
   const handleCloseModal = () => {
     setSelectedContent(null);
   };
+
+  if (showSkeleton) {
+    return <HomeSkeleton />;
+  }
 
   return (
     <PullToRefresh onRefresh={fetchContent}>
