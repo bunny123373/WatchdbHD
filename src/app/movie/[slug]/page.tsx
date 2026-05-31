@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import DownloadButton from "@/components/DownloadButton";
 import BackButton from "@/components/BackButton";
+import MovieAudioSection from "@/components/MovieAudioSection";
 import { SITE_CONFIG } from "@/utils/constants";
 import { normalizeExternalUrl } from "@/utils/url";
 
@@ -147,9 +148,9 @@ export default async function MoviePage({ params }: { params: Promise<{ slug: st
                 <span className="text-yellow-500">{movie.rating}</span>
               </span>
             )}
-            {movie.audioLanguages && movie.audioLanguages.length > 0 && (
-              <span className="text-white/80 hidden sm:inline">
-                {movie.audioLanguages.map((lang) => lang.toUpperCase()).join(" | ")}
+            {movie.audioLanguages && movie.audioLanguages.length > 1 && (
+              <span className="text-white/50 hidden sm:inline text-xs">
+                {movie.audioLanguages.length} Audio
               </span>
             )}
           </div>
@@ -196,13 +197,10 @@ export default async function MoviePage({ params }: { params: Promise<{ slug: st
             <p className="text-gray-500 text-xs uppercase mb-1">Genres</p>
             <p className="text-white text-sm">{movie.tmdbGenres?.slice(0, 2).join(", ") || movie.tags?.slice(0, 2).join(", ") || "N/A"}</p>
           </div>
-          <div>
-            <p className="text-gray-500 text-xs uppercase mb-1">Audio</p>
-            <p className="text-white text-sm flex items-center gap-1">
-              <Globe className="w-3 h-3" />
-              {movie.audioLanguages?.join(", ") || movie.language || "N/A"}
-            </p>
-          </div>
+          <MovieAudioSection
+            audioLanguages={movie.audioLanguages || []}
+            defaultLanguage={movie.language}
+          />
         </div>
       </div>
       

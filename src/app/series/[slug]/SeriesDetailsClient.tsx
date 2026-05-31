@@ -8,6 +8,7 @@ import { IContent, IEpisode } from "@/models/Content";
 import Footer from "@/components/Footer";
 import ContentGrid from "@/components/ContentGrid";
 import BackButton from "@/components/BackButton";
+import AudioSelectUnderline from "@/components/AudioSelectUnderline";
 
 interface SeriesDetailsClientProps {
   series: IContent;
@@ -18,6 +19,14 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
   const [series] = useState<IContent>(initialSeries);
   const [similarSeries] = useState<IContent[]>(initialSimilar);
   const [expandedSeasons, setExpandedSeasons] = useState<number[]>([1]);
+  const [selectedAudio, setSelectedAudio] = useState(
+    () => initialSeries.audioLanguages?.[0] || initialSeries.language || ""
+  );
+
+  const handleAudioChange = (lang: string) => {
+    setSelectedAudio(lang);
+    localStorage.setItem("preferredAudio", lang);
+  };
 
   const totalEpisodes = series.seasons?.reduce((acc: number, s: { episodes?: unknown[] }) => acc + (s.episodes?.length || 0), 0) || 0;
 
@@ -68,9 +77,9 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
                 <span className="text-yellow-500">{series.rating}</span>
               </span>
             )}
-            {series.audioLanguages && series.audioLanguages.length > 0 && (
-              <span className="text-white/80">
-                {series.audioLanguages.map((lang) => lang.toUpperCase()).join(" | ")}
+            {series.audioLanguages && series.audioLanguages.length > 1 && (
+              <span className="text-white/50 text-xs">
+                {series.audioLanguages.length} Audio
               </span>
             )}
           </div>
@@ -151,7 +160,7 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
 
       {/* About Section */}
       <div className="px-4 py-6 border-t border-white/10">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div>
             <p className="text-gray-500 text-xs uppercase mb-1">Seasons</p>
             <p className="text-white text-sm">{series.seasons?.length || 0}</p>
@@ -160,6 +169,16 @@ export default function SeriesDetailsClient({ series: initialSeries, similarSeri
             <p className="text-gray-500 text-xs uppercase mb-1">Genres</p>
             <p className="text-white text-sm">{series.tmdbGenres?.slice(0, 2).join(", ") || series.tags?.slice(0, 2).join(", ") || "N/A"}</p>
           </div>
+          {series.audioLanguages && series.audioLanguages.length > 0 && (
+            <div>
+              <p className="text-gray-500 text-xs uppercase mb-1">Audio</p>
+              <AudioSelectUnderline
+                languages={series.audioLanguages}
+                selected={selectedAudio}
+                onSelect={handleAudioChange}
+              />
+            </div>
+          )}
         </div>
       </div>
 
